@@ -11,6 +11,10 @@
   .t-btn {
     @apply bg-transparent text-white px-7 py-3 rounded-md font-causten-semi-bold border text-xs;
   }
+
+  .btn {
+    @apply bg-[#8A33FD] text-[1.125rem] text-white px-7 py-3 rounded-md font-causten-medium;
+  }
 }
 
 /*home hero slider  */
@@ -140,3 +144,11 @@
   background-color: #8a33fd;
 }
 /*price range slide css end  */
+
+/* increase decrease button css  */
+
+.increase-decrease-btn input[type="number"]::-webkit-inner-spin-button,
+.increase-decrease-btn input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
