@@ -33,13 +33,13 @@ const Footer = () => {
             </h3>
             <ul className="font-causten-medium text-[1.125rem] text-white">
               <li>
-                <Link href={"/contact"}>About Us</Link>
+                <Link href={"/about-us"}>About Us</Link>
               </li>
               <li>
-                <Link href={"/contact"}>euphoria Blog</Link>
+                <Link href={"/euphoria-blog"}>Euphoria Blog</Link>
               </li>
               <li>
-                <Link href={"/contact"}>euphoriastan</Link>
+                <Link href={"/euphoriastan"}>euphoriastan</Link>
               </li>
               <li>
                 <Link href={"/contact"}>Media</Link>

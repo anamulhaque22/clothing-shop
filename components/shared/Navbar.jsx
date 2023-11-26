@@ -31,10 +31,10 @@ const Navbar = () => {
               </li>
 
               <li>
-                <Link href={"/"}>Combos</Link>
+                <Link href={"/products/combo"}>Combos</Link>
               </li>
               <li>
-                <Link href={"/"}>Joggers</Link>
+                <Link href={"/products/joggers"}>Joggers</Link>
               </li>
             </ul>
           </div>
