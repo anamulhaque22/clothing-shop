@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import SectionHeading from "../typhography/SectionHeading";
+import SectionHeading from "../Typography/SectionHeading";
 
 const BigSavingZone = () => {
   return (

@@ -1,5 +1,5 @@
 import Feedback from "../Feedback/Feedback";
-import SectionHeading from "../typhography/SectionHeading";
+import SectionHeading from "../Typography/SectionHeading";
 
 const UserFeedbacks = () => {
   return (

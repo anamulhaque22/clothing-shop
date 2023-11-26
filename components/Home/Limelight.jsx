@@ -1,5 +1,5 @@
 import Product from "../Product/Product";
-import SectionHeading from "../typhography/SectionHeading";
+import SectionHeading from "../Typography/SectionHeading";
 
 const Limelight = () => {
   return (

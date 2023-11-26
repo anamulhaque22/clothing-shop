@@ -6,6 +6,9 @@
   .section-space {
     @apply pt-20;
   }
+  .custom-divider {
+    @apply divider before:h-[1px] after:h-[1px] before:bg-[#EDEEF2] after:bg-[#EDEEF2];
+  }
 }
 @layer components {
   .t-btn {

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Slider from "react-slick";
-import SectionHeading from "../typhography/SectionHeading";
+import SectionHeading from "../Typography/SectionHeading";
 
 const NewArrival = () => {
   const settings = {

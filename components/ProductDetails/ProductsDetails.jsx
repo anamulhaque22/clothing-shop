@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import Product from "../Product/Product";
-import SectionHeading from "../typhography/SectionHeading";
+import SectionHeading from "../Typography/SectionHeading";
 const sizeList = ["XS", "S", "M", "L", "XL", "XXL"];
 const colorList = ["red", "green", "blue", "yellow", "black", "white"];
 const ProductsDetails = () => {
