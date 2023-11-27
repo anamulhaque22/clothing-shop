@@ -33,7 +33,7 @@ function InputText({
         value={value}
         placeholder={placeholder || ""}
         onChange={(e) => updateInputValue(e.target.value)}
-        className="input  input-bordered w-full "
+        className="input  input-bordered w-full focus:outline-none "
       />
     </div>
   );

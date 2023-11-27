@@ -16,8 +16,15 @@
   }
 
   .btn {
-    @apply bg-[#8A33FD] text-[1.125rem] text-white px-7 py-3 rounded-md font-causten-medium;
+    @apply bg-[#8A33FD] hover:bg-[#6620C1] text-[1.125rem] text-white px-7 py-3 rounded-md font-causten-medium;
   }
+}
+
+/* utility classes */
+.custom-shadow {
+  box-shadow:
+    rgba(145, 158, 171, 0.2) 0px 0px 2px,
+    rgb(229, 234, 241) 0px 5px 20px;
 }
 
 /*home hero slider  */
@@ -155,3 +162,32 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* user account left menu css  */
+.user-account .menu .a:hover {
+  background-color: #f6f6f6;
+}
+
+.user-account.menu a:active {
+  background-color: #f6f6f6;
+}
+/* .menu li > *:not(ul):not(.menu-title):not(details):active,
+.menu li > *:not(ul):not(.menu-title):not(details).active,
+.menu li > details > summary:active {
+  background-color: #f6f6f6;
+}
+:where(
+    .user-account
+      .menu
+      li:not(.menu-title):not(.disabled)
+      > *:not(ul):not(details):not(.menu-title)
+  ):not(.active):hover,
+:where(
+    .user-account
+      .menu
+      li:not(.menu-title):not(.disabled)
+      > details
+      > summary:not(.menu-title)
+  ):not(.active):hover {
+  background-color: #f6f6f6;
+} */
