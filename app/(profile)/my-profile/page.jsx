@@ -1,4 +1,4 @@
-import MyInfo from "@/components/MyAccount/MyInfo";
+import MyInfo from "@/components/UserProfile/Profile/MyInfo";
 
 const page = () => {
   return <MyInfo />;

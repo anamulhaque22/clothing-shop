@@ -1,5 +1,6 @@
+"use client";
 import React, { useState } from "react";
-import InputText from "../Input/InputText";
+import InputText from "../../Input/InputText";
 
 const UpdatePassword = () => {
   const UPDATE_PASS_OBJ = {

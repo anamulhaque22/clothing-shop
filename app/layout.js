@@ -1,4 +1,4 @@
-import Navbar from "@/components/Shared/Navbar";
+import MainNav from "@/components/Navbar/MainNav";
 import font from "./font";
 import "./globals.css";
 import Footer from "@/components/Shared/Footer";
@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${conbineFontVariable(font)}  bg-white`}>
-        <Navbar />
+        <MainNav />
         {children}
         <Footer />
       </body>

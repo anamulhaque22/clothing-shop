@@ -1,9 +1,9 @@
+"use client";
 import React, { useState } from "react";
-import InputText from "../Input/InputText";
-import { Input } from "postcss";
+import InputText from "../../Input/InputText";
 import UpdatePassword from "./UpdatePassword";
 
-const UpdateDetails = () => {
+const EditProfile = () => {
   const INITIAL_USER_OBJ = {
     firstName: "",
     lastName: "",
@@ -46,7 +46,7 @@ const UpdateDetails = () => {
     updateFormValue({ updateType: "email", value: val });
   };
   return (
-    <div className="custom-shadow mt-6 py-6 px-5 rounded-lg">
+    <div className="custom-shadow py-6 px-5 rounded-lg">
       <form action="">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputText
@@ -96,9 +96,8 @@ const UpdateDetails = () => {
       </form>
 
       <UpdatePassword />
-      <form action=""></form>
     </div>
   );
 };
 
-export default UpdateDetails;
+export default EditProfile;
