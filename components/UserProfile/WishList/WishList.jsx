@@ -1,5 +1,6 @@
 import React from "react";
 import WishListItem from "./WishListItem";
+import EmptyWithList from "./EmptyWithList";
 
 const WishList = () => {
   return (
