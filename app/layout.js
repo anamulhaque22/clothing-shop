@@ -1,7 +1,5 @@
-import MainNav from "@/components/Navbar/MainNav";
 import font from "./font";
 import "./globals.css";
-import Footer from "@/components/Shared/Footer";
 
 export const metadata = {
   title: "Create Next App",
@@ -19,9 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${conbineFontVariable(font)}  bg-white`}>
-        <MainNav />
         {children}
-        <Footer />
       </body>
     </html>
   );

@@ -1,5 +1,3 @@
-import React from "react";
-
 const ShippingMethod = () => {
   return (
     <div>
@@ -11,14 +9,14 @@ const ShippingMethod = () => {
       <div className="bg-[#F6F6F6] rounded-md py-9 px-7">
         <p
           className="mt-px cursor-pointer select-none font-causten-bold text-xl text-[#3C4242]"
-          for="ripple-on"
+          htmlFor="ripple-on"
         >
           Arrives by Monday, June 7
         </p>
         <div className="divider"></div>
         <p
           className="mt-px cursor-pointer select-none font-causten-bold text-xl text-[#3C4242] flex justify-between"
-          for="ripple-on"
+          htmlFor="ripple-on"
         >
           <span>Delivery Charges</span> <span>$5.00</span>
         </p>

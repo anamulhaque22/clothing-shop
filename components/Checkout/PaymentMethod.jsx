@@ -1,5 +1,4 @@
 import Image from "next/image";
-import React from "react";
 
 const PaymentMethod = () => {
   return (
@@ -16,7 +15,7 @@ const PaymentMethod = () => {
         <div className="flex items-center">
           <label
             className="relative flex cursor-pointer items-center rounded-full p-3"
-            for="ripple-on"
+            htmlFor="ripple-on"
             dataRippleDark="true"
           >
             <input
@@ -38,7 +37,7 @@ const PaymentMethod = () => {
           </label>
           <label
             className="mt-px cursor-pointer select-none font-causten-bold text-xl text-[#3C4242] flex flex-col"
-            for="ripple-off"
+            htmlFor="ripple-off"
           >
             Credit Card
             <span className="font-causten-medium text-base text-[#807D7E]">
@@ -115,7 +114,7 @@ const PaymentMethod = () => {
         <div className="flex items-center">
           <label
             className="relative flex cursor-pointer items-center rounded-full p-3"
-            for="ripple-off"
+            htmlFor="ripple-off"
           >
             <input
               id="ripple-off"
@@ -136,7 +135,7 @@ const PaymentMethod = () => {
           </label>
           <label
             className="mt-px cursor-pointer select-none font-causten-bold text-xl text-[#3C4242] flex flex-col"
-            for="ripple-off"
+            htmlFor="ripple-off"
           >
             Cash on delivery
             <span className="font-causten-medium text-base text-[#807D7E]">

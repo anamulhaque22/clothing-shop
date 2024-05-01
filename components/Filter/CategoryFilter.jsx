@@ -35,7 +35,7 @@ const CategoryFilter = () => {
   return (
     <FilterSection
       title="Category"
-      icon={"/images/icon/filtter.svg"}
+      icon={"/images/icon/Filtter.svg"}
       titleBorder="border-b border-b-secondary-lighter"
     >
       <div className="flex justify-between px-7 py-10">

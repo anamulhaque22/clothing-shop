@@ -1,15 +1,13 @@
 "use client";
 import UserProfileNav from "@/components/Navbar/UserProfileNav";
 import Image from "next/image";
-import Link from "next/link";
-import React from "react";
 
 const UserProfileLayout = ({ children }) => {
   return (
     <div className="container">
-      <div class="drawer lg:drawer-open my-5 gap-x-5">
-        <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content">
+      <div className="drawer lg:drawer-open my-5 gap-x-5">
+        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content">
           <label
             htmlFor="my-drawer-2"
             className="rounded border border-black p-1 mb-3 inline-block lg:hidden"
@@ -24,7 +22,7 @@ const UserProfileLayout = ({ children }) => {
           {/* <!-- Page content here --> */}
           {children}
         </div>
-        <div class="drawer-side lg:rounded-md lg:custom-shadow lg:h-auto">
+        <div className="drawer-side lg:rounded-md lg:custom-shadow lg:h-auto">
           <label
             htmlFor="my-drawer-2"
             aria-label="close sidebar"

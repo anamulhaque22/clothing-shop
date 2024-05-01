@@ -1,5 +1,3 @@
-import React from "react";
-
 const ShippingAddress = () => {
   return (
     <div>
@@ -15,7 +13,7 @@ const ShippingAddress = () => {
         <div className="flex items-center">
           <label
             className="relative flex cursor-pointer items-center rounded-full p-3"
-            for="ripple-on"
+            htmlFor="ripple-on"
             dataRippleDark="true"
           >
             <input
@@ -37,7 +35,7 @@ const ShippingAddress = () => {
           </label>
           <label
             className="mt-px cursor-pointer select-none font-causten-bold text-xl text-[#3C4242]"
-            for="ripple-on"
+            htmlFor="ripple-on"
           >
             Same as Billing address
           </label>
@@ -46,7 +44,7 @@ const ShippingAddress = () => {
         <div className="flex items-center">
           <label
             className="relative flex cursor-pointer items-center rounded-full p-3"
-            for="ripple-off"
+            htmlFor="ripple-off"
           >
             <input
               id="ripple-off"
@@ -67,7 +65,7 @@ const ShippingAddress = () => {
           </label>
           <label
             className="mt-px cursor-pointer select-none font-causten-bold text-xl text-[#3C4242]"
-            for="ripple-off"
+            htmlFor="ripple-off"
           >
             Use a different shipping address
           </label>

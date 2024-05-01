@@ -1,6 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 
-const Product = () => {
+const Product = ({ productCategory }) => {
   return (
     <div>
       <div className="relative">
@@ -23,10 +24,13 @@ const Product = () => {
       </div>
       <div className="flex justify-between items-center mt-7">
         <div className="overflow-hidden">
-          <h3 className="truncate text-base font-causten-semi-bold text-secondary">
+          <Link
+            href={`/products/${productCategory}/1`}
+            className="truncate text-base font-causten-semi-bold text-secondary"
+          >
             Product Name Product NameProduct NameProduct NameProduct NameProduct
             NameProduct NameProduct Name
-          </h3>
+          </Link>
           <p className="text-sm font-causten-medium text-gray-500">
             AS{"'"}s Brand
           </p>

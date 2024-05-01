@@ -1,22 +1,20 @@
-import React from "react";
-
 const Checkbox = () => {
   return (
-    <div class="flex items-center">
+    <div className="flex items-center">
       <label
-        class="relative flex items-center rounded-full cursor-pointer"
-        for="login"
+        className="relative flex items-center rounded-full cursor-pointer"
+        htmlFor="login"
         dataRippleDark="true"
       >
         <input
           id="login"
           type="checkbox"
-          class="before:content[''] peer relative h-[1.125rem] w-[1.125rem] cursor-pointer appearance-none border border-[#BEBCBD] transition-all before:absolute before:top-2/4 before:left-2/4  before:-translate-y-2/4 before:-translate-x-2/4 before:opacity-0 before:transition-opacity checked:border-[#3C4242] checked:bg-[#3C4242] checked:before:bg-[#3C4242] hover:before:opacity-10"
+          className="before:content[''] peer relative h-[1.125rem] w-[1.125rem] cursor-pointer appearance-none border border-[#BEBCBD] transition-all before:absolute before:top-2/4 before:left-2/4  before:-translate-y-2/4 before:-translate-x-2/4 before:opacity-0 before:transition-opacity checked:border-[#3C4242] checked:bg-[#3C4242] checked:before:bg-[#3C4242] hover:before:opacity-10"
         />
-        <div class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+        <div className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-3.5 w-3.5"
+            className="h-3.5 w-3.5"
             viewBox="0 0 20 20"
             fill="currentColor"
             stroke="currentColor"
@@ -31,8 +29,8 @@ const Checkbox = () => {
         </div>
       </label>
       <label
-        class="ml-3 mt-px font-light text-gray-700 cursor-pointer select-none"
-        for="login"
+        className="ml-3 mt-px font-light text-gray-700 cursor-pointer select-none"
+        htmlFor="login"
       >
         Save my information for a faster checkout
       </label>

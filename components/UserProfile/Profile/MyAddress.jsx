@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const MyAddress = () => {
   return (
@@ -25,7 +24,7 @@ const MyAddress = () => {
           <div className="flex justify-between p-5 bg-[#F5F6F8]">
             <p>Office</p>
             <Image
-              src={"/images/icon/delete.svg"}
+              src={"/images/icon/Delete.svg"}
               width={18}
               height={18}
               alt="edit icon"
@@ -51,7 +50,7 @@ const MyAddress = () => {
           <div className="flex justify-between p-5 bg-[#F5F6F8]">
             <p>Office</p>
             <Image
-              src={"/images/icon/delete.svg"}
+              src={"/images/icon/Delete.svg"}
               width={18}
               height={18}
               alt="edit icon"
@@ -77,7 +76,7 @@ const MyAddress = () => {
           <div className="flex justify-between p-5 bg-[#F5F6F8]">
             <p>Office</p>
             <Image
-              src={"/images/icon/delete.svg"}
+              src={"/images/icon/Delete.svg"}
               width={18}
               height={18}
               alt="edit icon"

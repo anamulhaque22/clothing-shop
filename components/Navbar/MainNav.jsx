@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import MainNavLinks from "./MainNavLinks";
 import { useState } from "react";
 const MainNav = () => {
   const [open, setOpen] = useState(false);
@@ -20,7 +19,7 @@ const MainNav = () => {
                     height={100}
                     width={100}
                     alt="logo"
-                    priority={true}
+                    // priority={true}
                   />
                 </a>
               </div>

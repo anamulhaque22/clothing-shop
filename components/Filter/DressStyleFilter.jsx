@@ -19,9 +19,6 @@ const dressStyle = [
   {
     name: "Formal (evening)",
   },
-  {
-    name: "Formal (evening)",
-  },
 ];
 
 const DressStyleFilter = () => {
@@ -49,26 +46,3 @@ const DressStyleFilter = () => {
 };
 
 export default DressStyleFilter;
-
-{
-  /* <div>
-      <TitleFilterFor title="Dress Style" />
-      <div className="flex justify-between px-7 py-10">
-        <ul className="w-full space-y-[18px]">
-          {dressStyle.map((d) => (
-            <li key={d.name} className="flex justify-between">
-              <span className="font-causten-semi-bold text-base text-[#8A8989] cursor-pointer">
-                {d.name}
-              </span>
-              <Image
-                src={"/images/icon/chevron/right.svg"}
-                width={18}
-                height={18}
-                alt="filter icon"
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div> */
-}
