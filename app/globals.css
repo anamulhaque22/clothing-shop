@@ -180,3 +180,11 @@
   background-color: #f6f6f6;
   color: #807d7e;
 }
+
+/* login */
+.bg-image {
+  background-image: url("/images/sign-up-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

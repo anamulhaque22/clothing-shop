@@ -1,12 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
+import Login from "@/components/Auth/Login";
 
 const page = () => {
-  return (
-    <>
-      <h2>login</h2>
-    </>
-  );
+  return <Login />;
 };
 
 export default page;
