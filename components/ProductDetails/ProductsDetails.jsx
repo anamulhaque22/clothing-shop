@@ -20,7 +20,7 @@ const ProductsDetails = ({ params }) => {
   console;
 
   return (
-    <div className="container">
+    <div className="container mb-7">
       <div className="flex flex-col md:flex-row gap-8 md:gap-7 lg:gap-16">
         <div className="flex md:w-1/2 gap-4 lg:gap-8">
           <div className="hidden w-[75px] sm:flex flex-col justify-center gap-6">

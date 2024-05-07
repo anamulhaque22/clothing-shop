@@ -10,12 +10,12 @@ export default function LayoutContent({ productCategory }) {
       {/* <!-- Page content here --> */}
 
       <div className="w-full lg:pl-12">
-        <div className="flex justify-between py-12">
-          <h3 className="capitalize font-causten-semi-bold text-[1.375rem] text-secondary">
+        <div className="flex items-center justify-between py-12">
+          <h3 className="capitalize font-causten-semi-bold text-base sm:text-[1.375rem] text-secondary">
             {productCategory} Clothing
           </h3>
-          <div className="flex gap-6">
-            <ul className="flex gap-6 font-causten-semi-bold text-[1.375rem] text-[#3F4646]">
+          <div className="flex items-center gap-x-5 md:gap-x-6">
+            <ul className="flex gap-4 md:gap-6 font-causten-semi-bold text-base sm:text-[1.375rem] text-[#3F4646]">
               <li
                 className={`${
                   renderProduct === "New" ? "text-primary" : " "

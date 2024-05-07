@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 const page = () => {
   if (false) {
+    // if product id not found based on productId
     notFound();
   }
   return <ProductsDetails />;
