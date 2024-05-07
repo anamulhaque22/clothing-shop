@@ -25,7 +25,7 @@ export default function Register() {
             </h3>
             <LoginWithSocial />
 
-            <form className="flex flex-col gap-y-5 md:gap-y-7">
+            <form className="flex flex-col gap-y-5 md:gap-y-7 mt-7">
               <InputText
                 type="email"
                 containerStyle="mt-0 "
@@ -42,22 +42,20 @@ export default function Register() {
                 </Link>
               </div>
 
-              <div>
-                <div className="flex gap-x-2 items-center">
+              <div className="flex gap-y-2 flex-col">
+                <div className="flex gap-x-2 items-start sm:items-center">
                   <input
                     type="checkbox"
-                    defaultChecked
-                    className="checkbox checkbox-md"
+                    className="checkbox checkbox-md rounded-md border-secondary checked:border-secondary [--chkbg:theme(colors.secondary)] [--chkfg:white]"
                   />
                   <p className="font-causten-medium font-medium text-lg text-secondary-light">
                     Agree to our Terms of use and Privacy Policy
                   </p>
                 </div>
-                <div className="flex gap-x-2 items-center">
+                <div className="flex gap-x-2 items-start sm:items-center">
                   <input
                     type="checkbox"
-                    defaultChecked
-                    className="checkbox checkbox-md"
+                    className="checkbox checkbox-md rounded-md border-secondary checked:border-secondary [--chkbg:theme(colors.secondary)] [--chkfg:white]"
                   />
                   <p className="font-causten-medium font-medium text-lg text-secondary-light">
                     Subscribe to our monthly newsletter
@@ -65,18 +63,20 @@ export default function Register() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white"
-              >
-                Sign In
-              </button>
-              <p className="text-base font-causten-regular mt-3">
-                Don{"'"}t have an account?{" "}
-                <Link href="register" className="underline">
-                  Sing up
-                </Link>
-              </p>
+              <div>
+                <button
+                  type="submit"
+                  className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white"
+                >
+                  Sign In
+                </button>
+                <p className="text-base font-causten-regular mt-3">
+                  Already have an account?
+                  <Link href="/login" className="underline">
+                    Log in
+                  </Link>
+                </p>
+              </div>
             </form>
           </div>
         </div>
