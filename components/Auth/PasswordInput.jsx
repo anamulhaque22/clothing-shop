@@ -7,7 +7,7 @@ export default function PasswordInput() {
   return (
     <div className="form-control w-full">
       <label className="label font-causten-semi-bold text-base text-[#3C4242] flex justify-between items-center w-full">
-        <p>Password</p>
+        <span>Password</span>
         <button
           type="button"
           className="flex gap-x-2 items-center"
@@ -15,11 +15,11 @@ export default function PasswordInput() {
         >
           {isPasswordVisible ? (
             <>
-              <BsEyeFill size={18} color="#807D7E" /> <p>Show</p>
+              <BsEyeFill size={18} color="#807D7E" /> <span>Show</span>
             </>
           ) : (
             <>
-              <BsEyeSlashFill size={18} color="#807D7E" /> <p>Hide</p>
+              <BsEyeSlashFill size={18} color="#807D7E" /> <span>Hide</span>
             </>
           )}
         </button>
