@@ -6,6 +6,11 @@ const WishList = () => {
       <WishListItem />
       <WishListItem />
       <WishListItem />
+      <WishListItem />
+      <WishListItem />
+      <WishListItem />
+      <WishListItem />
+      <WishListItem />
     </div>
   );
 };

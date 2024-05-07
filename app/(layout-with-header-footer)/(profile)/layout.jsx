@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const UserProfileLayout = ({ children }) => {
   return (
-    <div className="container">
+    <div className="container h-full">
       <div className="drawer lg:drawer-open my-5 gap-x-5">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
@@ -22,7 +22,7 @@ const UserProfileLayout = ({ children }) => {
           {/* <!-- Page content here --> */}
           {children}
         </div>
-        <div className="drawer-side lg:rounded-md lg:custom-shadow lg:h-auto">
+        <div className="drawer-side lg:rounded-md lg:custom-shadow lg:h-[340px] z-50">
           <label
             htmlFor="my-drawer-2"
             aria-label="close sidebar"
