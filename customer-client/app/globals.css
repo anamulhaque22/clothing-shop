@@ -157,6 +157,15 @@
   height: 3px;
   background-color: #8a33fd;
 }
+
+/* user feedback slider css  */
+.user-feedback .slick-list {
+  margin: 0 -7px !important;
+}
+
+.user-feedback .slick-slide > div {
+  padding: 0 7px !important;
+}
 /*price range slide css end  */
 
 /* increase decrease button css  */
