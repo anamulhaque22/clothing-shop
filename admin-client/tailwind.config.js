@@ -11,6 +11,7 @@ module.exports = {
       colors: {
         primary: "rgb(var(--color-primary) / 1)",
         secondary: "rgb(var(--color-secondary) / 1)",
+        "content-bg": "rgb(var(--content-bg) / 1)",
         text: "rgb(var(--color-text) / 1)",
         bc: "rgb(var(--border-color) / 1)", // border color
         success: "rgb(var(--color-success) / 1)",
