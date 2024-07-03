@@ -1,9 +1,11 @@
 import Image from "next/image";
 import { useRef } from "react";
+import SizeWiseQuantity from "./SizeWiseQuantity";
 
-const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
+const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
   const canvasRef = useRef([]);
   const imgRefs = useRef([]);
+  const imgContainerRef = useRef();
 
   // uploading image
   const handleImageChange = (e) => {
@@ -20,15 +22,9 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
         ...prevProductInfo,
         {
           image: file,
-          color: "red",
-          sizes: [],
+          color: "",
           colorWiseQuantity: "",
-          sizeWiseQuantity: {
-            S: 0,
-            M: 0,
-            L: 0,
-            XL: 0,
-          },
+          colorSizeWiseQuantity: Object.fromEntries(sizes?.map((s) => [s, 0])),
           previewImage: newImage,
         },
       ]); // setting image preview
@@ -45,10 +41,11 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
   const handleImageLoad = (index) => {
     const canvas = canvasRef.current[index];
     const img = imgRefs.current[index];
-    canvas.width = img.width;
+    canvas.width = imgContainerRef.current.offsetWidth - 32;
+    const ctxWidth = imgContainerRef.current.offsetWidth - 32;
     canvas.height = img.height;
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, img.width, img.height);
+    ctx.drawImage(img, 0, 0, ctxWidth, img.height);
   };
 
   // handle click on image to pick color
@@ -74,26 +71,6 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
     setProductInfo(updatedProductInfo);
   };
 
-  // set sizes color wise
-  const setSizesColorWise = (e, index) => {
-    const { value } = e.target;
-    const updatedProductInfo = productInfo.map((info, i) => {
-      if (i === index) {
-        if (info.sizes.includes(value)) {
-          alert("Size already exists");
-          return info;
-        }
-        return {
-          ...info,
-          sizes: [...info.sizes, value],
-          sizeWiseQuantity: { ...info.sizeWiseQuantity, [value]: 0 },
-        };
-      }
-      return info;
-    });
-    setProductInfo(updatedProductInfo);
-  };
-
   // handle size wise quantity
   const handleSizeWiseQuantity = (e, index, size) => {
     const { value } = e.target;
@@ -101,7 +78,62 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
       if (i === index) {
         return {
           ...info,
-          sizeWiseQuantity: { ...info.sizeWiseQuantity, [size]: value },
+          colorSizeWiseQuantity: {
+            ...info.colorSizeWiseQuantity,
+            [size]: value,
+          },
+        };
+      }
+      return info;
+    });
+    setProductInfo(updatedProductInfo);
+  };
+
+  // handle delete size from size wise quantity
+  const handleDeleteSize = (index, size) => {
+    const updatedProductInfo = productInfo.map((info, i) => {
+      if (i === index) {
+        const updatedSizeWiseQuantity = { ...info.colorSizeWiseQuantity };
+        delete updatedSizeWiseQuantity[size];
+        return {
+          ...info,
+          sizes: info.sizes.filter((s) => s !== size),
+          colorSizeWiseQuantity: updatedSizeWiseQuantity,
+        };
+      }
+      return info;
+    });
+    setProductInfo(updatedProductInfo);
+  };
+
+  // delete image from product info
+  const deleteImage = (index) => {
+    const updatedProductInfo = productInfo.filter((_, i) => i !== index);
+    setProductInfo(updatedProductInfo);
+  };
+
+  // handle color name
+  const handleColorName = (e, index) => {
+    const { value } = e.target;
+    const updatedProductInfo = productInfo.map((info, i) => {
+      if (i === index) {
+        return {
+          ...info,
+          colorName: value,
+        };
+      }
+      return info;
+    });
+    setProductInfo(updatedProductInfo);
+  };
+
+  const handleColorWiseQuantity = (e, index) => {
+    const { value } = e.target;
+    const updatedProductInfo = productInfo.map((info, i) => {
+      if (i === index) {
+        return {
+          ...info,
+          colorWiseQuantity: value,
         };
       }
       return info;
@@ -110,15 +142,17 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
   };
 
   return (
-    <div>
+    <div className="mb-4">
       <input type="file" accept="image/*" onChange={handleImageChange} />
 
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-5 mt-4">
         {productInfo.map((info, index) => (
           <div
+            ref={imgContainerRef}
             className="border p-4 rounded-md flex flex-col items-center"
             key={index}
           >
+            {/* image preview here */}
             {info?.previewImage && (
               <>
                 <Image
@@ -126,7 +160,7 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
                   src={info ? info.previewImage : ""}
                   width={0}
                   height={200}
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="w-full h-[300px]"
                   alt="image"
                   style={{ display: "none" }}
@@ -139,9 +173,10 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
                 />
               </>
             )}
+            {/* product image and color wise product info  */}
             <div>
               <div className="mt-4 mb-4 flex items-center gap-x-3">
-                <h3>Selected Color:</h3>
+                <p className="text-sm">Click on IMAGE to pick Color:</p>
                 <div
                   style={{
                     backgroundColor: info.color,
@@ -153,51 +188,46 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo }) => {
               </div>
 
               <div className="flex items-center gap-x-3 mb-3">
-                <label htmlFor="color-wise-quantity">Color Wise Quantity</label>
+                <label htmlFor="color-wise-quantity" className="text-sm">
+                  Color Name:
+                </label>
                 <input
-                  type="number"
+                  type="text"
                   id="color-wise-quantity"
-                  className="w-16 input  input-bordered  h-8 focus:outline-1 focus:outline-offset-1"
+                  className="bg-secondary w-full input input-bordered  h-8 focus:outline-1 focus:outline-offset-1"
+                  onChange={(e) => handleColorName(e, index)}
                 />
               </div>
 
-              <label className="form-control w-full max-w-xs">
-                <div className="label">Select Sizes:</div>
-                <select
-                  className="select select-bordered"
-                  onChange={(e) => setSizesColorWise(e, index)}
-                >
-                  <option disabled selected={true}>
-                    Pick one option
-                  </option>
-                  <option value={"S"}>S</option>
-                  <option value={"M"}>M</option>
-                  <option value={"XL"}>XL</option>
-                </select>
-              </label>
-
-              <div className="mt-5">
-                <label htmlFor="size-wise-quantity">Size Wise Quantity</label>
-                <div>
-                  {info?.sizes?.map((s, i) => {
-                    return (
-                      <div className="flex items-center gap-x-3 mb-3" key={i}>
-                        <label htmlFor="size-wise-quantity">{s}</label>
-                        <input
-                          type="number"
-                          id="size-wise-quantity"
-                          className="w-16 input input-bordered h-8 focus:outline-1 focus:outline-offset-1"
-                          onChange={(e) => handleSizeWiseQuantity(e, index, s)}
-                          value={info.sizeWiseQuantity[s]}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+              <div className="flex items-center gap-x-3 mb-3">
+                <label htmlFor="color-wise-quantity" className="text-sm">
+                  Color Wise Quantity:
+                </label>
+                <input
+                  type="number"
+                  id="color-wise-quantity"
+                  className="w-16 input  input-bordered  h-8 focus:outline-1 focus:outline-offset-1 bg-secondary"
+                  onChange={(e) => handleColorWiseQuantity(e, index)}
+                />
               </div>
 
+              {sizes?.length > 0 && (
+                <SizeWiseQuantity
+                  info={info}
+                  onHandleSizeWiseQuantity={(e, size) =>
+                    handleSizeWiseQuantity(e, index, size)
+                  }
+                  sizes={sizes}
+                />
+              )}
+
               <div className="flex justify-center mt-3">
-                <button className="btn">Delete</button>
+                <button
+                  onClick={() => deleteImage(index)}
+                  className="btn btn-primary btn-sm !text-text"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>

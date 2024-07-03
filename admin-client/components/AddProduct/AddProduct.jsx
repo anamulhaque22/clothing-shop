@@ -1,24 +1,27 @@
 "use client";
-// components/AddProductForm.js
-import { SIZES } from "@/constants";
-import { useState } from "react";
+import { PRODUCT_VISIBILITY, SIZES } from "@/constants";
+import { useEffect, useState } from "react";
+import CategoryInput from "./CategoryInput";
 import ColorPickerFromImage from "./ColorPickerFromImage";
+import TagsInput from "./TagsInput";
 
 const AddProductForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [soldPrice, setSoldPrice] = useState("");
+  const [buyPrice, setBuyPrice] = useState("");
+  const [sellPrice, setSellPrice] = useState("");
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [tags, setTags] = useState();
   const [sizes, setSizes] = useState([]);
   const [error, setError] = useState("");
-  const [Visivility, setVisivility] = useState(null);
+  const [visivility, setVisivility] = useState(PRODUCT_VISIBILITY[0]);
   const [productInfo, setProductInfo] = useState([]);
 
   const handleSelectSize = (e) => {
     const value = e.target.value;
-    console.log({ value });
+
     if (sizes.includes(value)) {
       setSizes(sizes.filter((size) => size !== value));
     } else {
@@ -26,11 +29,27 @@ const AddProductForm = () => {
     }
   };
 
+  console.log({
+    title,
+    description,
+    buyPrice,
+    sellPrice,
+    category,
+    quantity,
+    discount,
+    tags,
+    sizes,
+    visivility,
+    productInfo,
+  });
+
+  useEffect(() => {}, []);
+
   return (
     <form>
       <div className="form-control w-full">
         <label htmlFor="name" className="label label-text text-text">
-          Product Name
+          Product Title
         </label>
         <input
           type="text"
@@ -38,7 +57,7 @@ const AddProductForm = () => {
           onChange={(e) => setTitle(e.target.value)}
           required
           className="input text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
-          placeholder="Type here"
+          placeholder="Product Title"
         />
       </div>
 
@@ -47,7 +66,7 @@ const AddProductForm = () => {
           Product Description
         </label>
         <textarea
-          placeholder="Type here"
+          placeholder="Product Description"
           rows={5}
           cols={20}
           className="py-2 input !h-auto text-text input-bordered w-full  focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
@@ -56,8 +75,69 @@ const AddProductForm = () => {
         ></textarea>
       </div>
 
-      <div className="mt-4 flex items-center ">
-        {/* size */}
+      <div className="mt-4 flex items-center gap-x-7">
+        <div className="form-control basis-1/2">
+          <label htmlFor="price" className="label label-text text-text">
+            Price
+          </label>
+          <input
+            type="number"
+            value={buyPrice}
+            onChange={(e) => setBuyPrice(e.target.value)}
+            required
+            id="price"
+            className="input  text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
+            placeholder="৳ 0.00"
+          />
+        </div>
+        <div className="form-control basis-1/2">
+          <label htmlFor="sell-price" className="label label-text text-text">
+            Sell Price
+          </label>
+          <input
+            type="number"
+            value={sellPrice}
+            id="sell-price"
+            onChange={(e) => setSellPrice(e.target.value)}
+            required
+            placeholder="৳ 0.00"
+            className="input text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center gap-x-7">
+        <div className="basis-1/2">
+          <label htmlFor="discount" className="label label-text text-text">
+            Discounts
+          </label>
+          <input
+            type="number"
+            value={discount}
+            onChange={(e) => setDiscount(e.target.value)}
+            required
+            id="discount"
+            className="input  text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
+            placeholder="0 %"
+          />
+        </div>
+        {/* quantity  */}
+        <div className="form-control basis-1/2">
+          <label htmlFor="name" className="label label-text text-text">
+            Quantity
+          </label>
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            required
+            placeholder="Quantity"
+            className="input text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center gap-x-7">
         <div className="basis-1/2">
           <p className="text-text text-sm mb-2">Size: </p>
           <div className="flex gap-x-3">
@@ -85,133 +165,40 @@ const AddProductForm = () => {
             ))}
           </div>
         </div>
-        {/* quantity  */}
-        <div className="form-control basis-1/2">
-          <label htmlFor="name" className="label label-text text-text">
-            Quantity
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            placeholder="Type here"
-            className="input text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
-          />
-        </div>
+        <CategoryInput category={category} setCategory={setCategory} />
       </div>
-
       <div className="mt-4 flex items-center gap-x-7">
-        <div className="form-control basis-1/2">
+        <div className="basis-1/2 flex flex-col">
           <label htmlFor="price" className="label label-text text-text">
-            Price
+            Visivility:
           </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            id="price"
-            className="input  text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
-            placeholder="Type here"
-          />
+          <select
+            onChange={(e) => setVisivility(e.target.value)}
+            value={visivility}
+            className="text-text input-bordered border bg-secondary h-10 px-4 pr-8 rounded leading-tight focus:outline-1 focus:outline-offset-1 focus:bg-white dark:focus:bg-secondary"
+          >
+            {PRODUCT_VISIBILITY.map((v, i) => (
+              <option key={i} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
         </div>
-        <div className="form-control basis-1/2">
-          <label htmlFor="sell-price" className="label label-text text-text">
-            Sell Price
-          </label>
-          <input
-            type="text"
-            value={title}
-            id="sell-price"
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            placeholder="Type here"
-            className="input text-text input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
-          />
-        </div>
+        <TagsInput tags={tags} onSetTags={setTags} />
       </div>
 
-      <div className="mt-4 flex items-center gap-x-7">
-        <div className="form-control basis-1/2">
-          <label htmlFor="price" className="label label-text text-text">
-            Visivility
-          </label>
-          <div className="flex items-center gap-x-3">
-            <input
-              type="radio"
-              name="radio-1"
-              className="radio checked:bg-[#3333] dark:checked:bg-[#F8F9FA] border-bc"
-              id="v-hidden"
-              checked={Visivility === false}
-              onChange={() => setVisivility(false)}
-            />
-            <label htmlFor="v-hidden" className="text-text text-sm">
-              Hidden
-            </label>
-          </div>
-
-          <div className="flex items-center gap-x-3">
-            <input
-              type="radio"
-              name="radio-1"
-              className="radio checked:bg-[#F8F9FA] border-bc"
-              id="v-published"
-              checked={Visivility === true}
-              onChange={() => setVisivility(true)}
-            />
-            <label htmlFor="v-published" className="text-text text-sm">
-              Published
-            </label>
-          </div>
-        </div>
-      </div>
-
-      {/* <div>
-        <label>Sizes (comma separated):</label>
-        <input
-          type="text"
-          value={sizes.join(",")}
-          onChange={(e) => setSizes(e.target.value.split(","))}
-        />
-      </div> */}
-      <div>
+      <div className="mt-4">
         <ColorPickerFromImage
           productInfo={productInfo}
           setProductInfo={setProductInfo}
+          sizes={sizes}
         />
       </div>
-      {/* <div>
-        <label>Color-Wise Quantity (JSON):</label>
-        <textarea
-          value={colorWiseQuantity}
-          onChange={(e) => setColorWiseQuantity(e.target.value)}
-        />
-      </div> */}
-      {/* <div>
-        <label>Size-Wise Quantity (JSON):</label>
-        <textarea
-          value={sizeWiseQuantity}
-          onChange={(e) => setSizeWiseQuantity(e.target.value)}
-        />
-      </div> */}
-      {/* <div>
-        <label>Color-Size-Wise Quantity (JSON):</label>
-        <textarea
-          value={colorSizeWiseQuantity}
-          onChange={(e) => setColorSizeWiseQuantity(e.target.value)}
-        />
+      <div className="flex justify-end">
+        <button className="btn btn-primary mt-4 !text-text" type="submit">
+          Add Product
+        </button>
       </div>
-      <div>
-        <label>Images (comma separated URLs):</label>
-        <input
-          type="text"
-          value={images.join(",")}
-          onChange={(e) => setImages(e.target.value.split(","))}
-        />
-      </div> */}
-      <button type="submit">Add Product</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   );
 };
