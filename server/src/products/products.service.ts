@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoriesService } from 'src/categories/categories.service';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
-import { ColorSizeQuantity } from './entity/color-size-quantity.entity';
+import { ProductDto } from './dto/product.dto';
 import { Image } from './entity/image.entity';
 import { ProductColor } from './entity/product-color.entity';
 import { ProductSize } from './entity/product-size.entity';
@@ -18,8 +18,6 @@ export class ProductsService {
     private productsRepository: Repository<Product>,
     @InjectRepository(ProductColor)
     private productColorsRepository: Repository<ProductColor>,
-    @InjectRepository(ColorSizeQuantity)
-    private colorSizeQuantitiesRepository: Repository<ColorSizeQuantity>,
     @InjectRepository(Image)
     private imagesRepository: Repository<Image>,
     @InjectRepository(Size)
@@ -29,113 +27,138 @@ export class ProductsService {
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    // const {
-    //   title,
-    //   description,
-    //   buyPrice,
-    //   sellPrice,
-    //   categoryId,
-    //   quantity,
-    //   discount,
-    //   visibility,
-    //   sizes,
-    //   productInfo,
-    // } = createProductDto;
-    // const category = await this.categoriesService.getCategoryById(categoryId);
-    // if (!category) {
-    //   throw new NotFoundException(`Category with id ${categoryId} not found`);
-    // }
-    // const product = this.productsRepository.create({
-    //   title,
-    //   description,
-    //   buyPrice,
-    //   sellPrice,
-    //   category,
-    //   quantity,
-    //   discount,
-    //   visibility,
-    // });
-    // const savedProduct = await this.productsRepository.save(product);
-    // // Save product sizes
-    // for (const sizeName of sizes) {
-    //   let size = await this.sizesRepository.findOne({ where: { sizeName } });
-    //   if (!size) {
-    //     size = this.sizesRepository.create({ sizeName });
-    //     size = await this.sizesRepository.save(size);
-    //   }
-    //   const productSize = this.productSizesRepository.create({
-    //     product: savedProduct,
-    //     size,
-    //   });
-    //   await this.productSizesRepository.save(productSize);
-    // }
-    // // Save product colors and related information
-    // for (const info of productInfo) {
-    //   const {
-    //     color,
-    //     colorWiseQuantity,
-    //     colorSizeWiseQuantity,
-    //     colorName,
-    //     imageUrl,
-    //   } = info;
-    //   const productColor = this.productColorsRepository.create({
-    //     colorName,
-    //     colorCode: color,
-    //     product: savedProduct,
-    //     colorWiseQuantity,
-    //   });
-    //   const savedProductColor =
-    //     await this.productColorsRepository.save(productColor);
-    //   for (const [size, qty] of Object.entries(colorSizeWiseQuantity)) {
-    //     if (sizes.indexOf(size) === -1) {
-    //       throw new BadRequestException(
-    //         `Size ${size} is not valid because this product does not have this size`,
-    //       );
-    //     }
-    //     const dbSize = await this.sizesRepository.findOne({
-    //       where: { sizeName: size },
-    //     });
-    //     const colorSizeQuantity = this.colorSizeQuantitiesRepository.create({
-    //       productColor: savedProductColor,
-    //       size: dbSize,
-    //       quantity: +qty, // Ensure quantity is a number
-    //     });
-    //     await this.colorSizeQuantitiesRepository.save(colorSizeQuantity);
-    //   }
-    //   const image = this.imagesRepository.create({
-    //     productColor: savedProductColor,
-    //     imageUrl: imageUrl,
-    //   });
-    //   await this.imagesRepository.save(image);
-    // }
-    // const savedProductDeatils = await this.productsRepository.find({
-    //   where: { id: savedProduct.id },
-    //   relations: [
-    //     'category',
-    //     'productColors',
-    //     'productColors.colorSizeQuantities',
-    //     'productColors.images',
-    //     'productSizes',
-    //     'productSizes.size',
-    //   ],
-    // });
-    // return {
-    //   ...savedProductDeatils[0],
-    // };
-    return createProductDto;
+    const {
+      title,
+      description,
+      buyPrice,
+      sellPrice,
+      categoryId,
+      quantity,
+      discount,
+      visibility,
+      sizes,
+      productInfo,
+    } = createProductDto;
+
+    const category = await this.categoriesService.getCategoryById(categoryId);
+    if (!category) {
+      throw new NotFoundException(`Category with id ${categoryId} not found`);
+    }
+    const product = this.productsRepository.create({
+      title,
+      description,
+      buyPrice,
+      sellPrice,
+      category,
+      quantity,
+      discount,
+      visibility,
+    });
+    const savedProduct = await this.productsRepository.save(product);
+
+    // Save product sizes
+    for (const sizeName of sizes) {
+      let size = await this.sizesRepository.findOne({
+        where: { sizeName: sizeName.toUpperCase() },
+      });
+      if (!size) {
+        size = this.sizesRepository.create({ sizeName });
+        size = await this.sizesRepository.save(size);
+      }
+      const productSize = this.productSizesRepository.create({
+        product: savedProduct,
+        size,
+      });
+      await this.productSizesRepository.save(productSize);
+    }
+    // Save product colors and related information like color size quantity and color wise quantity
+    for (const info of productInfo) {
+      const {
+        color,
+        colorWiseQuantity,
+        colorSizeWiseQuantity,
+        colorName,
+        imageUrl,
+      } = info;
+      const productColor = this.productColorsRepository.create({
+        colorName,
+        colorCode: color,
+        product: savedProduct,
+        colorWiseQuantity,
+        colorSizeWiseQuantity,
+      });
+
+      await this.productColorsRepository.save(productColor);
+
+      const image = this.imagesRepository.create({
+        imageUrl: imageUrl,
+        product: savedProduct,
+      });
+      await this.imagesRepository.save(image);
+    }
+    const savedProductDeatils = await this.productsRepository.find({
+      where: { id: savedProduct.id },
+      relations: {
+        productColors: true,
+      },
+    });
+    return {
+      ...savedProductDeatils[0],
+    };
   }
 
-  async findOne(id: number): Promise<Product> {
-    const product = await this.productsRepository.find({
-      where: { id },
+  async findOne(id: number): Promise<ProductDto> {
+    const product = await this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.productColors', 'productInfo')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.productSizes', 'productSizes')
+      .leftJoinAndSelect('productSizes.size', 'size')
+      .where('product.id = :id', { id })
+      .getOne();
+
+    if (!product)
+      throw new NotFoundException(`Product with id ${id} not found`);
+
+    const transformedProduct = {
+      ...product,
+      sizes: product.productSizes.map((productSize) => ({
+        sizeName: productSize.size.sizeName,
+        id: productSize.size.id,
+      })),
+      productInfo: product.productColors,
+    };
+    delete transformedProduct.productSizes;
+    delete transformedProduct.visibility;
+    delete transformedProduct.productColors;
+    return transformedProduct;
+  }
+
+  async findAll(): Promise<ProductDto[]> {
+    const products = await this.productsRepository.find({
       relations: [
         'productColors',
-        'productColors.colorSizeQuantities',
-        'productColors.images',
+        'productSizes',
         'productSizes.size',
+        'images',
       ],
     });
+    console.log(products);
+    const transformedProducts = products.map((product) => {
+      const transformedProduct = {
+        ...product,
+        sizes: product.productSizes.map((productSize) => ({
+          sizeName: productSize.size.sizeName,
+          id: productSize.size.id,
+        })),
+        productInfo: product.productColors,
+      };
+      delete transformedProduct.productSizes;
+      delete transformedProduct.visibility;
+      delete transformedProduct.productColors;
+      return transformedProduct;
+    });
 
-    return product[0];
+    return transformedProducts;
   }
 }

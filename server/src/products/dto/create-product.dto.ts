@@ -1,4 +1,5 @@
 // create-product.dto.ts
+import { OmitType } from '@nestjs/mapped-types';
 import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
@@ -8,33 +9,16 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ProductInfo } from './product-info.dto';
+import { ProductDto } from './product.dto';
 
-export class CreateProductDto {
-  @IsString()
-  title: string;
-
-  @IsString()
-  description: string;
-
-  @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
-  buyPrice: number;
-
-  @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
-  sellPrice: number;
-
+export class CreateProductDto extends OmitType(ProductDto, [
+  'id',
+  'sizes',
+  'productInfo',
+] as const) {
   @IsNumber()
   @Transform(({ value }) => parseInt(value, 10))
   categoryId: number;
-
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value, 10))
-  quantity: number;
-
-  @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
-  discount: number;
 
   @IsArray()
   @IsString({ each: true })

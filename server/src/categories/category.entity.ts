@@ -2,7 +2,6 @@ import { Product } from 'src/products/entity/product.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -19,9 +18,11 @@ export class Category {
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 
-  @ManyToOne(() => Category, (category) => category.children)
-  @JoinColumn({ name: 'parentCategoryID' })
-  parent: Category;
+  @ManyToOne(() => Category, (category) => category.children, {
+    nullable: true,
+  })
+  parentCategory: Category;
 
+  @OneToMany(() => Category, (category) => category.parentCategory)
   children: Category[];
 }

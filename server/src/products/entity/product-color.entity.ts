@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-
-import { ColorSizeQuantity } from './color-size-quantity.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Product } from './product.entity';
 
@@ -27,9 +19,6 @@ export class ProductColor {
   @Column()
   colorWiseQuantity: number;
 
-  @OneToMany(
-    () => ColorSizeQuantity,
-    (colorSizeQuantity) => colorSizeQuantity.productColor,
-  )
-  colorSizeQuantities: ColorSizeQuantity[];
+  @Column('jsonb')
+  colorSizeWiseQuantity: { [key: string]: number };
 }

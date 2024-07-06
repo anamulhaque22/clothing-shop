@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { Category } from './category.entity';
+import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -9,9 +10,22 @@ export class CategoriesService {
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
-  async createCategory(name: string): Promise<Category> {
-    const category = this.categoryRepo.create({ name });
-    return this.categoryRepo.save(category);
+  async create(data: CreateCategoryDto): Promise<any> {
+    let parentCategory: CreateCategoryDto = null;
+    if (data.parentCategoryID) {
+      parentCategory = await this.categoryRepo.findOne({
+        where: { id: data.parentCategoryID },
+      });
+      if (!parentCategory) {
+        throw new NotFoundException('Parent category not found');
+      }
+    }
+    const categoryData: DeepPartial<Category> = {
+      name: data.name,
+      parentCategory,
+    };
+
+    return await this.categoryRepo.save(categoryData);
   }
 
   async getCategories(): Promise<Category[]> {

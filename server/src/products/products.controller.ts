@@ -17,6 +17,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { imageFileFilter } from 'src/utils/image-file-filter';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductsService } from './products.service';
+
 @Controller({
   path: 'products',
   version: '1',
@@ -74,8 +75,16 @@ export class ProductsController {
   }
 
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   async getProduct(@Param('id') id: number) {
     const result = await this.productsService.findOne(id);
+    return result;
+  }
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getProducts() {
+    const result = await this.productsService.findAll();
     return result;
   }
 }
