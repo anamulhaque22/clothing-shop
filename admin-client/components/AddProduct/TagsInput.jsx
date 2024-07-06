@@ -27,7 +27,7 @@ export default function TagsInput({ tags, onSetTags }) {
       }
     } else if (e.key === "Backspace" && tag === "") {
       e.preventDefault();
-      if (tags.length > 0) {
+      if (tags?.length > 0) {
         removeLastTag();
       }
     }
@@ -77,7 +77,6 @@ export default function TagsInput({ tags, onSetTags }) {
           autoCapitalize="off"
           value={tag}
           onChange={handleTag}
-          required
           id="tags"
           name="tags"
           className=" min-w-[1ch] -outline-offset-2 overflow-hidden min-h-10 h-10"

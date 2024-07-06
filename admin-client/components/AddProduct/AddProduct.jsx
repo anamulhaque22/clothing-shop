@@ -1,6 +1,7 @@
 "use client";
 import { PRODUCT_VISIBILITY, SIZES } from "@/constants";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import axios from "../../utils/axiosInstance";
 import CategoryInput from "./CategoryInput";
 import ColorPickerFromImage from "./ColorPickerFromImage";
 import TagsInput from "./TagsInput";
@@ -13,10 +14,10 @@ const AddProductForm = () => {
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [discount, setDiscount] = useState("");
-  const [tags, setTags] = useState();
+  const [tags, setTags] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [error, setError] = useState("");
-  const [visivility, setVisivility] = useState(PRODUCT_VISIBILITY[0]);
+  const [visibility, setVisibility] = useState(PRODUCT_VISIBILITY[0]);
   const [productInfo, setProductInfo] = useState([]);
 
   const handleSelectSize = (e) => {
@@ -39,14 +40,55 @@ const AddProductForm = () => {
     discount,
     tags,
     sizes,
-    visivility,
     productInfo,
   });
 
-  useEffect(() => {}, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("submitting");
+    const formData = new FormData();
+    try {
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("buyPrice", buyPrice);
+      formData.append("sellPrice", sellPrice);
+      formData.append("categoryId", category.id);
+      formData.append("quantity", quantity);
+      formData.append("discount", discount);
+      formData.append("sizes", JSON.stringify(sizes));
+      formData.append("visibility", visibility);
+
+      productInfo.forEach((info, index) => {
+        formData.append(`productInfo[${index}][color]`, info.color);
+        formData.append(
+          `productInfo[${index}][colorWiseQuantity]`,
+          info.colorWiseQuantity
+        );
+        formData.append(
+          `productInfo[${index}][colorSizeWiseQuantity]`,
+          JSON.stringify(info.colorSizeWiseQuantity)
+        );
+        formData.append(`productInfo[${index}][colorName]`, info.colorName);
+        if (info.image) {
+          formData.append(`images`, info.image);
+        }
+      });
+
+      axios
+        .post("/products", formData)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit} encType="multipart/form-data">
       <div className="form-control w-full">
         <label htmlFor="name" className="label label-text text-text">
           Product Title
@@ -72,6 +114,7 @@ const AddProductForm = () => {
           className="py-2 input !h-auto text-text input-bordered w-full  focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required
         ></textarea>
       </div>
 
@@ -173,9 +216,10 @@ const AddProductForm = () => {
             Visivility:
           </label>
           <select
-            onChange={(e) => setVisivility(e.target.value)}
-            value={visivility}
+            onChange={(e) => setVisibility(e.target.value)}
+            value={visibility}
             className="text-text input-bordered border bg-secondary h-10 px-4 pr-8 rounded leading-tight focus:outline-1 focus:outline-offset-1 focus:bg-white dark:focus:bg-secondary"
+            required
           >
             {PRODUCT_VISIBILITY.map((v, i) => (
               <option key={i} value={v}>

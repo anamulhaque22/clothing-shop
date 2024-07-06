@@ -23,6 +23,7 @@ export default function SizeWiseQuantity({
                   className="w-16 text-sm bg-secondary input input-bordered h-7 focus:outline-1 focus:outline-offset-1"
                   onChange={(e) => onHandleSizeWiseQuantity(e, s)}
                   value={info.colorSizeWiseQuantity[s]}
+                  required
                 />
               </div>
             </div>

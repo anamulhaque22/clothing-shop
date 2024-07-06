@@ -35,6 +35,7 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
     };
 
     reader.readAsDataURL(file);
+    e.target.value = null;
   };
 
   // handle image load
@@ -89,23 +90,6 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
     setProductInfo(updatedProductInfo);
   };
 
-  // handle delete size from size wise quantity
-  const handleDeleteSize = (index, size) => {
-    const updatedProductInfo = productInfo.map((info, i) => {
-      if (i === index) {
-        const updatedSizeWiseQuantity = { ...info.colorSizeWiseQuantity };
-        delete updatedSizeWiseQuantity[size];
-        return {
-          ...info,
-          sizes: info.sizes.filter((s) => s !== size),
-          colorSizeWiseQuantity: updatedSizeWiseQuantity,
-        };
-      }
-      return info;
-    });
-    setProductInfo(updatedProductInfo);
-  };
-
   // delete image from product info
   const deleteImage = (index) => {
     const updatedProductInfo = productInfo.filter((_, i) => i !== index);
@@ -143,7 +127,12 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
 
   return (
     <div className="mb-4">
-      <input type="file" accept="image/*" onChange={handleImageChange} />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        required={productInfo?.length === 0}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-5 mt-4">
         {productInfo.map((info, index) => (
@@ -193,6 +182,7 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
                 </label>
                 <input
                   type="text"
+                  required
                   id="color-wise-quantity"
                   className="bg-secondary w-full input input-bordered  h-8 focus:outline-1 focus:outline-offset-1"
                   onChange={(e) => handleColorName(e, index)}
@@ -207,6 +197,7 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
                   type="number"
                   id="color-wise-quantity"
                   className="w-16 input  input-bordered  h-8 focus:outline-1 focus:outline-offset-1 bg-secondary"
+                  required
                   onChange={(e) => handleColorWiseQuantity(e, index)}
                 />
               </div>
