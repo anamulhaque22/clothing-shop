@@ -17,7 +17,7 @@ class SizeDto {
 
 class ImageDto {
   @IsNumber()
-  id: number;
+  id?: number;
 
   @IsString()
   imageUrl: string;
@@ -47,7 +47,9 @@ export class ProductDto {
   description: string;
 
   @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => {
+    return parseFloat(value);
+  })
   buyPrice: number;
 
   @IsNumber()

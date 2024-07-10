@@ -22,10 +22,10 @@ export class Product {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'numeric', precision: 10, scale: 2 })
   buyPrice: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'numeric', precision: 10, scale: 2 })
   sellPrice: number;
 
   @ManyToOne(() => Category, (category) => category.products)
@@ -40,12 +40,21 @@ export class Product {
   @Column({ type: 'enum', enum: ['Hidden', 'Visible'] })
   visibility: 'Hidden' | 'Visible';
 
-  @OneToMany(() => ProductColor, (productColor) => productColor.product)
+  @OneToMany(() => ProductColor, (productColor) => productColor.product, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   productColors: ProductColor[];
 
-  @OneToMany(() => ProductSize, (productSize) => productSize.product)
+  @OneToMany(() => ProductSize, (productSize) => productSize.product, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   productSizes: ProductSize[];
 
-  @OneToMany(() => Image, (image) => image.product)
+  @OneToMany(() => Image, (image) => image.product, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   images: Image[];
 }

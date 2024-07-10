@@ -7,7 +7,9 @@ export class ProductSize {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Product, (product) => product.productSizes)
+  @ManyToOne(() => Product, (product) => product.productSizes, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @ManyToOne(() => Size, (size) => size.productSizes)

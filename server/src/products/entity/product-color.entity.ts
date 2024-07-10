@@ -13,7 +13,9 @@ export class ProductColor {
   @Column()
   colorCode: string;
 
-  @ManyToOne(() => Product, (product) => product.productColors)
+  @ManyToOne(() => Product, (product) => product.productColors, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @Column()

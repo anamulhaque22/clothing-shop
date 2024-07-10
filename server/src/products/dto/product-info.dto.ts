@@ -3,9 +3,6 @@ import { IsNumber, IsObject, IsString } from 'class-validator';
 
 export class ProductInfo {
   @IsString()
-  imageUrl: string;
-
-  @IsString()
   color: string;
 
   @IsNumber()
