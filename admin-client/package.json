@@ -1,0 +1,30 @@
+{
+  "name": "admin-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "html2canvas": "^1.4.1",
+    "next": "14.2.3",
+    "next-themes": "^0.3.0",
+    "react": "^18.3.1",
+    "react-color": "^2.19.3",
+    "react-dom": "^18",
+    "react-icons": "^5.2.1",
+    "react-pick-color": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
+    "daisyui": "^4.11.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
+  }
+}
