@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductDto } from './dto/product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Image } from './entity/image.entity';
+import { ProductImageEntity } from './entity/image.entity';
 import { ProductColor } from './entity/product-color.entity';
 import { ProductSize } from './entity/product-size.entity';
 import { Product } from './entity/product.entity';
@@ -19,8 +19,8 @@ export class ProductsService {
     private productsRepository: Repository<Product>,
     @InjectRepository(ProductColor)
     private productColorsRepository: Repository<ProductColor>,
-    @InjectRepository(Image)
-    private imagesRepository: Repository<Image>,
+    @InjectRepository(ProductImageEntity)
+    private imagesRepository: Repository<ProductImageEntity>,
     @InjectRepository(Size)
     private sizesRepository: Repository<Size>,
     @InjectRepository(ProductSize)

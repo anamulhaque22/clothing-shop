@@ -1,18 +1,24 @@
 import { Category } from 'src/categories/category.entity';
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-import { ProductImageEntity } from './image.entity';
-import { ProductColor } from './product-color.entity';
-import { ProductSize } from './product-size.entity';
+import { EntityHelper } from 'src/utils/entity-helper';
+import { ProductColorEntity } from './product-color.entity';
+import { ProductImageEntity } from './product-image.entity';
+import { ProductSizeEntity } from './product-size.entity';
 
-@Entity()
-export class Product {
+@Entity({
+  name: 'product',
+})
+export class ProductEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -40,17 +46,17 @@ export class Product {
   @Column({ type: 'enum', enum: ['Hidden', 'Visible'] })
   visibility: 'Hidden' | 'Visible';
 
-  @OneToMany(() => ProductColor, (productColor) => productColor.product, {
+  @OneToMany(() => ProductColorEntity, (productColor) => productColor.product, {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  productColors: ProductColor[];
+  productColors: ProductColorEntity[];
 
-  @OneToMany(() => ProductSize, (productSize) => productSize.product, {
+  @OneToMany(() => ProductSizeEntity, (productSize) => productSize.product, {
     cascade: true,
     onDelete: 'CASCADE',
   })
-  productSizes: ProductSize[];
+  productSizes: ProductSizeEntity[];
 
   @OneToMany(() => ProductImageEntity, (image) => image.product, {
     cascade: true,
@@ -58,12 +64,12 @@ export class Product {
   })
   images: ProductImageEntity[];
 
-  // @CreateDateColumn()
-  // createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-  // @UpdateDateColumn()
-  // updateAt: Date;
+  @UpdateDateColumn()
+  updateAt: Date;
 
-  // @DeleteDateColumn()
-  // deletedAt: Date;
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

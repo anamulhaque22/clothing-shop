@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity({
   name: 'user_image',
 })
-export class UserImage extends EntityHelper {
+export class UserImageEntity extends EntityHelper {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
 import { AuthProvidersEnum } from 'src/auth/auth-provider.enum';
-import { RoleEntity } from 'src/roles/entities/role.entity';
-import { StatusEntity } from 'src/statuses/entities/status.entity';
+import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
+import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
   AfterLoad,
@@ -16,7 +16,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserImage } from './user-image.entity';
+import { UserImageEntity } from './user-image.entity';
 
 @Entity({
   name: 'user',
@@ -60,11 +60,11 @@ export class UserEntity extends EntityHelper {
   @Column({ type: String, nullable: true })
   lastName: string | null;
 
-  @OneToOne(() => UserImage, {
+  @OneToOne(() => UserImageEntity, {
     eager: true,
   })
   @JoinColumn()
-  photo?: UserImage | null;
+  photo?: UserImageEntity | null;
 
   @ManyToOne(() => RoleEntity, {
     eager: true,

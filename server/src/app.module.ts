@@ -5,20 +5,22 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import authConfig from './auth/config/auth.config';
+import { CategoriesModule } from './categories/categories.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import appConfig from './config/app.config';
 import databaseConfig from './database/config/database.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
-import { ProductsModule } from './products/products.module';
-import { CategoriesModule } from './categories/categories.module';
-import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ProductsModule } from './products/products.module';
+import { SessionModule } from './session/session.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, appConfig],
+      load: [databaseConfig, appConfig, authConfig],
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
@@ -32,6 +34,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     UsersModule,
     OrdersModule,
     CloudinaryModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

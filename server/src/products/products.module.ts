@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
-import { Image } from './entity/image.entity';
+import { ProductImageEntity } from './entity/image.entity';
 import { ProductColor } from './entity/product-color.entity';
 import { ProductSize } from './entity/product-size.entity';
 import { Product } from './entity/product.entity';
@@ -12,7 +12,13 @@ import { ProductsService } from './products.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Image, Size, ProductColor, ProductSize]),
+    TypeOrmModule.forFeature([
+      Product,
+      ProductImageEntity,
+      Size,
+      ProductColor,
+      ProductSize,
+    ]),
     CategoriesModule,
     CloudinaryModule,
   ],
