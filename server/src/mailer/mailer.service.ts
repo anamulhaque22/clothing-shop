@@ -20,6 +20,15 @@ export class MailerService {
         pass: this.configService.get('mail.password', { infer: true }),
       },
     });
+
+    this.transporter
+      .verify()
+      .then(() => {
+        console.log('connnection successful');
+      })
+      .catch((error) => {
+        console.error('Error verifying mail transporter', error);
+      });
   }
 
   async sendMail({

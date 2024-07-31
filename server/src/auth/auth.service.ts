@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import ms from 'ms';
+import { MailService } from 'src/mail/mail.service';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { Session } from 'src/session/domain/session';
 import { SessionService } from 'src/session/session.service';
@@ -29,6 +30,7 @@ export class AuthService {
     private usersService: UsersService,
     private sessionService: SessionService,
     private configService: ConfigService,
+    private mailService: MailService,
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
@@ -102,10 +104,10 @@ export class AuthService {
     };
   }
 
-  async register(data: AuthRegisterLoginDto): Promise<void> {
+  async register(dto: AuthRegisterLoginDto): Promise<void> {
     const user = await this.usersService.create({
-      ...data,
-      email: data.email,
+      ...dto,
+      email: dto.email,
       role: {
         id: RoleEnum.user,
       },
@@ -127,6 +129,13 @@ export class AuthService {
         }),
       },
     );
+
+    await this.mailService.userSignUp({
+      to: dto.email,
+      data: {
+        hash,
+      },
+    });
   }
 
   private async getTokensData(data: {
