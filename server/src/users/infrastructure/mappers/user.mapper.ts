@@ -1,7 +1,6 @@
 import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
 import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
-import { User, UserImage } from 'src/users/domain/user';
-import { UserImageEntity } from '../entities/user-image.entity';
+import { User } from 'src/users/domain/user';
 import { UserEntity } from '../entities/user.entity';
 
 export class UserMapper {
@@ -15,13 +14,13 @@ export class UserMapper {
     user.socialId = raw.socialId;
     user.firstName = raw.firstName;
     user.lastName = raw.lastName;
-    let domainImage: UserImage | undefined = undefined;
-    if (raw.photo) {
-      domainImage = new UserImage();
-      domainImage.id = raw.photo.id;
-      domainImage.image = raw.photo.image;
-    }
-    user.photo = domainImage;
+    // let domainImage: UserImage | undefined = undefined;
+    // if (raw.photo) {
+    //   domainImage = new UserImage();
+    //   domainImage.id = raw.photo.id;
+    //   domainImage.image = raw.photo.image;
+    // }
+    user.photo = raw.photo;
     user.role = raw.role;
     user.status = raw.status;
     user.createdAt = raw.createdAt;
@@ -43,12 +42,12 @@ export class UserMapper {
       status.id = Number(user.status.id);
     }
 
-    let photo: UserImageEntity | undefined = undefined;
-    if (user.photo) {
-      photo = new UserImageEntity();
-      photo.id = user.photo.id;
-      photo.image = user.photo.image;
-    }
+    // let photo: UserImageEntity | undefined = undefined;
+    // if (user.photo) {
+    //   photo = new UserImageEntity();
+    //   photo.id = user.photo.id;
+    //   photo.image = user.photo.image;
+    // }
 
     const userEntity = new UserEntity();
     userEntity.email = user.email;
@@ -58,7 +57,7 @@ export class UserMapper {
     userEntity.socialId = user.socialId;
     userEntity.firstName = user.firstName;
     userEntity.lastName = user.lastName;
-    userEntity.photo = photo;
+    userEntity.photo = user.photo;
     userEntity.role = role;
     userEntity.status = status;
     userEntity.createdAt = user.createdAt;

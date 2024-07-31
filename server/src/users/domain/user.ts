@@ -33,7 +33,7 @@ export class User {
 
   lastName: string | null;
 
-  photo?: UserImage | null;
+  photo?: string | null;
 
   role?: Role | null;
 

@@ -8,7 +8,9 @@ import { SessionRepository } from './infrastructure/session.repository';
 export class SessionService {
   constructor(private readonly sessionRepository: SessionRepository) {}
 
-  async create(data: Session): Promise<Session> {
+  async create(
+    data: Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+  ): Promise<Session> {
     return this.sessionRepository.create(data);
   }
 

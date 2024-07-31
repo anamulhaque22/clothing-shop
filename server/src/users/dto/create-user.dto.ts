@@ -1,21 +1,15 @@
 import { Transform, Type } from 'class-transformer';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 import { RoleDto } from 'src/roles/dto/role.dto';
 import { StatusDto } from 'src/statuses/dto/status.dto';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 
-export class UserImageDto {
-  @IsString()
-  id: string;
+// export class UserImageDto {
+//   @IsString()
+//   id: string;
 
-  image: string;
-}
+//   image: string;
+// }
 
 export class CreateUserDto {
   @Transform(lowerCaseTransformer)
@@ -37,7 +31,7 @@ export class CreateUserDto {
   lastName: string;
 
   @IsOptional()
-  photo: UserImageDto;
+  photo?: string;
 
   @IsOptional()
   @Type(() => RoleDto)

@@ -51,8 +51,10 @@ export class UsersService {
     }
 
     // letter will develop generic file upload system
-    if (clonedPayload.photo?.id) {
-    }
+    // if (clonedPayload.photo?.id) {
+    // } else {
+    //   clonedPayload.photo = null;
+    // }
 
     if (clonedPayload.role?.id) {
       const roleObject = Object.values(RoleEnum)
@@ -124,6 +126,7 @@ export class UsersService {
       const userObject = await this.usersRepository.findByEmail(
         clonedPayload.email,
       );
+      // console.log(typeof id);
 
       if (userObject && userObject.id !== id) {
         throw new UnprocessableEntityException({
@@ -135,8 +138,8 @@ export class UsersService {
       }
     }
 
-    if (clonedPayload.photo?.id) {
-    }
+    // if (clonedPayload.photo?.id) {
+    // }
 
     if (clonedPayload.role?.id) {
       const roleObject = Object.values(RoleEnum)

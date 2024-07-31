@@ -21,6 +21,7 @@ export class UsersRepositoryImpl implements IUserRepository {
     const newEntity = await this.usersRepository.save(
       this.usersRepository.create(persistenceModel),
     );
+    console.log(persistenceModel);
     return UserMapper.toDomain(newEntity);
   }
 
@@ -44,7 +45,11 @@ export class UsersRepositoryImpl implements IUserRepository {
       },
     });
 
-    return entity ? UserMapper.toDomain(entity) : null;
+    if (!entity) {
+      throw new NotFoundException('User Not found!');
+    }
+
+    return UserMapper.toDomain(entity);
   }
 
   async findBySocialIdAndProvider({
@@ -60,6 +65,7 @@ export class UsersRepositoryImpl implements IUserRepository {
 
     return entity ? UserMapper.toDomain(entity) : null;
   }
+
   async findManyWithPagination({
     filterOptions,
     sortOptions,
@@ -108,6 +114,10 @@ export class UsersRepositoryImpl implements IUserRepository {
       ...domainEntity,
       ...payload,
     });
+
+    console.log(mappedPayload);
+    console.log(entity);
+    console.log({ id });
 
     const updatedEntity = await this.usersRepository.save(
       this.usersRepository.create(mappedPayload),

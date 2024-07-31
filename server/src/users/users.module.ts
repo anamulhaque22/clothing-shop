@@ -8,5 +8,6 @@ import { UsersService } from './users.service';
   imports: [UserPersistenceModule],
   providers: [UsersService],
   controllers: [UsersController],
+  exports: [UsersService],
 })
 export class UsersModule {}
