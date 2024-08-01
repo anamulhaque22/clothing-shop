@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Handlebars from 'handlebars';
-import fs from 'node:fs/promises';
+import * as fs from 'node:fs/promises';
 import { createTransport, SendMailOptions, Transporter } from 'nodemailer';
 import { AllConfigType } from 'src/config/config.type';
 @Injectable()
@@ -12,23 +12,17 @@ export class MailerService {
     this.transporter = createTransport({
       host: this.configService.get('mail.host', { infer: true }),
       port: this.configService.get('mail.port', { infer: true }),
-      ignoreTLS: this.configService.get('mail.ignoreTLS', { infer: true }),
-      secure: this.configService.get('mail.secure', { infer: true }),
-      requireTLS: this.configService.get('mail.requireTLS', { infer: true }),
+      ignoreTLS: this.configService.get('mail.ignoreTLS', { infer: true }), //false
+      secure: this.configService.get('mail.secure', { infer: true }), //false
+      requireTLS: this.configService.get('mail.requireTLS', { infer: true }), //true
       auth: {
         user: this.configService.get('mail.user', { infer: true }),
         pass: this.configService.get('mail.password', { infer: true }),
       },
+      tls: {
+        rejectUnauthorized: false, // Add this if you encounter certificate issues
+      },
     });
-
-    this.transporter
-      .verify()
-      .then(() => {
-        console.log('connnection successful');
-      })
-      .catch((error) => {
-        console.error('Error verifying mail transporter', error);
-      });
   }
 
   async sendMail({

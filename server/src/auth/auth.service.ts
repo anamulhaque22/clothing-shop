@@ -4,12 +4,13 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import ms from 'ms';
 import { MailService } from 'src/mail/mail.service';
 import { RoleEnum } from 'src/roles/roles.enum';
@@ -138,6 +139,47 @@ export class AuthService {
     });
   }
 
+  async confirmEmail(hash: string): Promise<void> {
+    let userId: User['id'];
+
+    try {
+      const jwtData = await this.jwtService.verifyAsync<{
+        confirmEmailUserId: User['id'];
+      }>(hash, {
+        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+          infer: true,
+        }),
+      });
+
+      userId = jwtData.confirmEmailUserId;
+    } catch (error) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: 'Invalid hash!',
+        },
+      });
+    }
+
+    const user = await this.usersService.findById(userId);
+
+    if (
+      !user ||
+      user?.status?.id?.toString() !== StatusEnum.inactive.toString()
+    ) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Not found!',
+      });
+    }
+
+    user.status = {
+      id: StatusEnum.active,
+    };
+
+    await this.usersService.update(user.id, user);
+  }
+
   private async getTokensData(data: {
     id: User['id'];
     role: User['role'];
@@ -147,6 +189,8 @@ export class AuthService {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
       infer: true,
     });
+
+    console.log({ tokenExpiresIn });
 
     const tokenExpires = Date.now() + ms(tokenExpiresIn);
 
