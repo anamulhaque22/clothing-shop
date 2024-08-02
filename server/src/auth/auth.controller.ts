@@ -30,4 +30,12 @@ export class AuthController {
   ): Promise<void> {
     return this.authService.confirmEmail(confirmEmailDto.hash);
   }
+
+  @Post('email/confirm/new')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async confirmNewEmail(
+    @Body() confirmEmailDto: AuthConfirmEmailDto,
+  ): Promise<void> {
+    return this.authService.confirmNewEmail(confirmEmailDto.hash);
+  }
 }

@@ -180,6 +180,47 @@ export class AuthService {
     await this.usersService.update(user.id, user);
   }
 
+  async confirmNewEmail(hash: string): Promise<void> {
+    let userId: User['id'];
+    let newEmail: User['email'];
+
+    try {
+      const jwtData = await this.jwtService.verifyAsync<{
+        confirmEmailUserId: User['id'];
+        newEmail: User['email'];
+      }>(hash, {
+        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+          infer: true,
+        }),
+      });
+
+      userId = jwtData.confirmEmailUserId;
+      newEmail = jwtData.newEmail;
+    } catch (error) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: 'Invalid hash',
+        },
+      });
+    }
+
+    const user = await this.usersService.findById(userId);
+    if (!user) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'User not found',
+      });
+    }
+
+    user.email = newEmail;
+    user.status = {
+      id: StatusEnum.active,
+    };
+
+    await this.usersService.update(user.id, user);
+  }
+
   private async getTokensData(data: {
     id: User['id'];
     role: User['role'];
