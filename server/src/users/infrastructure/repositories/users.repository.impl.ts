@@ -109,18 +109,13 @@ export class UsersRepositoryImpl implements IUserRepository {
       throw new NotFoundException("User doesn't exist");
     }
 
-    const domainEntity = UserMapper.toDomain(entity);
-    const mappedPayload = UserMapper.toPersistence({
-      ...domainEntity,
-      ...payload,
-    });
-
-    console.log(mappedPayload);
-    console.log(entity);
-    console.log({ id });
-
     const updatedEntity = await this.usersRepository.save(
-      this.usersRepository.create(mappedPayload),
+      this.usersRepository.create(
+        UserMapper.toPersistence({
+          ...UserMapper.toDomain(entity),
+          ...payload,
+        }),
+      ),
     );
     return UserMapper.toDomain(updatedEntity);
   }

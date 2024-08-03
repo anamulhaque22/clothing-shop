@@ -50,6 +50,9 @@ export class UserMapper {
     // }
 
     const userEntity = new UserEntity();
+    if (user.id && typeof user.id === 'number') {
+      userEntity.id = user.id;
+    }
     userEntity.email = user.email;
     userEntity.password = user.password;
     userEntity.previousPassword = user.previousPassword;

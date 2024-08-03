@@ -13,9 +13,7 @@ import databaseConfig from './database/config/database.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import mailConfig from './mail/config/mail.config';
 import { MailModule } from './mail/mail.module';
-import { MailService } from './mail/mail.service';
 import { MailerModule } from './mailer/mailer.module';
-import { MailerService } from './mailer/mailer.service';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { SessionModule } from './session/session.module';
@@ -26,6 +24,7 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig, authConfig, mailConfig],
+      envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
@@ -44,6 +43,6 @@ import { UsersModule } from './users/users.module';
     MailerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MailService, MailerService],
+  providers: [AppService],
 })
 export class AppModule {}

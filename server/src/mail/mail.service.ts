@@ -50,4 +50,48 @@ export class MailService {
       },
     });
   }
+
+  async forgotPassword(
+    mailData: MailData<{ hash: string; tokenExpires: number }>,
+  ): Promise<void> {
+    const resetPasswordTitle: string = 'Reset Password';
+    const text1: string = 'Trouble signing in?';
+    const text2: string = 'Resetting your password is easy.';
+    const text3: string =
+      'Just press the button below and follow the instructions. We’ll have you up and running in no time.';
+    const text4: string =
+      'If you did not make this request then please ignore this email.';
+
+    const url = new URL(
+      this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
+        '/change-password',
+    );
+    url.searchParams.set('hash', mailData.data.hash);
+    url.searchParams.set('expires', mailData.data.tokenExpires.toString());
+
+    this.mailerService.sendMail({
+      to: mailData.to,
+      subject: resetPasswordTitle,
+      text: `${url.toString()} ${resetPasswordTitle}`,
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', { infer: true }),
+        'src',
+        'mail',
+        'mail-templates',
+        'reset-password.hbs',
+      ),
+      context: {
+        title: resetPasswordTitle,
+        url: url.toString(),
+        actionTitle: resetPasswordTitle,
+        app_name: this.configService.get('app.name', {
+          infer: true,
+        }),
+        text1,
+        text2,
+        text3,
+        text4,
+      },
+    });
+  }
 }

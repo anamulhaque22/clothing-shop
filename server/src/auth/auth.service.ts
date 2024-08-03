@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import ms from 'ms';
+import { AllConfigType } from 'src/config/config.type';
 import { MailService } from 'src/mail/mail.service';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { Session } from 'src/session/domain/session';
@@ -30,8 +31,8 @@ export class AuthService {
     private jwtService: JwtService,
     private usersService: UsersService,
     private sessionService: SessionService,
-    private configService: ConfigService,
     private mailService: MailService,
+    private configService: ConfigService<AllConfigType>,
   ) {}
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
@@ -122,12 +123,18 @@ export class AuthService {
         confirmEmailUserId: user.id,
       },
       {
-        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
-          infer: true,
-        }),
-        expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
-          infer: true,
-        }),
+        secret: this.configService.getOrThrow<string>(
+          'auth.confirmEmailSecret',
+          {
+            infer: true,
+          },
+        ),
+        expiresIn: this.configService.getOrThrow<string>(
+          'auth.confirmEmailExpires',
+          {
+            infer: true,
+          },
+        ),
       },
     );
 
@@ -146,9 +153,12 @@ export class AuthService {
       const jwtData = await this.jwtService.verifyAsync<{
         confirmEmailUserId: User['id'];
       }>(hash, {
-        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
-          infer: true,
-        }),
+        secret: this.configService.getOrThrow<string>(
+          'auth.confirmEmailSecret',
+          {
+            infer: true,
+          },
+        ),
       });
 
       userId = jwtData.confirmEmailUserId;
@@ -189,9 +199,12 @@ export class AuthService {
         confirmEmailUserId: User['id'];
         newEmail: User['email'];
       }>(hash, {
-        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
-          infer: true,
-        }),
+        secret: this.configService.getOrThrow<string>(
+          'auth.confirmEmailSecret',
+          {
+            infer: true,
+          },
+        ),
       });
 
       userId = jwtData.confirmEmailUserId;
@@ -221,17 +234,105 @@ export class AuthService {
     await this.usersService.update(user.id, user);
   }
 
+  async forgotPassword(email: string): Promise<void> {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        error: {
+          email:
+            'If an account with that email exists, a password reset link has been sent.',
+        },
+      });
+    }
+
+    const tokenExpiresIn = this.configService.getOrThrow<string>(
+      'auth.forgotExpires',
+      {
+        infer: true,
+      },
+    );
+    const tokenExpires = Date.now() + ms(tokenExpiresIn);
+
+    const hash = await this.jwtService.signAsync(
+      {
+        forgotUserId: user.id,
+      },
+      {
+        secret: this.configService.getOrThrow<string>('auth.forgotSecret', {
+          infer: true,
+        }),
+        expiresIn: tokenExpiresIn,
+      },
+    );
+
+    console.log({ hash });
+
+    await this.mailService.forgotPassword({
+      to: email,
+      data: {
+        hash,
+        tokenExpires,
+      },
+    });
+  }
+
+  async resetPassword(hash: string, password: string): Promise<void> {
+    console.log({ hash, password });
+    let userId: User['id'];
+
+    try {
+      const jwtData = await this.jwtService.verifyAsync<{
+        forgotUserId: User['id'];
+      }>(hash, {
+        secret: this.configService.getOrThrow<string>('auth.forgotSecret', {
+          infer: true,
+        }),
+      });
+      console.log({ jwtData });
+
+      userId = jwtData.forgotUserId;
+
+      console.log({ userId });
+    } catch (error) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: 'Invalid Hash',
+        },
+      });
+    }
+
+    const user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          hash: 'Invalid Hash',
+        },
+      });
+    }
+
+    user.password = password;
+
+    await this.sessionService.deleteByUserId({ userId: user.id });
+
+    await this.usersService.update(user.id, user);
+  }
+
   private async getTokensData(data: {
     id: User['id'];
     role: User['role'];
     sessionId: Session['id'];
     hash: Session['hash'];
   }) {
-    const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
-      infer: true,
-    });
-
-    console.log({ tokenExpiresIn });
+    const tokenExpiresIn: string = this.configService.getOrThrow<string>(
+      'auth.expires',
+      {
+        infer: true,
+      },
+    );
 
     const tokenExpires = Date.now() + ms(tokenExpiresIn);
 
@@ -243,7 +344,9 @@ export class AuthService {
           sessionId: data.sessionId,
         },
         {
-          secret: this.configService.getOrThrow('auth.secret', { infer: true }),
+          secret: this.configService.getOrThrow<string>('auth.secret', {
+            infer: true,
+          }),
           expiresIn: tokenExpiresIn,
         },
       ),
@@ -253,12 +356,18 @@ export class AuthService {
           hash: data.hash,
         },
         {
-          secret: this.configService.getOrThrow('auth.refreshSecret', {
-            infer: true,
-          }),
-          expiresIn: this.configService.getOrThrow('auth.refreshExpires', {
-            infer: true,
-          }),
+          secret: this.configService.getOrThrow<'auth.refreshSecret'>(
+            'auth.refreshSecret',
+            {
+              infer: true,
+            },
+          ),
+          expiresIn: this.configService.getOrThrow<'auth.refreshExpires'>(
+            'auth.refreshExpires',
+            {
+              infer: true,
+            },
+          ),
         },
       ),
     ]);
