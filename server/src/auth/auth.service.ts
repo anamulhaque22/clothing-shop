@@ -23,6 +23,7 @@ import { UsersService } from 'src/users/users.service';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { AuthProvidersEnum } from './auth-provider.enum';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
+import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthRegisterLoginDto } from './dto/auth.register-login.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { JwtPayloadType } from './types/jwt-payload.type';
@@ -368,6 +369,103 @@ export class AuthService {
 
   async me(userJwtPayload: JwtPayloadType): Promise<NullableType<User>> {
     return this.usersService.findById(userJwtPayload.id);
+  }
+
+  async update(
+    userJwtPayload: JwtPayloadType,
+    userDto: AuthUpdateDto,
+  ): Promise<NullableType<User>> {
+    const currentUser = await this.usersService.findById(userJwtPayload.id);
+
+    if (!currentUser) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        error: {
+          user: 'User not found!',
+        },
+      });
+    }
+
+    if (userDto.password) {
+      if (!userDto.oldPassword) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          error: {
+            oldPassword: 'Missing old password!',
+          },
+        });
+      }
+
+      if (!currentUser.password) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            oldPassword: 'incorrectOldPassword',
+          },
+        });
+      }
+
+      const isValidOldPassword = await bcrypt.compare(
+        userDto.oldPassword,
+        currentUser.password,
+      );
+
+      if (!isValidOldPassword) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            oldPassword: 'incorrectOldPassword',
+          },
+        });
+      } else {
+        await this.sessionService.deleteByUserIdWithExclude({
+          userId: currentUser.id,
+          excludeSessionId: userJwtPayload.sessionId,
+        });
+      }
+    }
+
+    if (userDto.email && userDto.email !== currentUser.email) {
+      const userByEmail = await this.usersService.findByEmail(userDto.email);
+      if (userByEmail && userByEmail.id !== currentUser.id) {
+        throw new UnprocessableEntityException({
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            email: 'emailExists',
+          },
+        });
+      }
+
+      const hash = await this.jwtService.signAsync(
+        {
+          confirmEmailUserId: currentUser.id,
+          newEmail: userDto.email,
+        },
+        {
+          secret: this.configService.getOrThrow<string>(
+            'auth.confirmEmailSecret',
+            { infer: true },
+          ),
+          expiresIn: this.configService.getOrThrow<string>(
+            'auth.confirmEmailExpires',
+            { infer: true },
+          ),
+        },
+      );
+
+      await this.mailService.confirmNewEmail({
+        to: userDto.email,
+        data: {
+          hash,
+        },
+      });
+    }
+
+    delete userDto.email;
+    delete userDto.oldPassword;
+    await this.usersService.update(userJwtPayload.id, userDto);
+
+    return await this.usersService.findById(userJwtPayload.id);
   }
 
   private async getTokensData(data: {

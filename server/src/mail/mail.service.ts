@@ -94,4 +94,40 @@ export class MailService {
       },
     });
   }
+
+  async confirmNewEmail(mailData: MailData<{ hash: string }>): Promise<void> {
+    const confirmNewEmailTitle: string = 'Confirm email';
+    const text1 = 'Hey!';
+    const text2 = 'Confirm your new email address.';
+    const text3 =
+      'Simply click the big green button below to verify your email address.';
+
+    const url = new URL(
+      this.configService.getOrThrow('app.frontendDomain', {
+        infer: true,
+      }) + '/confirm-new-email',
+    );
+
+    url.searchParams.set('hash', mailData.data.hash);
+    this.mailerService.sendMail({
+      subject: confirmNewEmailTitle,
+      text: `${url.toString()} ${confirmNewEmailTitle}`,
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', { infer: true }),
+        'src',
+        'mail',
+        'mail-template',
+        'confirm-new-email.hbs',
+      ),
+      context: {
+        title: confirmNewEmailTitle,
+        app_name: this.configService.get('app.name', { infer: true }),
+        url: url.toString(),
+        actionTitle: confirmNewEmailTitle,
+        text1,
+        text2,
+        text3,
+      },
+    });
+  }
 }

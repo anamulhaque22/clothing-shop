@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -14,6 +15,7 @@ import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthForgotPasswordDto } from './dto/auth-forgot-password.dto';
 import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
+import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthRegisterLoginDto } from './dto/auth.register-login.dto';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
 import { AuthJwtRefreshGuard } from './guard/auth-jwt-refresh.guard';
@@ -88,5 +90,12 @@ export class AuthController {
   @UseGuards(AuthGuard)
   async me(@Request() request): Promise<User> {
     return this.authService.me(request.user);
+  }
+
+  @Patch('me')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard)
+  async update(@Request() request, @Body() userDto: AuthUpdateDto) {
+    return this.authService.update(request.user, userDto);
   }
 }
