@@ -20,10 +20,13 @@ import { SessionService } from 'src/session/session.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { User } from 'src/users/domain/user';
 import { UsersService } from 'src/users/users.service';
+import { NullableType } from 'src/utils/types/nullable.type';
 import { AuthProvidersEnum } from './auth-provider.enum';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthRegisterLoginDto } from './dto/auth.register-login.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { JwtPayloadType } from './types/jwt-payload.type';
+import { JwtRefreshPayloadType } from './types/jwt-refresh-payload.type';
 
 @Injectable()
 export class AuthService {
@@ -101,7 +104,7 @@ export class AuthService {
     return {
       token,
       refreshToken,
-      tokenExpires: Number(tokenExpires),
+      tokenExpires,
       user,
     };
   }
@@ -319,6 +322,52 @@ export class AuthService {
     await this.sessionService.deleteByUserId({ userId: user.id });
 
     await this.usersService.update(user.id, user);
+  }
+
+  async refreshToken(
+    data: Pick<JwtRefreshPayloadType, 'sessionId' | 'hash'>,
+  ): Promise<Omit<LoginResponseDto, 'user'>> {
+    const session = await this.sessionService.findById(data.sessionId);
+
+    if (!session) {
+      throw new UnauthorizedException();
+    }
+
+    if (session.hash !== data.hash) {
+      throw new UnauthorizedException();
+    }
+
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
+    const user = await this.usersService.findById(session.user.id);
+
+    if (!user?.role) {
+      throw new UnauthorizedException();
+    }
+
+    await this.sessionService.update(session.id, { hash });
+
+    const { token, refreshToken, tokenExpires } = await this.getTokensData({
+      id: session.user.id,
+      role: {
+        id: user.role.id,
+      },
+      sessionId: session.id,
+      hash,
+    });
+
+    return {
+      token,
+      refreshToken,
+      tokenExpires,
+    };
+  }
+
+  async me(userJwtPayload: JwtPayloadType): Promise<NullableType<User>> {
+    return this.usersService.findById(userJwtPayload.id);
   }
 
   private async getTokensData(data: {

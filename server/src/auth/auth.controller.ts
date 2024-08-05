@@ -1,10 +1,23 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { User } from 'src/users/domain/user';
 import { AuthService } from './auth.service';
 import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthForgotPasswordDto } from './dto/auth-forgot-password.dto';
 import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthRegisterLoginDto } from './dto/auth.register-login.dto';
+import { RefreshResponseDto } from './dto/refresh-response.dto';
+import { AuthJwtRefreshGuard } from './guard/auth-jwt-refresh.guard';
+import { AuthGuard } from './guard/auth.guard';
 
 @Controller({
   path: 'auth',
@@ -58,5 +71,22 @@ export class AuthController {
       resetPasswordDto.hash,
       resetPasswordDto.password,
     );
+  }
+
+  @Get('refresh')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthJwtRefreshGuard)
+  async refresh(@Request() request): Promise<RefreshResponseDto> {
+    return this.authService.refreshToken({
+      sessionId: request.user.sessionId,
+      hash: request.user.hash,
+    });
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  async me(@Request() request): Promise<User> {
+    return this.authService.me(request.user);
   }
 }
