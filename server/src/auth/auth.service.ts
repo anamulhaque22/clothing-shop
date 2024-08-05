@@ -468,6 +468,10 @@ export class AuthService {
     return await this.usersService.findById(userJwtPayload.id);
   }
 
+  async logout(data: Pick<JwtRefreshPayloadType, 'sessionId'>): Promise<void> {
+    return this.sessionService.deleteById(data.sessionId);
+  }
+
   private async getTokensData(data: {
     id: User['id'];
     role: User['role'];

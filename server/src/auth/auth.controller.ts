@@ -98,4 +98,13 @@ export class AuthController {
   async update(@Request() request, @Body() userDto: AuthUpdateDto) {
     return this.authService.update(request.user, userDto);
   }
+
+  @Get('logout')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Request() request): Promise<void> {
+    return this.authService.logout({
+      sessionId: request.user.sessionId,
+    });
+  }
 }
