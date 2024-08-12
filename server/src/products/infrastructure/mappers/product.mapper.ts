@@ -1,6 +1,7 @@
+import { Category } from 'src/categories/domain/category';
 import { CategoryEntity } from 'src/categories/infrastructure/entities/category.entity';
 import { ProductSizeEntity } from 'src/product-sizes/infrastructure/entities/product-size.entity';
-import { Product } from 'src/products/domain/product';
+import { Image, Product, ProductInfo, Size } from 'src/products/domain/product';
 import { ProductColorEntity } from '../entities/product-color.entity';
 import { ProductImageEntity } from '../entities/product-image.entity';
 import { ProductEntity } from '../entities/product.entity';
@@ -8,6 +9,46 @@ import { ProductEntity } from '../entities/product.entity';
 export class ProductMapper {
   static toDomain(raw: ProductEntity): Product {
     const product = new Product();
+    let domainSizes: Size[] | undefined = undefined;
+    if (raw.sizes && raw.sizes.length > 0) {
+      domainSizes = raw.sizes.map((size) => {
+        const sizeModel = new Size();
+        sizeModel.id = size.id;
+        sizeModel.name = size.name;
+        return sizeModel;
+      });
+    }
+
+    let domainImages: Image[] | undefined = undefined;
+    if (raw.images && raw.images.length > 0) {
+      domainImages = raw.images.map((image) => {
+        const imageModel = new Image();
+        imageModel.id = image.id;
+        imageModel.imageUrl = image.imageUrl;
+        return imageModel;
+      });
+    }
+
+    let domainProductInfo: ProductInfo[] | undefined = undefined;
+    if (raw.productColors && raw.productColors.length > 0) {
+      domainProductInfo = raw.productColors.map((color) => {
+        const productInfo = new ProductInfo();
+        productInfo.id = color.id;
+        productInfo.colorCode = color.colorCode;
+        productInfo.colorName = color.colorName;
+        productInfo.colorSizeWiseQuantity = color.colorSizeWiseQuantity;
+        productInfo.colorWiseQuantity = color.colorWiseQuantity;
+        return productInfo;
+      });
+    }
+
+    let domainCategory: Category | undefined = undefined;
+    if (raw.category) {
+      domainCategory = new Category();
+      domainCategory.id = raw.category.id;
+      domainCategory.name = raw.category.name;
+    }
+
     product.id = raw.id;
     product.title = raw.title;
     product.description = raw.description;
@@ -15,10 +56,10 @@ export class ProductMapper {
     product.sellPrice = raw.sellPrice;
     product.quantity = raw.quantity;
     product.discount = raw.discount;
-    product.category = raw.category;
-    product.sizes = raw.sizes;
-    product.images = raw.images;
-    product.productInfo = raw.productColors;
+    product.category = domainCategory;
+    product.sizes = domainSizes;
+    product.images = domainImages;
+    product.productInfo = domainProductInfo;
 
     return product;
   }
