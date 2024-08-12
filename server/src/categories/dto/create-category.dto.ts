@@ -1,12 +1,15 @@
-import { Transform } from 'class-transformer';
+import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
+class ParentCategoryDto {
+  @IsNumber({}, { message: 'Parent category id must be a number' })
+  id: number;
+}
 
 export class CreateCategoryDto {
   @IsString()
   name: string;
 
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value, 10))
   @IsOptional()
-  parentCategoryID?: number;
+  @Type(() => ParentCategoryDto)
+  parentCategory?: ParentCategoryDto;
 }

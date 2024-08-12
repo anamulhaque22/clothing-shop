@@ -1,40 +1,84 @@
 // create-product.dto.ts
-import { OmitType } from '@nestjs/mapped-types';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
+  IsObject,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { ProductInfo } from './product-info.dto';
-import { ProductDto } from './product.dto';
 
-export class CreateProductDto extends OmitType(ProductDto, [
-  'id',
-  'sizes',
-  'productInfo',
-] as const) {
+class SizeDto {
   @IsNumber()
-  @Transform(({ value }) => parseInt(value, 10))
-  categoryId: number;
+  id: number;
+}
+
+class ImageDto {
+  @IsNumber()
+  id: number;
+}
+
+class ProductInfoDto {
+  @IsString()
+  colorName: string;
+
+  @IsString()
+  colorCode: string;
+
+  @IsNumber()
+  colorWiseQuantity: number;
+
+  @IsObject()
+  colorSizeWiseQuantity: { [key: string]: number };
+}
+
+class Category {
+  @IsNumber()
+  id: number;
+}
+
+export class CreateProductDto {
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
+  @IsString()
+  description: string;
+
+  @IsNumber()
+  buyPrice: number;
+
+  @IsNumber()
+  sellPrice: number;
+
+  @IsNumber()
+  quantity: number;
+
+  @IsNumber()
+  discount: number;
+
+  @IsObject()
+  @Type(() => Category)
+  @ValidateNested()
+  category: Category;
 
   @IsArray()
-  @IsString({ each: true })
-  @Transform(({ value }) =>
-    typeof value === 'string' ? JSON.parse(value) : value,
-  )
-  sizes: string[];
+  @ValidateNested({ each: true })
+  @Type(() => SizeDto)
+  sizes: SizeDto[];
+
+  @IsArray()
+  @Type(() => ImageDto)
+  @ValidateNested({ each: true })
+  images: ImageDto[];
 
   @IsEnum(['Hidden', 'Visible'])
   visibility: 'Hidden' | 'Visible';
 
   @IsArray()
-  @Type(() => ProductInfo)
+  @Type(() => ProductInfoDto)
   @ValidateNested({ each: true })
-  @Transform(({ value }) =>
-    typeof value === 'string' ? JSON.parse(value) : value,
-  )
-  productInfo: ProductInfo[];
+  productInfo: ProductInfoDto[];
 }

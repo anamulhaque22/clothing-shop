@@ -1,6 +1,15 @@
 import { Exclude, Expose } from 'class-transformer';
+import { Allow } from 'class-validator';
 import { Role } from 'src/roles/domain/role';
 import { Status } from 'src/statuses/domain/status';
+
+export class UserImage {
+  @Allow()
+  id: string;
+
+  @Allow()
+  image: string;
+}
 
 export class User {
   id: number;
@@ -9,10 +18,10 @@ export class User {
   email: string;
 
   @Exclude({ toPlainOnly: true })
-  password: string;
+  password?: string;
 
   @Exclude({ toPlainOnly: true })
-  previousPasswords: string;
+  previousPassword?: string;
 
   @Expose({ groups: ['me', 'admin'] })
   provider: string;

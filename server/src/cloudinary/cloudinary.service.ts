@@ -37,4 +37,11 @@ export class CloudinaryService {
       bufferToStream(file.buffer).pipe(uploadStream);
     });
   }
+
+  removeFile(id: string) {
+    cloudinary.uploader.destroy(id, {
+      resource_type: 'image',
+      invalidate: true,
+    });
+  }
 }

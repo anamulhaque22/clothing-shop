@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
 import { AuthProvidersEnum } from 'src/auth/auth-provider.enum';
-import { RoleEntity } from 'src/roles/entities/role.entity';
-import { StatusEntity } from 'src/statuses/entities/status.entity';
+import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
+import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
   AfterLoad,
@@ -10,13 +10,10 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
-  JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserImage } from './user-image.entity';
 
 @Entity({
   name: 'user',
@@ -25,8 +22,6 @@ export class UserEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // For "string | null" we need to use String type.
-  // More info: https://github.com/typeorm/typeorm/issues/2567
   @Column({ type: String, unique: true, nullable: true })
   @Expose({ groups: ['me', 'admin'] })
   email: string | null;
@@ -60,11 +55,12 @@ export class UserEntity extends EntityHelper {
   @Column({ type: String, nullable: true })
   lastName: string | null;
 
-  @OneToOne(() => UserImage, {
-    eager: true,
-  })
-  @JoinColumn()
-  photo?: UserImage | null;
+  // @OneToOne(() => UserImageEntity, {
+  //   eager: true,
+  // })
+  // @JoinColumn()
+  @Column({ type: String, nullable: true })
+  photo?: string | null;
 
   @ManyToOne(() => RoleEntity, {
     eager: true,
