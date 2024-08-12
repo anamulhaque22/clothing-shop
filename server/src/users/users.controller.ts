@@ -9,13 +9,20 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { Roles } from 'src/roles/roles.decorators';
+import { RoleEnum } from 'src/roles/roles.enum';
+import { RolesGuard } from 'src/roles/roles.guard';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { User } from './domain/user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
+@Roles(RoleEnum.admin)
+@UseGuards(AuthGuard, RolesGuard)
 @Controller({
   path: 'users',
   version: '1',

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { StatusEntity } from 'src/statuses/entities/status.entity';
+import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
 import { StatusSeedService } from './status-seed.service';
 
 @Module({

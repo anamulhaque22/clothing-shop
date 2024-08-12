@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import authConfig from './auth/config/auth.config';
 import { CategoriesModule } from './categories/categories.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import cloudinaryConfig from './cloudinary/config/cloudinary.config';
 import appConfig from './config/app.config';
 import databaseConfig from './database/config/database.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
@@ -23,7 +24,13 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, appConfig, authConfig, mailConfig],
+      load: [
+        databaseConfig,
+        appConfig,
+        authConfig,
+        mailConfig,
+        cloudinaryConfig,
+      ],
       envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({

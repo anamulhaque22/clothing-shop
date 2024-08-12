@@ -1,19 +1,21 @@
-import { Category } from 'src/categories/category.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
+import { CategoryEntity } from 'src/categories/infrastructure/entities/category.entity';
+import { ProductSizeEntity } from 'src/product-sizes/infrastructure/entities/product-size.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { ProductColorEntity } from './product-color.entity';
 import { ProductImageEntity } from './product-image.entity';
-import { ProductSizeEntity } from './product-size.entity';
 
 @Entity({
   name: 'product',
@@ -34,8 +36,10 @@ export class ProductEntity extends EntityHelper {
   @Column({ type: 'numeric', precision: 10, scale: 2 })
   sellPrice: number;
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
+  @ManyToOne(() => CategoryEntity, (category) => category.products, {
+    eager: true,
+  })
+  category: CategoryEntity;
 
   @Column()
   quantity: number;
@@ -48,19 +52,16 @@ export class ProductEntity extends EntityHelper {
 
   @OneToMany(() => ProductColorEntity, (productColor) => productColor.product, {
     cascade: true,
-    onDelete: 'CASCADE',
+    eager: true,
   })
   productColors: ProductColorEntity[];
 
-  @OneToMany(() => ProductSizeEntity, (productSize) => productSize.product, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  productSizes: ProductSizeEntity[];
+  @ManyToMany(() => ProductSizeEntity)
+  @JoinTable()
+  sizes: ProductSizeEntity[];
 
   @OneToMany(() => ProductImageEntity, (image) => image.product, {
-    cascade: true,
-    onDelete: 'CASCADE',
+    eager: true,
   })
   images: ProductImageEntity[];
 

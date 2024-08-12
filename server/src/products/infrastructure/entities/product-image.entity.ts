@@ -16,4 +16,7 @@ export class ProductImageEntity extends EntityHelper {
 
   @Column()
   imageUrl: string;
+
+  @Column()
+  publicId: string;
 }

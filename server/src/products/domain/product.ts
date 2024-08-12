@@ -1,34 +1,44 @@
-import { Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
+import { Category } from 'src/categories/domain/category';
+class Size {
+  id: number;
+  name?: string;
+}
+
+class Image {
+  id: number;
+  imageUrl?: string;
+}
+
+class ProductInfo {
+  id?: number;
+  colorName: string;
+  colorCode: string;
+  colorWiseQuantity: number;
+  colorSizeWiseQuantity: { [key: string]: number };
+}
 
 export class Product {
   id: number;
   title: string;
   description: string;
 
-  @Transform(({ value }) => {
-    return parseFloat(value);
-  })
+  @Expose({ groups: ['admin'] })
   buyPrice: number;
 
-  @Transform(({ value }) => parseFloat(value))
   sellPrice: number;
+
+  category: Category;
 
   quantity: number;
 
-  @Transform(({ value }) => parseFloat(value))
   discount: number;
 
-  //   @Type(() => SizeDto)
-  //   @ValidateNested({ each: true })
-  //   sizes: SizeDto[];
+  sizes: Size[];
 
-  //   @IsArray()
-  //   @Type(() => ImageDto)
-  //   @ValidateNested({ each: true })
-  //   images: ImageDto[];
+  images: Image[];
 
-  //   @IsArray()
-  //   @Type(() => ProductInfoDto)
-  //   @ValidateNested({ each: true })
-  //   productInfo: ProductInfoDto[];
+  productInfo: ProductInfo[];
+
+  visibility: 'Hidden' | 'Visible';
 }

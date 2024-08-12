@@ -2,12 +2,14 @@ import { EntityHelper } from 'src/utils/entity-helper';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity({
-  name: 'role',
+  name: 'product_size',
 })
-export class RoleEntity extends EntityHelper {
+export class ProductSizeEntity extends EntityHelper {
   @PrimaryColumn()
   id: number;
 
-  @Column()
-  name?: string;
+  @Column({
+    unique: true,
+  })
+  name: string;
 }

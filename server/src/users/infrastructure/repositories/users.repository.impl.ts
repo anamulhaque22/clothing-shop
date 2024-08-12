@@ -21,7 +21,6 @@ export class UsersRepositoryImpl implements IUserRepository {
     const newEntity = await this.usersRepository.save(
       this.usersRepository.create(persistenceModel),
     );
-    console.log(persistenceModel);
     return UserMapper.toDomain(newEntity);
   }
 

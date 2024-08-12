@@ -1,38 +1,42 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
-import { Category } from './category.entity';
+import { NullableType } from 'src/utils/types/nullable.type';
+import { Category } from './domain/category';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { CategoryRepository } from './infrastructure/category.repositoty';
 
 @Injectable()
 export class CategoriesService {
-  constructor(
-    @InjectRepository(Category) private categoryRepo: Repository<Category>,
-  ) {}
+  constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async create(data: CreateCategoryDto): Promise<any> {
-    let parentCategory: CreateCategoryDto = null;
-    if (data.parentCategoryID) {
-      parentCategory = await this.categoryRepo.findOne({
-        where: { id: data.parentCategoryID },
-      });
+  async create(data: CreateCategoryDto): Promise<Category> {
+    if (data.parentCategory) {
+      const parentCategory = await this.categoryRepository.findById(
+        data.parentCategory.id,
+      );
       if (!parentCategory) {
         throw new NotFoundException('Parent category not found');
       }
     }
-    const categoryData: DeepPartial<Category> = {
-      name: data.name,
-      parentCategory,
-    };
-
-    return await this.categoryRepo.save(categoryData);
+    console.log(data);
+    return await this.categoryRepository.create(data);
   }
 
-  async getCategories(): Promise<Category[]> {
-    return this.categoryRepo.find();
+  async findById(id: Category['id']): Promise<NullableType<Category>> {
+    return this.categoryRepository.findById(id);
   }
 
-  async getCategoryById(id: number): Promise<Category> {
-    return this.categoryRepo.findOneBy({ id });
+  async findAll(): Promise<Category[]> {
+    return this.categoryRepository.findAll();
+  }
+
+  async update(
+    id: Category['id'],
+    data: Partial<Category>,
+  ): Promise<NullableType<Category>> {
+    return this.categoryRepository.update(id, data);
+  }
+
+  async remove(id: Category['id']) {
+    return this.categoryRepository.remove(id);
   }
 }

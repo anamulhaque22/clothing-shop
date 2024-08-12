@@ -5,13 +5,12 @@ import appConfig from 'src/config/app.config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import databaseConfig from '../config/database.config';
 import { TypeOrmConfigService } from '../typeorm-config.service';
+import { ProductSizeSeedModule } from './product-size/product-size-seed.module';
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 
 @Module({
   imports: [
-    RoleSeedModule,
-    StatusSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
@@ -23,6 +22,9 @@ import { StatusSeedModule } from './status/status-seed.module';
         return new DataSource(options).initialize();
       },
     }),
+    RoleSeedModule,
+    StatusSeedModule,
+    ProductSizeSeedModule,
   ],
 })
 export class SeedModule {}
