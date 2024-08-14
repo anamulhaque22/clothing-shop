@@ -73,7 +73,6 @@ export class ProductsController {
   async findOneById(
     @Param('id') id: Product['id'],
   ): Promise<NullableType<Product>> {
-    console.log({ id });
     return await this.productsService.findOne(id);
   }
 
@@ -84,9 +83,9 @@ export class ProductsController {
   //   return result;
   // }
 
-  // @Delete(':id')
-  // @HttpCode(HttpStatus.OK)
-  // async deleteProduct(@Param('id') id: number) {
-  //   return this.productsService.delete(id);
-  // }
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async deleteProduct(@Param('id') id: Product['id']): Promise<void> {
+    return this.productsService.delete(id);
+  }
 }

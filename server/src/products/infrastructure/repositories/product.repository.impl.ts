@@ -53,6 +53,7 @@ export class ProductRepositoryImpl implements ProductRepository {
       },
     });
   }
+
   async findAll(): Promise<Product[]> {
     const entities = await this.productRepository.find();
     return entities.map((product) => ProductMapper.toDomain(product));
@@ -68,6 +69,7 @@ export class ProductRepositoryImpl implements ProductRepository {
   async remove(id: Product['id']): Promise<void> {
     await this.productRepository.softDelete(id);
   }
+
   async update(
     id: Product['id'],
     payload: Partial<Product>,
@@ -80,6 +82,7 @@ export class ProductRepositoryImpl implements ProductRepository {
       throw new Error('Product Not Found!');
     }
 
+    // checking existing product info and updating it. If not found, adding new product info
     const mappedProductInfo: ProductInfo[] = entity.productColors.map((pc) => {
       const matchingInfo = payload.productInfo.find((pf) => pf?.id === pc.id);
       return matchingInfo

@@ -94,10 +94,12 @@ export class ProductsService {
       });
     }
 
-    const validSizes = sizes.map((size) => size.id.toString());
+    const validSizes = sizes.map((size) =>
+      ProductSizesEnum[size.id].toLowerCase(),
+    );
     clonedPayload.productInfo.forEach((info) => {
       const invalidSizes = Object.keys(info.colorSizeWiseQuantity).filter(
-        (size) => !validSizes.includes(size),
+        (size) => !validSizes.includes(size.toLowerCase()),
       );
 
       if (invalidSizes.length > 0) {
@@ -236,6 +238,10 @@ export class ProductsService {
   async findOne(id: Product['id']): Promise<NullableType<Product>> {
     return this.productsRepo.findById(id);
   }
+
+  async delete(id: Product['id']): Promise<void> {
+    return this.productsRepo.remove(id);
+  }
   /*
  
 
@@ -267,24 +273,6 @@ export class ProductsService {
     return transformedProducts;
   }
 
-  async delete(id: number) {
-    const product = await this.productsRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.productColors', 'productColors')
-      .leftJoinAndSelect('product.images', 'images')
-      .leftJoinAndSelect('product.productSizes', 'productSizes')
-      .where('product.id = :id', { id })
-      .getOne();
-
-    if (!product) {
-      throw new NotFoundException(`Product with id ${id} not found`);
-    }
-
-    const result = await this.productsRepository.remove(product);
-    console.log(result);
-    return {
-      message: 'Product successfully deleted',
-    };
-  }
+ 
     */
 }
