@@ -29,6 +29,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
 
         subscribersDir: 'subscriber',
       },
+      ssl: {
+        rejectUnauthorized: false,
+      },
     } as TypeOrmModuleOptions;
   }
 }
