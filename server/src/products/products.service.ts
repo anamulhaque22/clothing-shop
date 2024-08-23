@@ -69,7 +69,7 @@ export class ProductsService {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         errors: {
-          category: 'Category not found!',
+          category: `Category not found with id: ${clonedPayload.category.id}`,
         },
       });
     }
