@@ -20,7 +20,7 @@ class ImageDto {
   id: number;
 }
 
-class ProductInfoDto {
+export class ProductInfoDto {
   @IsString()
   colorName: string;
 

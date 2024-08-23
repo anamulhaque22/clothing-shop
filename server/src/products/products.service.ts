@@ -9,9 +9,12 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { CloudinaryResponse } from 'src/cloudinary/cloudinary-response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ProductSizesEnum } from 'src/product-sizes/product-sizes.enum';
+import { NullableType } from 'src/utils/types/nullable.type';
+import { Product } from './domain/product';
 import { ProductImage } from './domain/product-image';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ImageRemoveDto } from './dto/image-remove.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from './infrastructure/product.repository';
 
 @Injectable()
@@ -55,19 +58,18 @@ export class ProductsService {
     return;
   }
 
-  async create(payload: CreateProductDto): Promise<any> {
+  async create(payload: CreateProductDto): Promise<Product> {
     const clonedPayload = {
       ...payload,
     };
     const category = await this.categoriesService.findById(
       clonedPayload.category.id,
     );
-    console.log({ category });
     if (!category) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         errors: {
-          category: 'Category not found!',
+          category: `Category not found with id: ${clonedPayload.category.id}`,
         },
       });
     }
@@ -92,11 +94,12 @@ export class ProductsService {
       });
     }
 
-    const validSizes = sizes.map((size) => size.id.toString());
-    console.log({ validSizes });
+    const validSizes = sizes.map((size) =>
+      ProductSizesEnum[size.id].toLowerCase(),
+    );
     clonedPayload.productInfo.forEach((info) => {
       const invalidSizes = Object.keys(info.colorSizeWiseQuantity).filter(
-        (size) => !validSizes.includes(size),
+        (size) => !validSizes.includes(size.toLowerCase()),
       );
 
       if (invalidSizes.length > 0) {
@@ -173,121 +176,74 @@ export class ProductsService {
     // return await this.findOne(savedProduct.id);
   }
 
-  // async update(
-  //   id: number,
-  //   updateProductDto: UpdateProductDto,
-  // ): Promise<ProductDto> {
-  //   const {
-  //     title,
-  //     description,
-  //     buyPrice,
-  //     sellPrice,
-  //     categoryId,
-  //     quantity,
-  //     discount,
-  //     visibility,
-  //     sizes,
-  //     productInfo,
-  //   } = updateProductDto;
+  async update(
+    id: Product['id'],
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
+    const clonedPayload = { ...updateProductDto };
 
-  //   const category = await this.categoryService.findById(categoryId);
-  //   if (!category) {
-  //     throw new NotFoundException(`Category with id ${categoryId} not found`);
-  //   }
-  //   const product = await this.productsRepository.findOneBy({ id });
-  //   if (!product) {
-  //     throw new NotFoundException(`Product with id ${id} not found`);
-  //   }
+    if (clonedPayload.category && clonedPayload?.category?.id) {
+      const category = await this.categoriesService.findById(
+        clonedPayload?.category?.id,
+      );
+      if (!category) {
+        throw new NotFoundException({
+          status: HttpStatus.NOT_FOUND,
+          errors: {
+            category: 'Category not found!',
+          },
+        });
+      }
+    }
 
-  //   product.title = title;
-  //   product.description = description;
-  //   product.buyPrice = buyPrice;
-  //   product.sellPrice = sellPrice;
-  //   product.category = category;
-  //   product.quantity = quantity;
-  //   product.discount = discount;
-  //   product.visibility = visibility;
+    if (clonedPayload?.sizes) {
+      clonedPayload.sizes.forEach((size) => {
+        if (size.id) {
+          const sizeObject = Object.values(ProductSizesEnum)
+            .map(String)
+            .includes(String(size.id));
 
-  //   await this.productsRepository.save(product);
+          if (!sizeObject) {
+            throw new UnprocessableEntityException({
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errors: {
+                message: 'size not exits',
+              },
+            });
+          }
+        }
+      });
+    }
 
-  //   // Save product sizes
-  //   for (const sizeName of sizes) {
-  //     let size = await this.sizesRepository.findOneBy({
-  //       sizeName: sizeName.toUpperCase(),
-  //     });
+    if (clonedPayload?.images) {
+      clonedPayload.images.forEach((image) => {
+        if (image.id) {
+          const imageObject = this.productsRepo.findImageById(image.id);
 
-  //     if (!size) {
-  //       size = this.sizesRepository.create({ sizeName });
-  //       size = await this.sizesRepository.save(size);
-  //     }
+          if (!imageObject) {
+            throw new UnprocessableEntityException({
+              status: HttpStatus.UNPROCESSABLE_ENTITY,
+              errors: {
+                message: 'image not exits',
+              },
+            });
+          }
+        }
+      });
+    }
 
-  //     const productSize = await this.productSizesRepository.findOneBy({
-  //       product,
-  //       size,
-  //     });
-  //     if (!productSize) {
-  //       const newProductSize = this.productSizesRepository.create({
-  //         product,
-  //         size,
-  //       });
-  //       await this.productSizesRepository.save(newProductSize);
-  //     }
-  //   }
-  //   // Save product colors and related information like color size quantity and color wise quantity
-  //   for (const info of productInfo) {
-  //     const { color, colorWiseQuantity, colorSizeWiseQuantity, colorName } =
-  //       info;
-  //     const isColorExist = await this.productColorsRepository.findOneBy({
-  //       product,
-  //       colorCode: color,
-  //     });
-  //     if (isColorExist) {
-  //       isColorExist.colorWiseQuantity = colorWiseQuantity;
-  //       isColorExist.colorSizeWiseQuantity = colorSizeWiseQuantity;
-  //       isColorExist.colorName = colorName;
-  //       await this.productColorsRepository.save(isColorExist);
-  //       continue;
-  //     }
-  //     const productColor = this.productColorsRepository.create({
-  //       colorName,
-  //       colorCode: color,
-  //       product,
-  //       colorWiseQuantity,
-  //       colorSizeWiseQuantity,
-  //     });
-
-  //     await this.productColorsRepository.save(productColor);
-  //   }
-
-  //   return await this.findOne(product.id);
-  // }
-  /*
-  async findOne(id: number): Promise<ProductDto> {
-    const product = await this.productsRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.productColors', 'productInfo')
-      .leftJoinAndSelect('product.images', 'images')
-      .leftJoinAndSelect('product.productSizes', 'productSizes')
-      .leftJoinAndSelect('productSizes.size', 'size')
-      .where('product.id = :id', { id })
-      .getOne();
-
-    if (!product)
-      throw new NotFoundException(`Product with id ${id} not found`);
-
-    const transformedProduct = {
-      ...product,
-      sizes: product.productSizes.map((productSize) => ({
-        sizeName: productSize.size.sizeName,
-        id: productSize.size.id,
-      })),
-      productInfo: product.productColors,
-    };
-    delete transformedProduct.productSizes;
-    delete transformedProduct.visibility;
-    delete transformedProduct.productColors;
-    return transformedProduct;
+    return await this.productsRepo.update(id, clonedPayload);
   }
+
+  async findOne(id: Product['id']): Promise<NullableType<Product>> {
+    return this.productsRepo.findById(id);
+  }
+
+  async delete(id: Product['id']): Promise<void> {
+    return this.productsRepo.remove(id);
+  }
+  /*
+ 
 
   async findAll(): Promise<ProductDto[]> {
     const products = await this.productsRepository.find({
@@ -317,24 +273,6 @@ export class ProductsService {
     return transformedProducts;
   }
 
-  async delete(id: number) {
-    const product = await this.productsRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.productColors', 'productColors')
-      .leftJoinAndSelect('product.images', 'images')
-      .leftJoinAndSelect('product.productSizes', 'productSizes')
-      .where('product.id = :id', { id })
-      .getOne();
-
-    if (!product) {
-      throw new NotFoundException(`Product with id ${id} not found`);
-    }
-
-    const result = await this.productsRepository.remove(product);
-    console.log(result);
-    return {
-      message: 'Product successfully deleted',
-    };
-  }
+ 
     */
 }

@@ -44,11 +44,7 @@ export class UsersRepositoryImpl implements IUserRepository {
       },
     });
 
-    if (!entity) {
-      throw new NotFoundException('User Not found!');
-    }
-
-    return UserMapper.toDomain(entity);
+    return entity ? UserMapper.toDomain(entity) : null;
   }
 
   async findBySocialIdAndProvider({

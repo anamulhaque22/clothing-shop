@@ -1,16 +1,16 @@
 import { Expose } from 'class-transformer';
 import { Category } from 'src/categories/domain/category';
-class Size {
+export class Size {
   id: number;
   name?: string;
 }
 
-class Image {
+export class Image {
   id: number;
   imageUrl?: string;
 }
 
-class ProductInfo {
+export class ProductInfo {
   id?: number;
   colorName: string;
   colorCode: string;

@@ -56,7 +56,7 @@ export class ProductEntity extends EntityHelper {
   })
   productColors: ProductColorEntity[];
 
-  @ManyToMany(() => ProductSizeEntity)
+  @ManyToMany(() => ProductSizeEntity, { eager: true })
   @JoinTable()
   sizes: ProductSizeEntity[];
 

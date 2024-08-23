@@ -3,16 +3,21 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from 'src/utils/image-file-filter';
+import { NullableType } from 'src/utils/types/nullable.type';
+import { Product } from './domain/product';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ImageRemoveDto } from './dto/image-remove.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
 @Controller({
@@ -50,104 +55,26 @@ export class ProductsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createProduct(@Body() data: CreateProductDto) {
+  async createProduct(@Body() data: CreateProductDto): Promise<Product> {
     return this.productsService.create(data);
-    // try {
-    //   const { productInfo } = body;
-    //   const parsedProductInfo = JSON.parse(productInfo);
-    //   const productData = plainToInstance(CreateProductDto, {
-    //     ...body,
-    //     productInfo: parsedProductInfo,
-    //   });
-    //   if (!files.images || files?.images?.length === 0) {
-    //     throw new BadRequestException('At least one image is required');
-    //   }
-    //   const imageUrls = await Promise.all(
-    //     files.images.map((image) =>
-    //       this.cloudinaryService.uploadFile(image, 'products'),
-    //     ),
-    //   );
-    //   productData.images = imageUrls.map((url) => ({
-    //     imageUrl: url.secure_url,
-    //   }));
-    //   await validateOrReject(productData);
-    //   console.log(productData.images);
-    //   const result = this.productsService.create(productData);
-    //   return result;
-    // } catch (error) {
-    //   if (error instanceof Array && error[0] instanceof ValidationError) {
-    //     throw new BadRequestException({
-    //       message: 'Validation failed',
-    //       errors: generateErrors(error),
-    //     });
-    //   } else {
-    //     throw new BadRequestException(error.message);
-    //   }
-    // }
   }
 
-  // @Post(':id')
-  // @HttpCode(HttpStatus.OK)
-  // @UseInterceptors(
-  //   FileFieldsInterceptor(
-  //     [
-  //       {
-  //         name: 'images',
-  //       },
-  //     ],
-  //     {
-  //       fileFilter: imageFileFilter,
-  //     },
-  //   ),
-  // )
-  // // async updateProduct(
-  // //   @UploadedFiles() files: { images?: Express.Multer.File[] },
-  // //   @Body() body: any,
-  // //   @Param('id') productId: number,
-  // // ) {
-  // //   try {
-  // //     const { productInfo } = body;
-  // //     const parsedProductInfo = JSON.parse(productInfo);
-  // //     const productData = plainToInstance(UpdateProductDto, {
-  // //       ...body,
-  // //       productInfo: parsedProductInfo,
-  // //     });
+  @Post(':id')
+  @HttpCode(HttpStatus.OK)
+  async updateProduct(
+    @Body() data: UpdateProductDto,
+    @Param('id') id: Product['id'],
+  ) {
+    return this.productsService.update(id, data);
+  }
 
-  // //     let imageUrls;
-  // //     if (files.images && files?.images?.length > 0) {
-  // //       imageUrls = await Promise.all(
-  // //         files.images.map((image) =>
-  // //           this.cloudinaryService.uploadFile(image, 'products'),
-  // //         ),
-  // //       );
-
-  // //       productData.images = imageUrls.map((url) => ({
-  // //         imageUrl: url.secure_url,
-  // //       }));
-  // //     }
-
-  // //     await validateOrReject(productData);
-
-  // //     const result = this.productsService.update(productId, productData);
-
-  // //     return result;
-  // //   } catch (error) {
-  // //     if (error instanceof Array && error[0] instanceof ValidationError) {
-  // //       throw new BadRequestException({
-  // //         message: 'Validation failed',
-  // //         errors: generateErrors(error),
-  // //       });
-  // //     } else {
-  // //       throw new BadRequestException(error.message);
-  // //     }
-  // //   }
-  // // }
-  // @Get(':id')
-  // @HttpCode(HttpStatus.OK)
-  // async getProduct(@Param('id') id: number) {
-  //   const result = await this.productsService.findOne(id);
-  //   return result;
-  // }
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOneById(
+    @Param('id') id: Product['id'],
+  ): Promise<NullableType<Product>> {
+    return await this.productsService.findOne(id);
+  }
 
   // @Get()
   // @HttpCode(HttpStatus.OK)
@@ -156,9 +83,9 @@ export class ProductsController {
   //   return result;
   // }
 
-  // @Delete(':id')
-  // @HttpCode(HttpStatus.OK)
-  // async deleteProduct(@Param('id') id: number) {
-  //   return this.productsService.delete(id);
-  // }
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async deleteProduct(@Param('id') id: Product['id']): Promise<void> {
+    return this.productsService.delete(id);
+  }
 }

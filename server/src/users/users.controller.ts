@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
@@ -30,12 +31,18 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createProfileDto);
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: User['id']): Promise<NullableType<User>> {

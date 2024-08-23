@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from 'src/products/domain/product';
+import { Product, ProductInfo } from 'src/products/domain/product';
 import { ProductImage } from 'src/products/domain/product-image';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { Repository } from 'typeorm';
@@ -53,6 +53,7 @@ export class ProductRepositoryImpl implements ProductRepository {
       },
     });
   }
+
   async findAll(): Promise<Product[]> {
     const entities = await this.productRepository.find();
     return entities.map((product) => ProductMapper.toDomain(product));
@@ -68,6 +69,7 @@ export class ProductRepositoryImpl implements ProductRepository {
   async remove(id: Product['id']): Promise<void> {
     await this.productRepository.softDelete(id);
   }
+
   async update(
     id: Product['id'],
     payload: Partial<Product>,
@@ -80,11 +82,33 @@ export class ProductRepositoryImpl implements ProductRepository {
       throw new Error('Product Not Found!');
     }
 
+    // checking existing product info and updating it. If not found, adding new product info
+    const mappedProductInfo: ProductInfo[] = entity.productColors.map((pc) => {
+      const matchingInfo = payload.productInfo.find((pf) => pf?.id === pc.id);
+      return matchingInfo
+        ? {
+            ...pc,
+            ...matchingInfo,
+            colorSizeWiseQuantity: {
+              ...pc.colorSizeWiseQuantity,
+              ...matchingInfo.colorSizeWiseQuantity,
+            },
+          }
+        : pc;
+    });
+
+    payload.productInfo.map((pi) => {
+      if (!pi.id) {
+        mappedProductInfo.push(pi);
+      }
+    });
+
     const updatedEntity = await this.productRepository.save(
       this.productRepository.create(
         ProductMapper.toPersistence({
           ...ProductMapper.toDomain(entity),
           ...payload,
+          // productInfo: [...mappedProductInfo],
         }),
       ),
     );
