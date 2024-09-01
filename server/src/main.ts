@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllConfigType } from './config/config.type';
+import { ResolvePromiseInterceptor } from './utils/serializer.interceptor';
 import validationOptions from './utils/validation-options';
 
 async function bootstrap() {
@@ -26,7 +27,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe(validationOptions));
   app.useGlobalInterceptors(
-    // new ResolvePromiseInterceptor(),
+    new ResolvePromiseInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
 

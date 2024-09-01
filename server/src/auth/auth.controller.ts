@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Request,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 import { User } from 'src/users/domain/user';
@@ -17,6 +18,7 @@ import { AuthForgotPasswordDto } from './dto/auth-forgot-password.dto';
 import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthRegisterLoginDto } from './dto/auth.register-login.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
 import { AuthJwtRefreshGuard } from './guard/auth-jwt-refresh.guard';
 import { AuthGuard } from './guard/auth.guard';
@@ -28,9 +30,10 @@ import { AuthGuard } from './guard/auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @SerializeOptions({ groups: ['me'] })
   @Post('email/login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: AuthEmailLoginDto) {
+  async login(@Body() loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
     return this.authService.validateLogin(loginDto);
   }
 
@@ -85,6 +88,7 @@ export class AuthController {
     });
   }
 
+  @SerializeOptions({ groups: ['me'] })
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)

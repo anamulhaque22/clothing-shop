@@ -1,8 +1,16 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductSizeDto } from 'src/product-sizes/dto/product-size.dto';
 import { Product, ProductInfo } from 'src/products/domain/product';
 import { ProductImage } from 'src/products/domain/product-image';
+import { QueryCategoryDto } from 'src/products/dto/query-product.dto';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { Repository } from 'typeorm';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
+import {
+  FindOptionsWhere,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { ProductImageEntity } from '../entities/product-image.entity';
 import { ProductEntity } from '../entities/product.entity';
 import { ProductMapper } from '../mappers/product.mapper';
@@ -54,8 +62,48 @@ export class ProductRepositoryImpl implements ProductRepository {
     });
   }
 
-  async findAll(): Promise<Product[]> {
-    const entities = await this.productRepository.find();
+  async findManyWithPagination({
+    category,
+    search,
+    paginationOptions,
+    size,
+    minPrice,
+    maxPrice,
+  }: {
+    size: ProductSizeDto | null;
+    minPrice: number | null;
+    maxPrice: number | null;
+    search: string;
+    category: QueryCategoryDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Product[]> {
+    const where: FindOptionsWhere<ProductEntity> = {};
+    if (category?.length) {
+      where.category = category.map((c) => ({ id: c.id }));
+    }
+
+    if (search) {
+      where.title = search;
+    }
+
+    if (size) {
+      console.log({ size });
+      where.sizes = size;
+    }
+
+    if (minPrice) {
+      where.sellPrice = MoreThanOrEqual(minPrice);
+    }
+    if (maxPrice) {
+      where.sellPrice = LessThanOrEqual(maxPrice);
+    }
+
+    const entities = await this.productRepository.find({
+      skip: (paginationOptions.page - 1) * paginationOptions.limit,
+      take: paginationOptions.limit,
+      where: where,
+    });
+
     return entities.map((product) => ProductMapper.toDomain(product));
   }
 

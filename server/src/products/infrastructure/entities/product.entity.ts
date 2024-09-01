@@ -30,10 +30,10 @@ export class ProductEntity extends EntityHelper {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'numeric', precision: 10, scale: 2 })
+  @Column({ type: 'float' })
   buyPrice: number;
 
-  @Column({ type: 'numeric', precision: 10, scale: 2 })
+  @Column({ type: 'float' })
   sellPrice: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.products, {
@@ -64,6 +64,9 @@ export class ProductEntity extends EntityHelper {
     eager: true,
   })
   images: ProductImageEntity[];
+
+  // @Column({ type: 'boolean', default: false })
+  // recommended: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
