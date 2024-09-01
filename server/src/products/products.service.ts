@@ -8,12 +8,15 @@ import {
 import { CategoriesService } from 'src/categories/categories.service';
 import { CloudinaryResponse } from 'src/cloudinary/cloudinary-response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { ProductSizeDto } from 'src/product-sizes/dto/product-size.dto';
 import { ProductSizesEnum } from 'src/product-sizes/product-sizes.enum';
 import { NullableType } from 'src/utils/types/nullable.type';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { Product } from './domain/product';
 import { ProductImage } from './domain/product-image';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ImageRemoveDto } from './dto/image-remove.dto';
+import { QueryCategoryDto } from './dto/query-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from './infrastructure/product.repository';
 
@@ -237,6 +240,35 @@ export class ProductsService {
 
   async findOne(id: Product['id']): Promise<NullableType<Product>> {
     return this.productsRepo.findById(id);
+  }
+
+  async findManyWithPagination({
+    // filterOptions,
+    // sortOptions,
+    category,
+    search,
+    paginationOptions,
+    size,
+    minPrice,
+    maxPrice,
+  }: {
+    // filterOptions: FilterUserDto | null;
+    // sortOptions: SortUserDto[] | null;
+    size: ProductSizeDto | null;
+    minPrice: number | null;
+    maxPrice: number | null;
+    search: string;
+    category: QueryCategoryDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }) {
+    return this.productsRepo.findManyWithPagination({
+      category,
+      search,
+      paginationOptions,
+      size,
+      minPrice,
+      maxPrice,
+    });
   }
 
   async delete(id: Product['id']): Promise<void> {
