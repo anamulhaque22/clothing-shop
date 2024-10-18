@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const AuthLayoutNav = () => {
   return (
@@ -32,12 +33,18 @@ const AuthLayoutNav = () => {
         </div>
 
         <div className="flex gap-x-2 sm:gap-x-7">
-          <button className="bg-primary border border-primary font-causten-medium sm:text-lg rounded-lg px-6 py-2 sm:px-12 md:py-3 text-white">
+          <Link
+            href={"/login"}
+            className="bg-primary border border-primary font-causten-medium sm:text-lg rounded-lg px-6 py-2 sm:px-12 md:py-3 text-white"
+          >
             Login
-          </button>
-          <button className="bg-transparent border border-secondary font-causten-medium sm:text-lg rounded-lg px-6 py-2 sm:px-12 md:py-3 text-black">
+          </Link>
+          <Link
+            href={"/register"}
+            className="bg-transparent border border-secondary font-causten-medium sm:text-lg rounded-lg px-6 py-2 sm:px-12 md:py-3 text-black"
+          >
             Sign Up
-          </button>
+          </Link>
         </div>
       </div>
     </div>

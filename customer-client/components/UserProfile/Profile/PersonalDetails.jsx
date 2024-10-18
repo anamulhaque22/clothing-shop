@@ -1,8 +1,9 @@
+import useAuth from "@/services/auth/use-auth";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const PersonalDetails = () => {
+  const { user } = useAuth();
   return (
     <div className="flex justify-between custom-shadow mt-6 py-6 px-5 rounded-lg">
       <div className="w-3/5">
@@ -13,11 +14,15 @@ const PersonalDetails = () => {
           <div>
             <p className="text-base font-causten-bold">
               First Name{" "}
-              <span className="font-causten-regular ml-2">Anamul</span>
+              <span className="font-causten-regular ml-2">
+                {user?.firstName && user?.firstName}
+              </span>
             </p>
             <p className="text-base font-causten-bold">
               Last Name{" "}
-              <span className="font-causten-regular ml-2">Anamul</span>
+              <span className="font-causten-regular ml-2">
+                {user?.lastName && user?.lastName}
+              </span>
             </p>
           </div>
           <div>
@@ -28,7 +33,7 @@ const PersonalDetails = () => {
             <p className="text-base font-causten-bold">
               Email{" "}
               <span className="font-causten-regular ml-2">
-                anamul.ah00@gmail.com
+                {user?.email && user?.email}
               </span>
             </p>
           </div>

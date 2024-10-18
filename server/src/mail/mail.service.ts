@@ -20,13 +20,13 @@ export class MailService {
       'Simply click the big green button below to verify your email address.';
 
     const url = new URL(
-      this.configService.getOrThrow(
-        'app.frontendDomain',
-        { infer: true } + '/confirm-email',
-      ),
+      this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
+        '/confirm-email',
     );
 
     url.searchParams.set('hash', mailData.data.hash);
+
+    console.log({ url });
 
     await this.mailerService.sendMail({
       to: mailData.to,

@@ -1,8 +1,12 @@
 "use client";
 import UserProfileNav from "@/components/Navbar/UserProfileNav";
+import useAuth from "@/services/auth/use-auth";
+import moment from "moment";
 import Image from "next/image";
 
 const UserProfileLayout = ({ children }) => {
+  const { user } = useAuth();
+
   return (
     <div className="container h-full">
       <div className="drawer lg:drawer-open my-5 gap-x-5">
@@ -34,7 +38,7 @@ const UserProfileLayout = ({ children }) => {
               <div className="avatar">
                 <div className="w-20 rounded-full bg-slate-200">
                   <Image
-                    src="/images/icon/user-icon.png"
+                    src={user?.photo || "/images/icon/user-icon.png"}
                     width={80}
                     height={80}
                     className="w-80"
@@ -44,10 +48,10 @@ const UserProfileLayout = ({ children }) => {
               </div>
               <div>
                 <h4 className="font-causten-bold text-lg text-[#3C4242]">
-                  Anamul Haque
+                  {user?.firstName} {user?.lastName}
                 </h4>
                 <p className="font-causten-medium text-base">
-                  Joined Nov 29th 23
+                  Joined {moment(user?.createdAt).format("MMM Do YY")}
                 </p>
               </div>
             </div>

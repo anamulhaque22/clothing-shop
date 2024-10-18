@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   HttpStatus,
   Injectable,
   NotFoundException,
@@ -43,8 +42,8 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
           email: 'User not found',
         },
@@ -52,8 +51,8 @@ export class AuthService {
     }
 
     if (user.provider !== AuthProvidersEnum.email) {
-      throw new BadRequestException({
-        status: HttpStatus.BAD_REQUEST,
+      throw new UnauthorizedException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
           email: `Need to login via privider: ${user.provider}`,
         },
@@ -61,8 +60,8 @@ export class AuthService {
     }
 
     if (!user.password) {
-      throw new BadRequestException({
-        status: HttpStatus.BAD_REQUEST,
+      throw new UnauthorizedException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
           password: 'passwordNotSet',
         },
@@ -75,8 +74,8 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException({
-        status: HttpStatus.UNAUTHORIZED,
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
           password: 'incorrectPassword',
         },

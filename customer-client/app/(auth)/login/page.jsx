@@ -1,7 +1,18 @@
-import Login from "@/components/Auth/Login";
+import SignIn from "./page-content";
+// export const metadata = {
+//   title: "Sign in",
+//   description: "Sign in to your account",
+// };
 
-const page = () => {
-  return <Login />;
+export const generateMetadata = async () => {
+  return {
+    title: "Sign in",
+    description: "Sign in to your account",
+  };
 };
 
-export default page;
+function SignInPage() {
+  return <SignIn />;
+}
+
+export default SignInPage;

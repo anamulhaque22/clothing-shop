@@ -40,7 +40,7 @@ export class AuthController {
   @Post('email/register')
   @HttpCode(HttpStatus.NO_CONTENT)
   async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<void> {
-    this.authService.register(createUserDto);
+    return this.authService.register(createUserDto);
   }
 
   @Post('email/confirm')
@@ -103,10 +103,11 @@ export class AuthController {
     return this.authService.update(request.user, userDto);
   }
 
-  @Get('logout')
+  @Post('logout')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Request() request): Promise<void> {
+    console.log({ user: request.user });
     return this.authService.logout({
       sessionId: request.user.sessionId,
     });

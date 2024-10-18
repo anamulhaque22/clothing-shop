@@ -1,7 +1,6 @@
-import MyInfo from "@/components/UserProfile/Profile/MyInfo";
-
+import MyProfile from "./page-context";
 const page = () => {
-  return <MyInfo />;
+  return <MyProfile />;
 };
 
 export default page;

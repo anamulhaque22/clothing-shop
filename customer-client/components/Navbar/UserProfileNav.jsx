@@ -1,8 +1,9 @@
+import useAuthActions from "@/services/auth/use-auth-actions";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const UserProfileNav = () => {
+  const { logOut } = useAuthActions();
   return (
     <ul className="user-account menu p-0">
       <li>
@@ -51,8 +52,8 @@ const UserProfileNav = () => {
         </Link>
       </li>
       <li>
-        <Link
-          href={"/"}
+        <button
+          onClick={logOut}
           className=" hover:bg-[#F6F6F6] font-causten-semi-bold text-[#807D7E] hover:text-[#807D7E] text-lg hover:rounded-r-md hover:rounded-l-none"
         >
           <Image
@@ -63,7 +64,7 @@ const UserProfileNav = () => {
             className="w-[20px] h-[20px] mr-2"
           />
           Sign Out
-        </Link>
+        </button>
       </li>
     </ul>
   );
