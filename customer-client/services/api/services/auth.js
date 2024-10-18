@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { API_URL } from "../config";
+import useFetch from "../use-fetch";
 import useFetchBase from "../use-fetch-base";
 import wrapperFetchJsonResponse from "../wrapper-fetch-json-response";
 
@@ -56,5 +57,20 @@ export function useAuthResetPasswordService() {
       }).then(wrapperFetchJsonResponse);
     },
     [fetchBase]
+  );
+}
+
+export function useAuthPatchMeService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (data, requestConfig) => {
+      return fetch(`${API_URL}/v1/auth/me`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetch]
   );
 }

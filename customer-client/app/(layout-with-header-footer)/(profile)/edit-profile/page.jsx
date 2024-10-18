@@ -1,13 +1,7 @@
-import EditProfile from "@/components/UserProfile/EditProfile/EditProfile";
-import UpdatePassword from "@/components/UserProfile/EditProfile/UpdatePassword";
-import React from "react";
+import EditProfile from "./page-content";
 
 const UpdateProfile = () => {
-  return (
-    <div>
-      <EditProfile />
-    </div>
-  );
+  return <EditProfile />;
 };
 
 export default UpdateProfile;

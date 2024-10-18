@@ -1,74 +1,95 @@
 "use client";
-import React, { useState } from "react";
-import InputText from "../../Input/InputText";
+import { FormProvider, useForm } from "react-hook-form";
 
+import PasswordInput from "@/components/Auth/PasswordInput";
+import HTTP_CODES from "@/services/api/constants/http-codes";
+import { useAuthPatchMeService } from "@/services/api/services/auth";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { enqueueSnackbar } from "notistack";
+import * as yup from "yup";
+
+const validationSchema = yup.object().shape({
+  oldPassword: yup.string().required("Old Password is required"),
+  password: yup.string().required("New Password is required"),
+  confirmPassword: yup
+    .string()
+    .oneOf(
+      [yup.ref("password")],
+      "New password and comfirm new password do not match"
+    )
+    .required("Confirm Password is required"),
+});
 const UpdatePassword = () => {
-  const UPDATE_PASS_OBJ = {
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  };
+  const fetchAuthPatchMe = useAuthPatchMeService();
 
-  // const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("");
-  const [updatePassObj, setUpdatePassObj] = useState(UPDATE_PASS_OBJ);
+  const methods = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      oldPassword: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  // const submitForm = (e) =>{
-  //     e.preventDefault()
-  //     setErrorMessage("")
+  const { handleSubmit, setError, reset } = methods;
 
-  //     if(userObj.emailId.trim() === "")return setErrorMessage("Email Id is required! (use any value)")
-  //     if(userObj.password.trim() === "")return setErrorMessage("Password is required! (use any value)")
-  //     else{
-  //         setLoading(true)
-  //         // Call API to check user credentials and save token in localstorage
-  //         localStorage.setItem("token", "DumyTokenHere")
-  //         setLoading(false)
-  //         window.location.href = '/app/welcome'
-  //     }
-  // }
+  const onSubmit = handleSubmit(async (formData) => {
+    const { data, status } = await fetchAuthPatchMe(formData);
 
-  const updateFormValue = ({ updateType, value }) => {
-    setErrorMessage("");
-    setUpdatePassObj({ ...updatePassObj, [updateType]: value });
-  };
+    if (status === HTTP_CODES.UNPROCESSABLE_ENTITY) {
+      Object.keys(data.errors).forEach((key) => {
+        setError(key, {
+          type: "manual",
+          message: data.errors[key],
+        });
+      });
+      return;
+    }
+
+    if (status === HTTP_CODES.OK) {
+      reset();
+      enqueueSnackbar("Password has been updated successfully", {
+        variant: "success",
+      });
+    }
+  });
   return (
     <div>
       <h3 className="font-causten-bold text-2xl text-[#3C4242] mb-3">
         Account Information
       </h3>
-      <form action="">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InputText
-            type="password"
-            defaultValue={updatePassObj.oldPassword}
-            updateType="oldPassword"
-            containerStyle="mt-0"
-            labelTitle="Old Password*"
-            updateFormValue={updateFormValue}
-          />
+      <FormProvider {...methods}>
+        <form onSubmit={onSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <PasswordInput labelText={"Old Password*"} name="oldPassword" />
 
-          <InputText
-            type="text"
-            defaultValue={updatePassObj.newPassword}
-            updateType="newPassword"
-            containerStyle="mt-0"
-            labelTitle="New Password*"
-            updateFormValue={updateFormValue}
-          />
-          <InputText
-            type="text"
-            defaultValue={updatePassObj.confirmPassword}
-            updateType="confirmPassword"
-            containerStyle="mt-0"
-            labelTitle="Confirm Password*"
-            updateFormValue={updateFormValue}
-          />
-        </div>
-        <div className="flex justify-end mt-5">
-          <button className="btn btn-primary">Change</button>
-        </div>
-      </form>
+            <PasswordInput labelText={"New Password*"} name="password" />
+
+            <PasswordInput
+              labelText={"Confirm Password*"}
+              name="confirmPassword"
+            />
+
+            {/* <InputText
+              type="password"
+              name="password"
+              containerStyle="mt-0"
+              labelTitle="New Password*"
+            />
+            <InputText
+              type="password"
+              name="confirmPassword"
+              containerStyle="mt-0"
+              labelTitle="Confirm Password*"
+            /> */}
+          </div>
+          <div className="flex justify-end mt-5">
+            <button type="submit" className="btn btn-primary">
+              Change
+            </button>
+          </div>
+        </form>
+      </FormProvider>
     </div>
   );
 };

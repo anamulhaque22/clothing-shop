@@ -1,69 +1,81 @@
 "use client";
-import React, { useState } from "react";
+import HTTP_CODES from "@/services/api/constants/http-codes";
+import { useAuthPatchMeService } from "@/services/api/services/auth";
+import useAuth from "@/services/auth/use-auth";
+import useAuthActions from "@/services/auth/use-auth-actions";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { enqueueSnackbar } from "notistack";
+import { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import * as yup from "yup";
 import InputText from "../../Input/InputText";
-import UpdatePassword from "./UpdatePassword";
 
+const validationSchema = yup.object().shape({
+  firstName: yup.string().required("First Name is required"),
+  lastName: yup.string().required("Last Name is required"),
+  // phone: yup.string().required("Phone is required"),
+});
 const EditProfile = () => {
-  const INITIAL_USER_OBJ = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-  };
+  const { setUser } = useAuthActions();
+  const { user } = useAuth();
+  const fetchAuthPatchMe = useAuthPatchMeService();
 
-  const UPDATE_PASS_OBJ = {
-    oldPassword: "",
-    newPassword: "",
-  };
+  const methods = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      // phone: "",
+    },
+  });
 
-  // const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userObj, setUserObj] = useState(INITIAL_USER_OBJ);
-  const [email, setEmail] = useState("");
+  const { handleSubmit, setError, reset } = methods;
 
-  // const submitForm = (e) =>{
-  //     e.preventDefault()
-  //     setErrorMessage("")
+  const onSubmit = handleSubmit(async (formData) => {
+    const { data, status } = await fetchAuthPatchMe(formData);
 
-  //     if(userObj.emailId.trim() === "")return setErrorMessage("Email Id is required! (use any value)")
-  //     if(userObj.password.trim() === "")return setErrorMessage("Password is required! (use any value)")
-  //     else{
-  //         setLoading(true)
-  //         // Call API to check user credentials and save token in localstorage
-  //         localStorage.setItem("token", "DumyTokenHere")
-  //         setLoading(false)
-  //         window.location.href = '/app/welcome'
-  //     }
-  // }
+    if (status === HTTP_CODES.UNPROCESSABLE_ENTITY) {
+      Object.keys(data.errors).forEach((key) => {
+        setError(key, {
+          type: "manual",
+          message: data.errors[key],
+        });
+      });
+      return;
+    }
 
-  const updateFormValue = ({ updateType, value }) => {
-    setErrorMessage("");
-    setUserObj({ ...userObj, [updateType]: value });
-  };
+    console.log({ status, data });
 
-  const updateEmailInput = (val) => {
-    setEmail(val);
-    updateFormValue({ updateType: "email", value: val });
-  };
+    if (status === HTTP_CODES.OK) {
+      setUser(data);
+      enqueueSnackbar("Profile has been updated successfully", {
+        variant: "success",
+      });
+    }
+  });
+
+  useEffect(() => {
+    reset({
+      firstName: user?.firstName ?? "",
+      lastName: user?.lastName ?? "",
+      // phone: user?.phone,
+    });
+  }, [user, reset]);
   return (
-    <div className="custom-shadow py-6 px-5 rounded-lg">
-      <form action="">
+    <FormProvider {...methods}>
+      <form onSubmit={onSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputText
             type="text"
-            defaultValue={userObj.firstName}
-            updateType="firstName"
+            name="firstName"
             containerStyle="mt-0"
             labelTitle="First Name*"
-            updateFormValue={updateFormValue}
           />
           <InputText
             type="text"
-            defaultValue={userObj.lastName}
-            updateType="lastName"
+            name="lastName"
             containerStyle="mt-0"
             labelTitle="Last Name*"
-            updateFormValue={updateFormValue}
           />
           <div className="form-control w-full">
             <label className="label">
@@ -75,28 +87,26 @@ const EditProfile = () => {
             </label>
             <input
               type="text"
-              value={email}
+              value={user?.email}
               placeholder="Email"
-              onChange={(e) => updateEmailInput(e.target.value)}
-              className="input  input-bordered w-full focus:outline-none "
+              className="input  input-bordered w-full focus:outline-none"
+              disabled
             />
           </div>
           <InputText
             type="text"
-            defaultValue={userObj.phone}
-            updateType="phone"
+            name="phone"
             containerStyle="mt-0"
             labelTitle="Phone*"
-            updateFormValue={updateFormValue}
           />
         </div>
         <div className="flex justify-end mt-5">
-          <button className="btn btn-primary">Update</button>
+          <button type="submit" className="btn btn-primary">
+            Update
+          </button>
         </div>
       </form>
-
-      <UpdatePassword />
-    </div>
+    </FormProvider>
   );
 };
 

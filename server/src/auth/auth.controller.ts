@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { User } from 'src/users/domain/user';
+import { NullableType } from 'src/utils/types/nullable.type';
 import { AuthService } from './auth.service';
 import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
@@ -78,7 +79,7 @@ export class AuthController {
     );
   }
 
-  @Get('refresh')
+  @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthJwtRefreshGuard)
   async refresh(@Request() request): Promise<RefreshResponseDto> {
@@ -96,10 +97,14 @@ export class AuthController {
     return this.authService.me(request.user);
   }
 
+  @SerializeOptions({ groups: ['me'] })
   @Patch('me')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
-  async update(@Request() request, @Body() userDto: AuthUpdateDto) {
+  async update(
+    @Request() request,
+    @Body() userDto: AuthUpdateDto,
+  ): Promise<NullableType<User>> {
     return this.authService.update(request.user, userDto);
   }
 
