@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Controller } from "react-hook-form";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
-export default function PasswordInput({ labelText }) {
+export default function PasswordInput({ labelText, name }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   return (
     <Controller
-      name="password"
+      name={name ?? "password"}
       defaultValue={""}
       render={({ field, fieldState }) => (
         <div className="form-control w-full">

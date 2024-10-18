@@ -97,7 +97,7 @@ export default function Login() {
                 <PasswordInput />
                 <div className="flex flex-row-reverse">
                   <Link
-                    href="/forget-password"
+                    href="/reset-password"
                     className="underline text-base font-causten-regular"
                   >
                     Forget your password

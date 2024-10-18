@@ -64,7 +64,7 @@ export class MailService {
 
     const url = new URL(
       this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
-        '/change-password',
+        '/password-change',
     );
     url.searchParams.set('hash', mailData.data.hash);
     url.searchParams.set('expires', mailData.data.tokenExpires.toString());

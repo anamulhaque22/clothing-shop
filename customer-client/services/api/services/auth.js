@@ -30,3 +30,31 @@ export function useAuthLoginService() {
     [fetchBase]
   );
 }
+
+export function useAuthForgotPasswordService() {
+  const fetchBase = useFetchBase();
+
+  return useCallback(
+    (data) => {
+      return fetchBase(`${API_URL}/v1/auth/forgot/password`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetchBase]
+  );
+}
+
+export function useAuthResetPasswordService() {
+  const fetchBase = useFetchBase();
+
+  return useCallback(
+    (data) => {
+      return fetchBase(`${API_URL}/v1/auth/reset/password`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetchBase]
+  );
+}
