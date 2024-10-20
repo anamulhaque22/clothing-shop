@@ -18,7 +18,13 @@ export class QueryCategoryDto {
 export class QueryProductDto {
   @IsOptional()
   @Transform(({ value }) =>
-    value ? plainToInstance(QueryCategoryDto, JSON.parse(value)) : undefined,
+    value
+      ? value.split(',').map((v) =>
+          plainToInstance(QueryCategoryDto, {
+            id: Number(v),
+          }),
+        )
+      : undefined,
   )
   @ValidateNested({ each: true })
   @Type(() => QueryCategoryDto)
@@ -42,11 +48,17 @@ export class QueryProductDto {
 
   @IsOptional()
   @Transform(({ value }) =>
-    value ? plainToInstance(ProductSizeDto, { id: Number(value) }) : undefined,
+    value
+      ? value.split(',').map((v) =>
+          plainToInstance(ProductSizeDto, {
+            id: Number(v),
+          }),
+        )
+      : undefined,
   )
   @ValidateNested({ each: true })
   @Type(() => ProductSizeDto)
-  size?: ProductSizeDto;
+  size?: ProductSizeDto[];
 
   //   @IsOptional()
   //   @IsEnum(['new', 'recommended'])

@@ -44,8 +44,6 @@ const EditProfile = () => {
       return;
     }
 
-    console.log({ status, data });
-
     if (status === HTTP_CODES.OK) {
       setUser(data);
       enqueueSnackbar("Profile has been updated successfully", {

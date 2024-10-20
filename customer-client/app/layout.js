@@ -1,5 +1,8 @@
 import SnackbarProvider from "@/components/snackbar-provider";
 import AuthProvider from "@/services/auth/auth-provider";
+import queryClient from "@/services/react-query/query-client";
+import QueryClientProvider from "@/services/react-query/query-client-provider";
+import ReactQueryDevtools from "@/services/react-query/react-query-devtools";
 import font from "./font";
 import "./globals.css";
 
@@ -22,9 +25,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${conbineFontVariable(font)}  bg-white`}>
-        <SnackbarProvider maxSnack={3}>
-          <AuthProvider>{children}</AuthProvider>
-        </SnackbarProvider>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <SnackbarProvider maxSnack={3}>
+            <AuthProvider>{children}</AuthProvider>
+          </SnackbarProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

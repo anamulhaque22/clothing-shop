@@ -35,7 +35,7 @@ export abstract class ProductRepository {
   }: {
     // filterOptions: FilterUserDto | null;
     // sortOptions: SortUserDto[] | null;
-    size: ProductSizeDto | null;
+    size: ProductSizeDto[] | null;
     minPrice: number | null;
     maxPrice: number | null;
     search: string;

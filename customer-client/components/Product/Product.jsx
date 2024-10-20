@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const Product = ({ productCategory }) => {
+const Product = ({ productCategory, product }) => {
   return (
     <div>
       <div className="relative">
         <Image
-          src="/images/porduct.jpg"
+          src={product?.images?.[0]?.imageUrl}
           width={0}
           height={0}
           sizes="100vw"

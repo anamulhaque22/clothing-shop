@@ -53,8 +53,6 @@ export default function Register() {
       return;
     }
 
-    console.log(status);
-
     if (status === HTTP_CODES.NO_CONTENT) router.push("/login");
   };
 

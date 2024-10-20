@@ -70,7 +70,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     minPrice,
     maxPrice,
   }: {
-    size: ProductSizeDto | null;
+    size: ProductSizeDto[];
     minPrice: number | null;
     maxPrice: number | null;
     search: string;
@@ -88,7 +88,7 @@ export class ProductRepositoryImpl implements ProductRepository {
 
     if (size) {
       console.log({ size });
-      where.sizes = size;
+      where.sizes = size.map((s) => ({ id: s.id }));
     }
 
     if (minPrice) {
