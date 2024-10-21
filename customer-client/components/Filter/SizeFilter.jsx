@@ -12,7 +12,16 @@ const productSize = [
 ];
 const SizeFilter = () => {
   const router = useRouter();
-  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sizes = params.get("size");
+
+    if (sizes) {
+      return sizes.split(",").map(Number);
+    }
+
+    return [];
+  });
 
   const handleAddSize = (newSizeId) => {
     const params = new URLSearchParams(window.location.search);

@@ -25,11 +25,10 @@ const Product = ({ productCategory, product }) => {
       <div className="flex justify-between items-center mt-7">
         <div className="overflow-hidden">
           <Link
-            href={`/products/${productCategory}/1`}
+            href={`/products/${productCategory}/${product?.id}`}
             className="truncate text-base font-causten-semi-bold text-secondary"
           >
-            Product Name Product NameProduct NameProduct NameProduct NameProduct
-            NameProduct NameProduct Name
+            {product?.title}
           </Link>
           <p className="text-sm font-causten-medium text-gray-500">
             AS{"'"}s Brand
@@ -37,7 +36,7 @@ const Product = ({ productCategory, product }) => {
         </div>
         <div>
           <p className="font-causten-bold text-sm inline-block bg-off-white-light py-2 px-4 rounded-md">
-            $123.00
+            {product?.sellPrice}
           </p>
         </div>
       </div>

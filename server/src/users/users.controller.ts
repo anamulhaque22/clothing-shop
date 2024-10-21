@@ -46,6 +46,7 @@ export class UsersController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: User['id']): Promise<NullableType<User>> {
+    console.log(typeof id);
     return this.usersService.findById(id);
   }
 

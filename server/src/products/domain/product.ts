@@ -40,5 +40,6 @@ export class Product {
 
   productInfo: ProductInfo[];
 
+  @Expose({ groups: ['admin'] })
   visibility: 'Hidden' | 'Visible';
 }

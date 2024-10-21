@@ -6,7 +6,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  NotFoundException,
   Param,
   Post,
   Query,
@@ -70,7 +69,7 @@ export class ProductsController {
 
   @Roles(RoleEnum.admin)
   @UseGuards(AuthGuard, RolesGuard)
-  @Post('create')
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   async createProduct(@Body() data: CreateProductDto): Promise<Product> {
     return this.productsService.create(data);
@@ -78,7 +77,7 @@ export class ProductsController {
 
   @Roles(RoleEnum.admin)
   @UseGuards(AuthGuard, RolesGuard)
-  @Post('update/:id')
+  @Post(':id')
   @HttpCode(HttpStatus.OK)
   async updateProduct(
     @Body() data: UpdateProductDto,
@@ -87,16 +86,13 @@ export class ProductsController {
     return this.productsService.update(id, data);
   }
 
-  @Get('single-product/:id')
+  @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOneById(
     @Param('id') id: Product['id'],
   ): Promise<NullableType<Product>> {
-    const product = await this.productsService.findOne(id);
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
-    return product;
+    console.log(typeof id);
+    return this.productsService.findOne(id);
   }
 
   /*
@@ -110,7 +106,10 @@ export class ProductsController {
     7. we can add size filter
   */
 
-  @Get('all-products')
+  @SerializeOptions({
+    groups: ['user'],
+  })
+  @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() query: QueryProductDto,
@@ -143,7 +142,7 @@ export class ProductsController {
   @SerializeOptions({
     groups: ['admin'],
   })
-  @Get('/admin-all-products')
+  @Get('/all/admin')
   @HttpCode(HttpStatus.OK)
   async findAllForAdmin(
     @Query() query: QueryProductDto,
@@ -171,7 +170,7 @@ export class ProductsController {
     );
   }
 
-  @Delete('delete/:id')
+  @Delete('/:id/delete')
   @HttpCode(HttpStatus.OK)
   async deleteProduct(@Param('id') id: Product['id']): Promise<void> {
     return this.productsService.delete(id);

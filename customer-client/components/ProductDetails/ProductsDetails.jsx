@@ -5,7 +5,7 @@ import Product from "../Product/Product";
 import SectionHeading from "../Typography/SectionHeading";
 const sizeList = ["XS", "S", "M", "L", "XL", "XXL"];
 const colorList = ["red", "green", "blue", "yellow", "black", "white"];
-const ProductsDetails = ({ params }) => {
+const ProductsDetails = ({ product }) => {
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
 
@@ -17,7 +17,7 @@ const ProductsDetails = ({ params }) => {
   //   setImageMainSrc(iamgeSrc);
   // };
 
-  console;
+  console.log({ product });
 
   return (
     <div className="container mb-7">
@@ -26,28 +26,24 @@ const ProductsDetails = ({ params }) => {
           <div className="hidden w-[75px] sm:flex flex-col justify-center gap-6">
             {/* image section  */}
             <div className="flex flex-col justify-center gap-5">
-              <div className="border border-[#3C4242] rounded-md p-1 h-[75px]">
-                <Image
-                  className="rounded-md"
-                  src={"/images/details.png"}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{ width: "100%", height: "100%" }}
-                  alt="image"
-                />
-              </div>
-              <div className="h-[75px]">
-                <Image
-                  className="rounded-md"
-                  src={"/images/details.png"}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{ width: "100%", height: "100%" }}
-                  alt="image"
-                />
-              </div>
+              {product?.images?.map((image) => {
+                return (
+                  <div
+                    className="border border-[#3C4242] rounded-md p-1 h-[75px]"
+                    key={image.id}
+                  >
+                    <Image
+                      className="rounded-md"
+                      src={image.imageUrl}
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      style={{ width: "100%", height: "100%" }}
+                      alt="image"
+                    />
+                  </div>
+                );
+              })}
             </div>
             {/* arrow button secton  */}
             <div className="flex flex-col items-center gap-3">
@@ -86,7 +82,7 @@ const ProductsDetails = ({ params }) => {
           </div>
           <div className="w-full md:w-[calc(100%-75px)] h-[70vh] md:h-full">
             <Image
-              src={"/images/details.png"}
+              src={product?.images[0]?.imageUrl}
               width={0}
               height={0}
               sizes="100vw"
@@ -112,7 +108,7 @@ const ProductsDetails = ({ params }) => {
             <li className="">comfy</li>
           </ol>
           <h2 className="font-core-sans-bold text-[1.125rem] lg:text-[2.125rem] text-[#3C4242]">
-            Raven Hoodie With Black colored Design
+            {product?.title}
           </h2>
           {/* ratting  */}
           <div className="flex items-center gap-5 lg:gap-6">
@@ -183,18 +179,18 @@ const ProductsDetails = ({ params }) => {
               </div>
             </div>
             <div className="flex gap-5 font-causten-medium text-sm text-[#3C4242]">
-              {sizeList?.map((item, index) => (
+              {product?.sizes?.map((item) => (
                 <span
-                  key={index}
+                  key={item?.id}
                   onClick={() => setSize(item)}
                   className={
                     "w-[40px] h-[40px] flex justify-center items-center text-center border border-[#BEBCBD] rounded-xl " +
-                    (size === item
+                    (size.name === item.name
                       ? "bg-[#3C4242] border-[#3C4242] text-white"
                       : "")
                   }
                 >
-                  {item}
+                  {item?.name}
                 </span>
               ))}
             </div>
@@ -207,13 +203,15 @@ const ProductsDetails = ({ params }) => {
               Select Color
             </h4>
             <div className="flex gap-5 font-causten-medium text-sm text-[#3C4242]">
-              {colorList?.map((item, index) =>
-                item !== "white" ? (
+              {product?.productInfo?.map((item) =>
+                item?.colorName !== "white" ? (
                   <span
-                    key={index}
+                    key={item?.id}
                     style={{
                       border: `${
-                        color === item ? `1px solid ${item}` : "none"
+                        color?.id === item?.id
+                          ? `1px solid ${item.colorCode}`
+                          : "none"
                       }`,
                     }}
                     onClick={() => setColor(item)}
@@ -224,7 +222,7 @@ const ProductsDetails = ({ params }) => {
                   >
                     <span
                       className="w-[22px] h-[22px] rounded-full"
-                      style={{ backgroundColor: item }}
+                      style={{ backgroundColor: item.colorCode }}
                     ></span>
                   </span>
                 ) : (
@@ -265,7 +263,7 @@ const ProductsDetails = ({ params }) => {
           </div>
 
           <div className="hidden divider"></div>
-          <div className="hidden grid grid-cols-2 gap-y-5">
+          <div className=" grid grid-cols-2 gap-y-5">
             <div className="flex items-center gap-[15px]">
               <div className="flex items-center justify-center w-[44px] h-[44px] bg-[#F6F6F6] rounded-full">
                 <Image
@@ -344,10 +342,7 @@ const ProductsDetails = ({ params }) => {
       <div className="mt-10 lg:mt-20">
         <SectionHeading text="Product Description" />
         <p className="text-[#807D7E] text-base font-causten-regular mt-7">
-          100% Bio-washed Cotton - makes the fabric extra soft & silky. Flexible
-          ribbed crew neck. Precisely stitched with no pilling & no fading.
-          Provide all-time comfort. Anytime, anywhere. Infinite range of
-          matte-finish HD prints.
+          {product?.description}
         </p>
       </div>
 

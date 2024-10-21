@@ -35,7 +35,7 @@ export function useGetProductsService() {
 
   return useCallback(
     (productReq, requestConfig) => {
-      const requestUrl = new URL(`${API_URL}/v1/products/all-products`);
+      const requestUrl = new URL(`${API_URL}/v1/products/`);
 
       if (productReq) {
         if (productReq.page)
@@ -64,6 +64,20 @@ export function useGetProductsService() {
       }
 
       return fetchBase(requestUrl, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetchBase]
+  );
+}
+
+export function useGetProductService() {
+  const fetchBase = useFetchBase();
+
+  return useCallback(
+    (productId, requestConfig) => {
+      return fetchBase(`${API_URL}/v1/products/${productId}`, {
         method: "GET",
         ...requestConfig,
       }).then(wrapperFetchJsonResponse);
