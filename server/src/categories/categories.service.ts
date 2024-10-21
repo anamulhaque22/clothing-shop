@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { Category } from './domain/category';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -16,8 +20,12 @@ export class CategoriesService {
       if (!parentCategory) {
         throw new NotFoundException('Parent category not found');
       }
+      if (data.isVisibleInMenu === true) {
+        throw new UnprocessableEntityException(
+          "Sub category can't be visible in menu",
+        );
+      }
     }
-    console.log(data);
     return await this.categoryRepository.create(data);
   }
 

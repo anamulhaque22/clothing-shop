@@ -29,4 +29,7 @@ export class CategoryEntity extends EntityHelper {
 
   @OneToMany(() => CategoryEntity, (category) => category.parentCategory, {})
   children: CategoryEntity[];
+
+  @Column({ default: false })
+  isVisibleInMenu: boolean;
 }

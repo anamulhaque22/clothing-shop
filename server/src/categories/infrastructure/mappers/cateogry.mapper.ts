@@ -6,6 +6,7 @@ export class CategoryMapper {
     const category = new Category();
     category.id = raw.id;
     category.name = raw.name;
+    category.isVisibleInMenu = raw.isVisibleInMenu;
 
     if (raw.parentCategory) {
       category.parentCategory = {
@@ -29,6 +30,7 @@ export class CategoryMapper {
     }
     categoryEntity.name = category.name;
     categoryEntity.parentCategory = parentCategory;
+    categoryEntity.isVisibleInMenu = category.isVisibleInMenu;
 
     return categoryEntity;
   }

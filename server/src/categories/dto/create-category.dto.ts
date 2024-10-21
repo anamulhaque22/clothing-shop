@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 class ParentCategoryDto {
   @IsNumber({}, { message: 'Parent category id must be a number' })
   id: number;
@@ -12,4 +12,8 @@ export class CreateCategoryDto {
   @IsOptional()
   @Type(() => ParentCategoryDto)
   parentCategory?: ParentCategoryDto;
+
+  @IsOptional()
+  @IsBoolean()
+  isVisibleInMenu?: boolean;
 }
