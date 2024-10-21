@@ -1,5 +1,4 @@
 import Image from "next/image";
-import React from "react";
 
 const AccountSummery = () => {
   return (
@@ -50,10 +49,10 @@ const AccountSummery = () => {
         </div>
         <Image
           src={"/images/icon/heart.svg"}
-          width={226}
-          height={26}
+          width={0}
+          height={0}
           alt="image"
-          className="w-[26px] h-[26px]"
+          className="w-[26px] h-[26px] w-auto"
         />
       </div>
     </div>

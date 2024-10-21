@@ -1,4 +1,5 @@
-import { useRouter } from "next/navigation";
+"use client";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import FilterSection from "./FilterSection";
 const productSize = [
@@ -12,9 +13,9 @@ const productSize = [
 ];
 const SizeFilter = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedSizes, setSelectedSizes] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sizes = params.get("size");
+    const sizes = searchParams.get("size");
 
     if (sizes) {
       return sizes.split(",").map(Number);

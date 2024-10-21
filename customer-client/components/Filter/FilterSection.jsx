@@ -27,7 +27,7 @@ const FilterSection = ({ title, icon, titleBorder, children }) => {
               width={18}
               height={18}
               alt="icon"
-              className="cursor-pointer"
+              className="cursor-pointer h-auto"
               onClick={() => setShow(!show)}
             />
           )}

@@ -43,10 +43,10 @@ const UserProfileNav = () => {
         >
           <Image
             src={"/images/icon/heart.svg"}
-            width={0}
+            width={20}
             height={0}
             alt="image"
-            className="w-[20px] h-[20px] mr-2"
+            className="h-[20px] mr-2 w-auto"
           />
           Wish List
         </Link>

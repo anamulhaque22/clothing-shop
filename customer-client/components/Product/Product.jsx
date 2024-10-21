@@ -6,12 +6,15 @@ const Product = ({ productCategory, product }) => {
     <div>
       <div className="relative">
         <Image
-          src={product?.images?.[0]?.imageUrl}
+          src={
+            product?.images?.[0]?.imageUrl ?? "/images/product-placeholder.jpg"
+          }
           width={0}
           height={0}
           sizes="100vw"
           style={{ width: "100%", height: "auto" }}
           alt="product"
+          priority={true}
         />
         <div className="w-[32px] h-[32px] flex justify-center bg-white absolute top-5 right-4 rounded-full">
           <Image
@@ -19,6 +22,7 @@ const Product = ({ productCategory, product }) => {
             width={15}
             height={15}
             alt="Heart Icon"
+            className="w-auto"
           />
         </div>
       </div>

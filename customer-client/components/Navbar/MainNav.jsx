@@ -20,7 +20,8 @@ const MainNav = () => {
                     height={100}
                     width={100}
                     alt="logo"
-                    // priority={true}
+                    priority={true}
+                    className="w-auto h-auto"
                   />
                 </a>
               </div>
@@ -89,6 +90,7 @@ const MainNav = () => {
                         alt="user icon"
                         width={20}
                         height={20}
+                        className="w-auto"
                       />
                     </Link>
                   </li>

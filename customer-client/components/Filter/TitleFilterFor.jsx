@@ -15,6 +15,7 @@ const TitleFilterFor = ({ title, icon }) => {
             width={18}
             height={18}
             alt="icon"
+            className="h-auto w-auto"
           />
         )}
       </div>
