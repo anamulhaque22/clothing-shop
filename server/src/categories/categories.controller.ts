@@ -36,6 +36,13 @@ export class CategoriesController {
     return this.categoriesService.findAll();
   }
 
+  @Get(':id/sub-categories')
+  async getCategoryWithSubCategories(
+    @Param('id') id: Category['id'],
+  ): Promise<Category[]> {
+    return this.categoriesService.getCategoryWithSubCategories(id);
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: Category['id'],
