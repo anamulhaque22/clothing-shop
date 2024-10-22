@@ -2,10 +2,10 @@ import CategoryFilter from "../Filter/CategoryFilter";
 import PriceFilter from "../Filter/PriceFilter";
 import SizeFilter from "../Filter/SizeFilter";
 
-const FilterContainer = () => {
+const FilterContainer = ({ productFor }) => {
   return (
     <>
-      <CategoryFilter />
+      <CategoryFilter productFor={productFor} />
       <PriceFilter />
       {/* <ColorsFilter /> */}
       <SizeFilter />

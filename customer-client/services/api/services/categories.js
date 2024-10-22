@@ -31,3 +31,17 @@ export function useGetCategoryService() {
     [fetchBase]
   );
 }
+
+export function useGetSubCategoryService() {
+  const fetchBase = useFetchBase();
+
+  return useCallback(
+    (id, requestConfig) => {
+      return fetchBase(`${API_URL}/v1/categories/${id}/sub-categories/`, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetchBase]
+  );
+}
