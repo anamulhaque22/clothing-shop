@@ -7,6 +7,7 @@ import { NullableType } from 'src/utils/types/nullable.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import {
   FindOptionsWhere,
+  In,
   LessThanOrEqual,
   MoreThanOrEqual,
   Repository,
@@ -63,7 +64,8 @@ export class ProductRepositoryImpl implements ProductRepository {
   }
 
   async findManyWithPagination({
-    category,
+    // category,
+    subCategory,
     search,
     paginationOptions,
     size,
@@ -74,15 +76,17 @@ export class ProductRepositoryImpl implements ProductRepository {
     minPrice: number | null;
     maxPrice: number | null;
     search: string;
-    category: QueryCategoryDto[] | null;
+    // category: QueryCategoryDto | null;
+    subCategory: QueryCategoryDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Product[]> {
-    const where: FindOptionsWhere<ProductEntity> = {};
+    let where: FindOptionsWhere<ProductEntity> = {};
 
-    if (category?.length) {
-      // const categoryIds = await this.ca;
-
-      where.category = category.map((c) => ({ id: c.id }));
+    if (subCategory) {
+      where = {
+        ...where,
+        category: { id: In(subCategory.map((sc) => sc.id)) },
+      };
     }
 
     if (search) {

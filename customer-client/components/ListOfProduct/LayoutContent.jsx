@@ -20,20 +20,9 @@ export default function LayoutContent({ productCategory }) {
     const maxPrice = searchParams.get("maxPrice");
     const size = searchParams.get("size");
 
-    let mergedCategory = null;
-    if (category) {
-      mergedCategory = category;
-    }
-    if (productCategory) {
-      if (mergedCategory) {
-        mergedCategory = mergedCategory + "," + productCategory;
-      } else {
-        mergedCategory = productCategory;
-      }
-    }
-
     const filterPamams = {
-      category: mergedCategory,
+      category: productCategory ?? productCategory,
+      subCategory: category ?? null,
       minPrice: minPrice ?? null,
       maxPrice: maxPrice ?? null,
       size: size ?? null,

@@ -26,7 +26,8 @@ export abstract class ProductRepository {
   abstract findManyWithPagination({
     // filterOptions,
     // sortOptions,
-    category,
+    // category,
+    subCategory,
     search,
     paginationOptions,
     size,
@@ -39,7 +40,8 @@ export abstract class ProductRepository {
     minPrice: number | null;
     maxPrice: number | null;
     search: string;
-    category: QueryCategoryDto[] | null;
+    // category: QueryCategoryDto | null;
+    subCategory: QueryCategoryDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Product[]>;
 

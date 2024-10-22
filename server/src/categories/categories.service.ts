@@ -37,6 +37,10 @@ export class CategoriesService {
     return this.categoryRepository.findAll();
   }
 
+  async getCategoryWithSubCategories(id: Category['id']): Promise<Category[]> {
+    return this.categoryRepository.getCategoryWithSubCategories(id);
+  }
+
   async update(
     id: Category['id'],
     data: Partial<Category>,

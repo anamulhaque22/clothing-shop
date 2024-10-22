@@ -48,6 +48,10 @@ export function useGetProductsService() {
           requestUrl.searchParams.append("category", productReq.category);
         }
 
+        if (productReq.subCategory) {
+          requestUrl.searchParams.append("subCategory", productReq.subCategory);
+        }
+
         if (productReq.search)
           requestUrl.searchParams.append("search", productReq.search);
 

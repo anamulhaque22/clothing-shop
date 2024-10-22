@@ -120,11 +120,10 @@ export class ProductsController {
       limit = 50;
     }
 
-    console.log(query);
-
     return infinityPagination(
       await this.productsService.findManyWithPagination({
         category: query?.category,
+        subCategory: query?.subCategory,
         search: query?.search,
         maxPrice: query?.maxPrice,
         minPrice: query?.minPrice,
@@ -159,6 +158,7 @@ export class ProductsController {
     return infinityPagination(
       await this.productsService.findManyWithPagination({
         category: query?.category,
+        subCategory: query?.subCategory,
         search: query?.search,
         maxPrice: query?.maxPrice,
         minPrice: query?.minPrice,

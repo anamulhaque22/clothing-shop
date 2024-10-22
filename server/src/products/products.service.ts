@@ -246,6 +246,7 @@ export class ProductsService {
     // filterOptions,
     // sortOptions,
     category,
+    subCategory,
     search,
     paginationOptions,
     size,
@@ -258,11 +259,17 @@ export class ProductsService {
     minPrice: number | null;
     maxPrice: number | null;
     search: string;
-    category: QueryCategoryDto[] | null;
+    category: QueryCategoryDto | null;
+    subCategory: QueryCategoryDto[] | null;
     paginationOptions: IPaginationOptions;
   }) {
+    if (category && category.id && !subCategory && !subCategory?.length) {
+      const childCategories =
+        await this.categoriesService.getCategoryWithSubCategories(category.id);
+      subCategory = childCategories;
+    }
     return this.productsRepo.findManyWithPagination({
-      category,
+      subCategory,
       search,
       paginationOptions,
       size,

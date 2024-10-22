@@ -20,6 +20,12 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       this.categoryRepository.create(toPersistence),
     );
   }
+  async getCategoryWithSubCategories(id: Category['id']): Promise<Category[]> {
+    const category = await this.categoryRepository.find({
+      where: { parentCategory: Equal(Number(id)) },
+    });
+    return category.map((category) => CategoryMapper.toDomain(category));
+  }
 
   async findAll(): Promise<Category[]> {
     // const categories = await this.categoryRepository.find({

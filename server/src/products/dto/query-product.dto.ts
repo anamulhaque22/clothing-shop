@@ -17,6 +17,11 @@ export class QueryCategoryDto {
 
 export class QueryProductDto {
   @IsOptional()
+  @Transform(({ value }) => (value ? { id: Number(value) } : undefined))
+  @Type(() => QueryCategoryDto)
+  category?: QueryCategoryDto;
+
+  @IsOptional()
   @Transform(({ value }) => {
     console.log({ value });
     return value
@@ -29,7 +34,7 @@ export class QueryProductDto {
   })
   @ValidateNested({ each: true })
   @Type(() => QueryCategoryDto)
-  category?: QueryCategoryDto[];
+  subCategory?: QueryCategoryDto[];
 
   @IsOptional()
   @IsString()
