@@ -1,5 +1,6 @@
 "use client";
 import { useProductListQuery } from "@/app/(layout-with-header-footer)/products/queries/products-queries";
+import { useGetCategoryService } from "@/services/api/services/categories";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,22 +10,39 @@ import ListOfProduct from "./ListOfProduct";
 export default function LayoutContent({ productCategory }) {
   const [renderProduct, setRenderProduct] = useState("New"); // new or recommended product
   const searchParams = useSearchParams();
+  const fetchCategory = useGetCategoryService();
   const router = useRouter();
+  const [clothFor, setClothFor] = useState(null);
+
   const filter = useMemo(() => {
     const category = searchParams.get("category");
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const size = searchParams.get("size");
 
+    let mergedCategory = null;
+    if (category) {
+      mergedCategory = category;
+    }
+    if (productCategory) {
+      if (mergedCategory) {
+        mergedCategory = mergedCategory + "," + productCategory;
+      } else {
+        mergedCategory = productCategory;
+      }
+    }
+
     const filterPamams = {
-      category: category ?? null,
+      category: mergedCategory,
       minPrice: minPrice ?? null,
       maxPrice: maxPrice ?? null,
       size: size ?? null,
     };
 
     return filterPamams;
-  }, [searchParams]);
+  }, [searchParams, productCategory]);
+
+  console.log({ filter });
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useProductListQuery(filter);
@@ -49,6 +67,16 @@ export default function LayoutContent({ productCategory }) {
     };
   }, [handleScroll]);
 
+  useEffect(() => {
+    async function fetch() {
+      const { data, status } = await fetchCategory(productCategory);
+      if (status === 200) {
+        setClothFor(data);
+      }
+    }
+    fetch();
+  }, [fetchCategory, productCategory]);
+
   const result = useMemo(() => {
     console.log({ data });
     const result = data?.pages.flatMap((page) => page?.data) ?? null;
@@ -66,7 +94,7 @@ export default function LayoutContent({ productCategory }) {
       <div className="w-full lg:pl-12">
         <div className="flex items-center justify-between py-6">
           <h3 className="capitalize font-causten-semi-bold text-base sm:text-[1.375rem] text-secondary">
-            {productCategory ? productCategory : "All "} Clothing
+            {clothFor?.name ? clothFor?.name : "All "} Clothing
           </h3>
           <div className="flex items-center gap-x-5 md:gap-x-6">
             <ul className="flex gap-4 md:gap-6 font-causten-semi-bold text-base sm:text-[1.375rem] text-[#3F4646]">

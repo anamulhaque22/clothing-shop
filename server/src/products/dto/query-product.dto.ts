@@ -17,15 +17,16 @@ export class QueryCategoryDto {
 
 export class QueryProductDto {
   @IsOptional()
-  @Transform(({ value }) =>
-    value
+  @Transform(({ value }) => {
+    console.log({ value });
+    return value
       ? value.split(',').map((v) =>
           plainToInstance(QueryCategoryDto, {
             id: Number(v),
           }),
         )
-      : undefined,
-  )
+      : undefined;
+  })
   @ValidateNested({ each: true })
   @Type(() => QueryCategoryDto)
   category?: QueryCategoryDto[];

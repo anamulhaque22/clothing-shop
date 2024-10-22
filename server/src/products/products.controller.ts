@@ -120,6 +120,8 @@ export class ProductsController {
       limit = 50;
     }
 
+    console.log(query);
+
     return infinityPagination(
       await this.productsService.findManyWithPagination({
         category: query?.category,

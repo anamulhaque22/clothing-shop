@@ -1,9 +1,25 @@
 "use client";
+import { useGetHeaderCategoriesService } from "@/services/api/services/categories";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const MainNav = () => {
   const [open, setOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const fetchCategories = useGetHeaderCategoriesService();
+
+  useEffect(() => {
+    async function getCategories() {
+      const { data, status } = await fetchCategories();
+
+      if (status === 200) {
+        setCategories(data);
+      }
+    }
+    getCategories();
+  }, [fetchCategories]);
+
+  console.log({ categories });
   return (
     <>
       <div className="border-b border-b-[#BEBCBD]">
@@ -48,20 +64,13 @@ const MainNav = () => {
                     <Link href={"/"}>Shop</Link>
                   </li>
 
-                  <li>
-                    <Link href={"/products/Men"}>Men</Link>
-                  </li>
-
-                  <li>
-                    <Link href={"/products/Women"}>Women</Link>
-                  </li>
-
-                  <li>
-                    <Link href={"/products/combo"}>Combos</Link>
-                  </li>
-                  <li>
-                    <Link href={"/products/joggers"}>Joggers</Link>
-                  </li>
+                  {categories
+                    .filter((c) => c.isVisibleInMenu)
+                    .map((c) => (
+                      <li key={c.id}>
+                        <Link href={`/products/${c.id}`}>{c.name}</Link>
+                      </li>
+                    ))}
                 </ul>
               </div>
               {/* header search bar  */}

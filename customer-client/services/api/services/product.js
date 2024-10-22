@@ -44,10 +44,8 @@ export function useGetProductsService() {
         if (productReq.limit)
           requestUrl.searchParams.append("limit", productReq.limit);
 
-        if (productReq.categorys) {
-          categorys.forEach((category) => {
-            requestUrl.searchParams.append("category", category);
-          });
+        if (productReq.category) {
+          requestUrl.searchParams.append("category", productReq.category);
         }
 
         if (productReq.search)

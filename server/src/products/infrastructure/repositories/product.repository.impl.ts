@@ -78,7 +78,10 @@ export class ProductRepositoryImpl implements ProductRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Product[]> {
     const where: FindOptionsWhere<ProductEntity> = {};
+
     if (category?.length) {
+      // const categoryIds = await this.ca;
+
       where.category = category.map((c) => ({ id: c.id }));
     }
 
