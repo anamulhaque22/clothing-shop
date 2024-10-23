@@ -14,6 +14,7 @@ export default function Logo() {
         height={100}
         src="/images/euphoria-white.png"
         alt="Admin Logo"
+        priority={true}
       />
     );
   }
@@ -26,6 +27,7 @@ export default function Logo() {
         className="!text-text dark:!stroke-white dark:!fill-white"
         src="/images/euphoria.png"
         alt="Admin Logo"
+        priority={true}
       />
     );
   }

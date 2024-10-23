@@ -1,16 +1,44 @@
-export default function InputText({ label, type }) {
+"use client";
+
+import { Controller } from "react-hook-form";
+
+function InputText({
+  type,
+  name,
+  placeholder,
+  defaultValue,
+  labelTitle,
+  labelStyle,
+  containerStyle,
+}) {
   return (
-    <div className="form-control w-full">
-      <label htmlFor="name" className="label label-text text-text">
-        Product Name
-      </label>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-        className="input  input-bordered w-full h-10 focus:outline-1 focus:outline-offset-1"
-      />
-    </div>
+    <Controller
+      name={name}
+      defaultValue={defaultValue ?? ""}
+      render={({ field, fieldState }) => (
+        <div className={`form-control w-full ${containerStyle}`}>
+          <label
+            htmlFor="userName"
+            className={`label font-causten-semi-bold text-base text-[#3C4242] ${labelStyle}`}
+          >
+            {labelTitle}
+          </label>
+          <input
+            type={type || "text"}
+            placeholder={placeholder || ""}
+            className="input text-text  input-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary"
+            name={name}
+            {...field}
+          />
+          {fieldState?.error?.message && (
+            <p className="text-red-500 text-sm mt-1">
+              {fieldState.error.message}
+            </p>
+          )}
+        </div>
+      )}
+    />
   );
 }
+
+export default InputText;
