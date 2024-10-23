@@ -19,7 +19,7 @@ function InputText({
         <div className={`form-control w-full ${containerStyle}`}>
           <label
             htmlFor="userName"
-            className={`label font-causten-semi-bold text-base text-[#3C4242] ${labelStyle}`}
+            className={`label font-causten-semi-bold text-base text-text ${labelStyle}`}
           >
             {labelTitle}
           </label>

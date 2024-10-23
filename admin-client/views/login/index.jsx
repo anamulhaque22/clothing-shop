@@ -1,4 +1,9 @@
 "use client";
+import { useAuthLoginService } from "@/services/api/services/auth";
+import HTTP_CODES from "@/services/api/types/http-codes";
+import withPageRequiredGuest from "@/services/auth/page-with-required-guest";
+import useAuthActions from "@/services/auth/use-auth-actions";
+import useAuthTokens from "@/services/auth/use-auth-tokens";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { FormProvider, useForm } from "react-hook-form";
@@ -14,6 +19,9 @@ const validationSchema = yup.object().shape({
 });
 
 function Login() {
+  const fetchAuthLogin = useAuthLoginService();
+  const { setTokensInfo } = useAuthTokens();
+  const { setUser } = useAuthActions();
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -24,7 +32,29 @@ function Login() {
 
   const { handleSubmit, setError } = methods;
 
-  const onSubmit = handleSubmit(async (formData) => {});
+  const onSubmit = handleSubmit(async (formData) => {
+    const { data, status } = await fetchAuthLogin(formData);
+
+    if (status === HTTP_CODES.UNPROCESSABLE_ENTITY) {
+      Object.keys(data.errors).forEach((key) => {
+        setError(key, {
+          type: "manual",
+          message: data.errors[key],
+        });
+      });
+
+      return;
+    }
+
+    if (status === HTTP_CODES.OK) {
+      setTokensInfo({
+        token: data.token,
+        refreshToken: data.refreshToken,
+        tokenExpires: data.tokenExpires,
+      });
+      setUser(data.user);
+    }
+  });
   return (
     <div className="bg-primary h-screen">
       <div className="card mx-auto flex justify-center items-center h-full">
@@ -76,4 +106,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default withPageRequiredGuest(Login);

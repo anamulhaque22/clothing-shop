@@ -7,28 +7,24 @@ export default function Logo() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (mounted && resolvedTheme === "dark") {
-    return (
-      <Image
-        width={100}
-        height={100}
-        src="/images/euphoria-white.png"
-        alt="Admin Logo"
-        priority={true}
-      />
-    );
-  }
 
-  if (mounted && resolvedTheme === "light") {
-    return (
-      <Image
-        width={100}
-        height={100}
-        className="!text-text dark:!stroke-white dark:!fill-white"
-        src="/images/euphoria.png"
-        alt="Admin Logo"
-        priority={true}
-      />
-    );
-  }
+  if (!mounted) return null;
+
+  console.log("resolvedTheme", resolvedTheme);
+
+  const logoSrc =
+    resolvedTheme === "dark"
+      ? "/images/euphoria-white.png"
+      : "/images/euphoria.png";
+
+  return (
+    <Image
+      width={100}
+      height={100}
+      className="!text-text dark:!stroke-white dark:!fill-white"
+      src={logoSrc}
+      alt="Admin Logo"
+      priority
+    />
+  );
 }

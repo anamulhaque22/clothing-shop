@@ -1,7 +1,6 @@
+"use client";
+import Dashboard from "@/views/dashboard";
+
 export default function page() {
-  return (
-    <div>
-      <h1>Page</h1>
-    </div>
-  );
+  return <Dashboard />;
 }
