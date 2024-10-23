@@ -1,4 +1,4 @@
-import UserListView from "@/views/user";
+import UserListView from "@/views/user-list";
 
 export default function InternalPage() {
   return (
