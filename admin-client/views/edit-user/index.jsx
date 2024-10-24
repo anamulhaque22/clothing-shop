@@ -31,7 +31,7 @@ const validationSchema = yup.object().shape({
     .required("Role is required"),
 });
 
-export default function AddUser() {
+export default function EditUser() {
   const [imagePreview, setImagePreview] = useState(null);
 
   const methods = useForm({
