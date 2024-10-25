@@ -22,9 +22,9 @@ function withPageRequiredAuth(component) {
         });
 
         console.log({ params });
-        let redirectTo = `/?${params.toString()}`;
+        let redirectTo = `/login?${params.toString()}`;
 
-        if (user) redirectTo = "/dashboard";
+        if (user) redirectTo = "/";
 
         router.replace(redirectTo);
       };
