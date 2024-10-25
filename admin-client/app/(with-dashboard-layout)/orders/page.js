@@ -1,3 +1,9 @@
+import OrderList from "@/views/order-list";
+
 export default function InternalOrderListPage() {
-  return <div>Order list page</div>;
+  return (
+    <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
+      <OrderList />
+    </div>
+  );
 }

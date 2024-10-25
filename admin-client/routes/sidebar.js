@@ -4,6 +4,7 @@ import { HiArrowRightEndOnRectangle } from "react-icons/hi2";
 import { HiDocumentDuplicate } from "react-icons/hi2";
 
 import {
+  FaCartArrowDown,
   FaRectangleList,
   FaUserPlus,
   FaUsers,
@@ -26,6 +27,12 @@ const routes = [
     path: "/dashboard",
     icon: <HiAcademicCap className={iconClasses} />,
     name: "Dashboard",
+  },
+
+  {
+    path: "/orders",
+    icon: <FaCartArrowDown className={iconClasses} />,
+    name: "Orders",
   },
 
   {
