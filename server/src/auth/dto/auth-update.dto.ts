@@ -1,10 +1,11 @@
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
+import { UserImageDto } from 'src/users/dto/create-user.dto';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 
 export class AuthUpdateDto {
   @IsOptional()
-  photo?: string | null;
+  photo?: UserImageDto | null;
 
   @IsOptional()
   @IsNotEmpty({ message: 'mustBeNotEmpty' })

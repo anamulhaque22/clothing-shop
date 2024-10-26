@@ -8,7 +8,7 @@ export class UserImage {
   id: string;
 
   @Allow()
-  image: string;
+  url: string;
 }
 
 export class User {
@@ -33,7 +33,7 @@ export class User {
 
   lastName: string | null;
 
-  photo?: string | null;
+  photo?: UserImage | null;
 
   role?: Role | null;
 

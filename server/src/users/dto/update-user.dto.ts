@@ -4,7 +4,7 @@ import { IsEmail, IsOptional, MinLength } from 'class-validator';
 import { RoleDto } from 'src/roles/dto/role.dto';
 import { StatusDto } from 'src/statuses/dto/status.dto';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
-import { CreateUserDto } from './create-user.dto';
+import { CreateUserDto, UserImageDto } from './create-user.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Transform(lowerCaseTransformer)
@@ -27,7 +27,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   lastName?: string | null;
 
   @IsOptional()
-  photo?: string | null;
+  photo?: UserImageDto | null;
 
   @IsOptional()
   @Type(() => RoleDto)
@@ -36,6 +36,4 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @Type(() => StatusDto)
   status?: StatusDto;
-
-  hash?: string | null;
 }

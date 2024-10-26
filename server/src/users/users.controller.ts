@@ -10,14 +10,18 @@ import {
   Patch,
   Post,
   SerializeOptions,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Roles } from 'src/roles/roles.decorators';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
+import { imageFileFilter } from 'src/utils/image-file-filter';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { User } from './domain/user';
+import { User, UserImage } from './domain/user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
@@ -63,5 +67,33 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: User['id']) {
     return this.usersService.remove(id);
+  }
+
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Post('image')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        {
+          name: 'image',
+        },
+      ],
+      {
+        fileFilter: imageFileFilter,
+      },
+    ),
+  )
+  async uploadImage(@UploadedFiles() files: { image?: Express.Multer.File }) {
+    return this.usersService.uploadUserImage(files['image'][0]);
+  }
+
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('image/:id')
+  @HttpCode(HttpStatus.OK)
+  async removeImage(@Param('id') id: UserImage['id']) {
+    return this.usersService.removeImage(id);
   }
 }

@@ -6,12 +6,16 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthProvidersEnum } from 'src/auth/auth-provider.enum';
+import { CloudinaryResponse } from 'src/cloudinary/cloudinary-response';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { Role } from 'src/roles/domain/role';
 import { RoleEnum } from 'src/roles/roles.enum';
+import { Status } from 'src/statuses/domain/status';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { DeepPartial } from 'typeorm';
-import { User } from './domain/user';
+import { User, UserImage } from './domain/user';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import {
   IUserRepository,
   USERS_REPOSITORY_TOKEN,
@@ -22,7 +26,29 @@ export class UsersService {
   constructor(
     @Inject(USERS_REPOSITORY_TOKEN)
     private readonly usersRepository: IUserRepository,
+
+    private cloudinaryService: CloudinaryService,
   ) {}
+
+  async uploadUserImage(files: Express.Multer.File): Promise<UserImage> {
+    let imageUploadedRes: CloudinaryResponse;
+    if (files) {
+      imageUploadedRes = await this.cloudinaryService.uploadFile(
+        files,
+        'users',
+      );
+    }
+
+    return this.usersRepository.uploadUserImage({
+      url: imageUploadedRes.secure_url,
+    });
+  }
+
+  async removeImage(id: UserImage['id']): Promise<void> {
+    const result = await this.usersRepository.removeUserImage(id);
+    await this.cloudinaryService.removeFile(result);
+    return;
+  }
 
   async create(createProfileDto: CreateUserDto) {
     // return type Promise<User>
@@ -53,10 +79,23 @@ export class UsersService {
     }
 
     // letter will develop generic file upload system
-    // if (clonedPayload.photo?.id) {
-    // } else {
-    //   clonedPayload.photo = null;
-    // }
+    if (clonedPayload.photo?.id) {
+      // const fileObject = await this.findImage.findById(clonedPayload.photo.id);
+      // if (!fileObject) {
+      //   throw new UnprocessableEntityException({
+      //     status: HttpStatus.UNPROCESSABLE_ENTITY,
+      //     errors: {
+      //       photo: 'imageNotExists',
+      //     },
+      //   });
+      // }
+      clonedPayload.photo = {
+        id: clonedPayload.photo.id,
+        url: clonedPayload.photo.url,
+      };
+    } else {
+      clonedPayload.photo = null;
+    }
 
     if (clonedPayload.role?.id) {
       const roleObject = Object.values(RoleEnum)
@@ -113,22 +152,27 @@ export class UsersService {
 
   async update(
     id: User['id'],
-    payload: DeepPartial<User>,
+    updateUserDto: UpdateUserDto,
   ): Promise<User | null> {
-    const clonedPayload = { ...payload };
-    if (
-      clonedPayload.password &&
-      clonedPayload.previousPassword !== clonedPayload.password
-    ) {
-      const salt = await bcrypt.genSalt();
-      clonedPayload.password = await bcrypt.hash(clonedPayload.password, salt);
+    // const updateUserDto = { ...payload };
+
+    let password: string | undefined = undefined;
+
+    if (updateUserDto.password) {
+      const userObject = await this.usersRepository.findById(id);
+
+      if (userObject && userObject?.password !== updateUserDto.password) {
+        const salt = await bcrypt.genSalt();
+        password = await bcrypt.hash(updateUserDto.password, salt);
+      }
     }
 
-    if (clonedPayload.email) {
+    let email: string | null | undefined = undefined;
+
+    if (updateUserDto.email) {
       const userObject = await this.usersRepository.findByEmail(
-        clonedPayload.email,
+        updateUserDto.email,
       );
-      // console.log(typeof id);
 
       if (userObject && userObject.id !== id) {
         throw new UnprocessableEntityException({
@@ -138,41 +182,85 @@ export class UsersService {
           },
         });
       }
+
+      email = updateUserDto.email;
+    } else if (updateUserDto.email === null) {
+      email = null;
     }
 
-    // if (clonedPayload.photo?.id) {
-    // }
+    let photo: UserImage | null | undefined = undefined;
 
-    if (clonedPayload.role?.id) {
+    if (updateUserDto.photo?.id) {
+      // const fileObject = await this.findImage.findById(
+      //   updateUserDto.photo.id,
+      // );
+      // if (!fileObject) {
+      //   throw new UnprocessableEntityException({
+      //     status: HttpStatus.UNPROCESSABLE_ENTITY,
+      //     errors: {
+      //       photo: 'imageNotExists',
+      //     },
+      //   });
+      // }
+      photo = {
+        id: updateUserDto.photo.id,
+        url: updateUserDto.photo.url,
+      };
+    } else if (updateUserDto.photo === null) {
+      photo = null;
+    }
+
+    let role: Role | undefined = undefined;
+
+    if (updateUserDto.role?.id) {
       const roleObject = Object.values(RoleEnum)
         .map(String)
-        .includes(String(clonedPayload.role.id));
-
+        .includes(String(updateUserDto.role.id));
       if (!roleObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            role: 'role not exits',
+            role: 'roleNotExists',
           },
         });
       }
+
+      role = {
+        id: updateUserDto.role.id,
+      };
     }
 
-    if (clonedPayload.status?.id) {
+    let status: Status | undefined = undefined;
+
+    if (updateUserDto.status?.id) {
       const statusObject = Object.values(StatusEnum)
         .map(String)
-        .includes(String(clonedPayload.status.id));
+        .includes(String(updateUserDto.status.id));
       if (!statusObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            role: 'status not exits',
+            status: 'statusNotExists',
           },
         });
       }
+
+      status = {
+        id: updateUserDto.status.id,
+      };
     }
 
-    return this.usersRepository.update(id, clonedPayload);
+    return this.usersRepository.update(id, {
+      firstName: updateUserDto.firstName,
+      lastName: updateUserDto.lastName,
+      email,
+      password,
+      photo,
+      role,
+      status,
+      provider: updateUserDto.provider,
+      socialId: updateUserDto.socialId,
+    });
   }
 
   async remove(id: User['id']): Promise<void> {

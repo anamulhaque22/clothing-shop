@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/domain/user';
+import { User, UserImage } from 'src/users/domain/user';
 import { FilterUserDto, SortUserDto } from 'src/users/dto/query-user.dto';
 import { UserEntity } from 'src/users/infrastructure/entities/user.entity';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
+import { UserImageEntity } from '../entities/user-image.entity';
 import { UserMapper } from '../mappers/user.mapper';
 import { IUserRepository } from '../user.repository.interface';
 
@@ -14,7 +15,24 @@ export class UsersRepositoryImpl implements IUserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
+    @InjectRepository(UserImageEntity)
+    private readonly userImagesRepository: Repository<UserImageEntity>,
   ) {}
+
+  async uploadUserImage(data: Omit<UserImage, 'id'>): Promise<UserImage> {
+    const newImage = new UserImageEntity();
+    newImage.url = data.url;
+    return this.userImagesRepository.save(
+      this.userImagesRepository.create(newImage),
+    );
+  }
+  async removeUserImage(
+    id: UserImage['id'],
+  ): Promise<UserImageEntity['publicId']> {
+    const image = await this.userImagesRepository.findOne({ where: { id } });
+    await this.userImagesRepository.remove(image);
+    return image.publicId;
+  }
 
   async create(data: User): Promise<User> {
     const persistenceModel = UserMapper.toPersistence(data);

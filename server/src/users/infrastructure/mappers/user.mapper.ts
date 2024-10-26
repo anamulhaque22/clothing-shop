@@ -1,6 +1,7 @@
 import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
 import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
-import { User } from 'src/users/domain/user';
+import { User, UserImage } from 'src/users/domain/user';
+import { UserImageEntity } from '../entities/user-image.entity';
 import { UserEntity } from '../entities/user.entity';
 
 export class UserMapper {
@@ -14,12 +15,14 @@ export class UserMapper {
     user.socialId = raw.socialId;
     user.firstName = raw.firstName;
     user.lastName = raw.lastName;
-    // let domainImage: UserImage | undefined = undefined;
-    // if (raw.photo) {
-    //   domainImage = new UserImage();
-    //   domainImage.id = raw.photo.id;
-    //   domainImage.image = raw.photo.image;
-    // }
+
+    if (raw.photo) {
+      const userImage: UserImage = new UserImage();
+      userImage.id = raw.photo.id;
+      userImage.url = raw.photo.url;
+      user.photo = userImage;
+    }
+
     user.photo = raw.photo;
     user.role = raw.role;
     user.status = raw.status;
@@ -42,12 +45,12 @@ export class UserMapper {
       status.id = Number(user.status.id);
     }
 
-    // let photo: UserImageEntity | undefined = undefined;
-    // if (user.photo) {
-    //   photo = new UserImageEntity();
-    //   photo.id = user.photo.id;
-    //   photo.image = user.photo.image;
-    // }
+    let photo: UserImageEntity | undefined = undefined;
+    if (user.photo) {
+      photo = new UserImageEntity();
+      photo.id = user.photo.id;
+      photo.url = user.photo.url;
+    }
 
     const userEntity = new UserEntity();
     if (user.id && typeof user.id === 'number') {
@@ -60,7 +63,7 @@ export class UserMapper {
     userEntity.socialId = user.socialId;
     userEntity.firstName = user.firstName;
     userEntity.lastName = user.lastName;
-    userEntity.photo = user.photo;
+    userEntity.photo = photo;
     userEntity.role = role;
     userEntity.status = status;
     userEntity.createdAt = user.createdAt;

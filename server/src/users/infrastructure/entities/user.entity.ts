@@ -10,10 +10,13 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserImageEntity } from './user-image.entity';
 
 @Entity({
   name: 'user',
@@ -55,12 +58,9 @@ export class UserEntity extends EntityHelper {
   @Column({ type: String, nullable: true })
   lastName: string | null;
 
-  // @OneToOne(() => UserImageEntity, {
-  //   eager: true,
-  // })
-  // @JoinColumn()
-  @Column({ type: String, nullable: true })
-  photo?: string | null;
+  @OneToOne(() => UserImageEntity, { cascade: true })
+  @JoinColumn()
+  photo?: UserImageEntity | null;
 
   @ManyToOne(() => RoleEntity, {
     eager: true,
