@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { AddressesModule } from './addresses/addresses.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -48,6 +49,7 @@ import { UsersModule } from './users/users.module';
     SessionModule,
     MailModule,
     MailerModule,
+    AddressesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

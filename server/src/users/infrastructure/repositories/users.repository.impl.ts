@@ -26,6 +26,7 @@ export class UsersRepositoryImpl implements IUserRepository {
       this.userImagesRepository.create(newImage),
     );
   }
+
   async removeUserImage(
     id: UserImage['id'],
   ): Promise<UserImageEntity['publicId']> {
@@ -132,6 +133,7 @@ export class UsersRepositoryImpl implements IUserRepository {
     );
     return UserMapper.toDomain(updatedEntity);
   }
+
   async remove(id: User['id']): Promise<void> {
     await this.usersRepository.softDelete(id);
   }

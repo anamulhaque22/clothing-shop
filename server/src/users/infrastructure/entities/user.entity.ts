@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { AddressEntity } from 'src/addresses/infrastructure/entities/address.entity';
 import { AuthProvidersEnum } from 'src/auth/auth-provider.enum';
 import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
 import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
@@ -12,6 +13,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -71,6 +73,9 @@ export class UserEntity extends EntityHelper {
     eager: true,
   })
   status?: StatusEntity;
+
+  @OneToMany(() => AddressEntity, (address) => address.user, { cascade: true })
+  addresses: AddressEntity[];
 
   @CreateDateColumn()
   createdAt: Date;
