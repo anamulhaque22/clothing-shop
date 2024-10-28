@@ -7,6 +7,6 @@ import { AddressTypeOrmModule } from './infrastructure/address-typeorm.module';
   imports: [AddressTypeOrmModule],
   controllers: [AddressesController],
   providers: [AddressesService],
-  exports: [],
+  exports: [AddressesService],
 })
 export class AddressesModule {}

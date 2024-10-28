@@ -1,6 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
 import { AddressEntity } from 'src/addresses/infrastructure/entities/address.entity';
 import { AuthProvidersEnum } from 'src/auth/auth-provider.enum';
+import { OrderEntity } from 'src/orders/infrastructure/entities/order.entity';
 import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
 import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
@@ -76,6 +77,9 @@ export class UserEntity extends EntityHelper {
 
   @OneToMany(() => AddressEntity, (address) => address.user, { cascade: true })
   addresses: AddressEntity[];
+
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: OrderEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

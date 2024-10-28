@@ -27,5 +27,5 @@ export class CreateAddressDto {
   @IsString()
   phone: string;
 
-  userId: string;
+  // userId: string;
 }
