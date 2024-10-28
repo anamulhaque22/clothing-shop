@@ -24,6 +24,8 @@ export class OrderRepositoryImpl implements OrderRepository {
       }),
     );
 
+    console.log(entity);
+
     return OrderMapper.toDomain(entity);
   }
 }
