@@ -1,5 +1,6 @@
 import { AddressEntity } from 'src/addresses/infrastructure/entities/address.entity';
 import { ORDER_STATUS } from 'src/orders/orders.enum';
+import { PaymentEntity } from 'src/payment/infrastructure/entities/payment.entity';
 import { UserEntity } from 'src/users/infrastructure/entities/user.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
@@ -7,6 +8,7 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderItemEntity } from './order-item.entity';
@@ -37,9 +39,14 @@ export class OrderEntity extends EntityHelper {
   @ManyToOne(() => UserEntity, (user) => user.orders)
   user: UserEntity;
 
-  @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order, {
+    cascade: true,
+  })
   orderItems: OrderItemEntity[];
 
-  @Column()
-  paymentIntentId: string;
+  @OneToMany(() => PaymentEntity, (payment) => payment.order, { cascade: true })
+  payments: PaymentEntity[];
+
+  @OneToOne(() => PaymentEntity, (payment) => payment.order)
+  successPayment: PaymentEntity;
 }

@@ -3,11 +3,22 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { CreateAddressDto } from 'src/addresses/dto/create-address.dto';
+
+class Color {
+  @IsNumber()
+  id: number;
+}
+
+class Size {
+  @IsNumber()
+  id: number;
+}
 
 class OrderItemDto {
   @IsNumber()
@@ -15,8 +26,18 @@ class OrderItemDto {
   productId: number;
 
   @IsNotEmpty()
-  @IsNotEmpty()
+  @IsNumber()
   quantity: number;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => Size)
+  size: Size;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => Color)
+  color: Color;
 }
 
 export class CreateOrderDto {

@@ -19,6 +19,8 @@ import { MailerModule } from './mailer/mailer.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { SessionModule } from './session/session.module';
+import stripeConfig from './stripe/config/stripe.config';
+import { StripeModule } from './stripe/stripe.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -31,6 +33,7 @@ import { UsersModule } from './users/users.module';
         authConfig,
         mailConfig,
         cloudinaryConfig,
+        stripeConfig,
       ],
       envFilePath: ['.env'],
     }),
@@ -50,8 +53,10 @@ import { UsersModule } from './users/users.module';
     MailerModule,
     AddressesModule,
     OrdersModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [],
 })
 export class AppModule {}

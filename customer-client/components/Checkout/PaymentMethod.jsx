@@ -1,6 +1,31 @@
+import {
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import Image from "next/image";
+import { useState } from "react";
 
 const PaymentMethod = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const result = await stripe.confirmPayment({
+      elements,
+
+      confirmParams: {
+        return_url: "http://localhost:3000/checkout/success",
+      },
+    });
+
+    if (result.error) {
+    }
+    localStorage.removeItem("clientSecret");
+  };
   return (
     <div>
       <div className="mb-7">
@@ -83,30 +108,25 @@ const PaymentMethod = () => {
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-7 gap-y-5">
-            <input
-              type="text"
-              value=""
-              placeholder="Card Number"
-              className="input  input-bordered w-full "
-            />
-            <input
+            <form action="">
+              <PaymentElement elements={elements} />
+              <button onClick={handleSubmit}>Pay</button>
+            </form>
+
+            {/* <CardNumberElement className="input input-bordered w-full" /> */}
+            {/* <input
               type="text"
               value=""
               placeholder="Name of card"
               className="input  input-bordered w-full "
-            />
-            <input
-              type="text"
-              value=""
-              placeholder="Expiration date (MM/YY)"
-              className="input  input-bordered w-full "
-            />
-            <input
+            /> */}
+            {/* <CardExpiryElement /> */}
+            {/* <input
               type="text"
               value=""
               placeholder="Security Code"
               className="input  input-bordered w-full "
-            />
+            /> */}
           </div>
         </div>
 

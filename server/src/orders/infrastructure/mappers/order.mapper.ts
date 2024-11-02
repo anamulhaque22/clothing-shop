@@ -51,6 +51,8 @@ export class OrderMapper {
       const orderItem = new OrderItemEntity();
       orderItem.quantity = item.quantity;
       orderItem.price = item.price * item.quantity;
+      orderItem.size = item.size;
+      orderItem.color = item.color;
       orderItem.product = new ProductEntity();
       orderItem.product.id = item.productId;
       return orderItem;
@@ -68,7 +70,6 @@ export class OrderMapper {
     order.shippingAddress = shippingAddress;
     order.user = userEntity;
     order.orderItems = items;
-    order.paymentIntentId = domain.paymentIntentId;
 
     return order;
   }

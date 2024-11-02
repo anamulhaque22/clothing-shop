@@ -1,4 +1,7 @@
-const ShippingAddress = () => {
+const ShippingAddress = ({
+  isShippingAddressDifferent,
+  handleDifferentShippingAddress,
+}) => {
   return (
     <div>
       <div className="mb-7">
@@ -17,6 +20,8 @@ const ShippingAddress = () => {
             dataRippleDark="true"
           >
             <input
+              onChange={() => handleDifferentShippingAddress(false)}
+              checked={!isShippingAddressDifferent}
               id="ripple-on"
               name="ripple"
               type="radio"
@@ -47,6 +52,8 @@ const ShippingAddress = () => {
             htmlFor="ripple-off"
           >
             <input
+              onChange={() => handleDifferentShippingAddress(true)}
+              checked={isShippingAddressDifferent}
               id="ripple-off"
               name="ripple"
               type="radio"

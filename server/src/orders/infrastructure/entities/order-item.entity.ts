@@ -21,4 +21,10 @@ export class OrderItemEntity extends EntityHelper {
 
   @ManyToOne(() => OrderEntity, (order) => order.orderItems)
   order: OrderEntity;
+
+  @Column()
+  size: string;
+
+  @Column()
+  color: string;
 }

@@ -1,11 +1,13 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { AddressType } from 'src/addresses/address-type.enum';
 import { AddressesService } from 'src/addresses/addresses.service';
 import { Address } from 'src/addresses/domain/address';
+import { QueryRunnerFactory } from 'src/database/query-runner-factory';
 import { ProductsService } from 'src/products/products.service';
 import { User } from 'src/users/domain/user';
 import { UsersService } from 'src/users/users.service';
@@ -21,6 +23,7 @@ export class OrdersService {
     private readonly productsService: ProductsService,
     private readonly userService: UsersService,
     private readonly addressesService: AddressesService,
+    private readonly queryRunnerFactory: QueryRunnerFactory,
   ) {}
 
   async createOrder(
@@ -33,41 +36,16 @@ export class OrdersService {
       throw new NotFoundException('User not found');
     }
 
-    // checking the product quantity and product existence
-    const products = await Promise.all(
-      data.orderItems.map(async (item) => {
-        const product = await this.productsService.findOne(item.productId);
-        if (!product) {
-          throw new NotFoundException(
-            `Product not found with id: ${item.productId}`,
-          );
-        }
-
-        if (product.quantity < item.quantity) {
-          throw new BadRequestException(
-            `Insufficient stock for product id: ${item.productId}`,
-          );
-        }
-
-        return product;
-      }),
-    );
-
-    //decreasing the product quantity
-    data.orderItems.forEach((item) => {
-      const product = products.find((p) => p.id === item.productId);
-      product.quantity -= item.quantity;
-    });
+    // checking the product quantity and product variation like size and color and size quantity, color quantity is available or not
+    const products = await this.orderItemsValidation(data.orderItems);
 
     //calculating the total amount
-    let totalAmount = 0;
-    data.orderItems.forEach((item) => {
-      const product = products.find((p) => p.id === item.productId);
-      totalAmount += product.sellPrice * item.quantity;
-    });
+    const totalAmount: number = this.calculateTotalAmount(
+      data.orderItems,
+      products,
+    );
 
-    // creating billing and shipping address
-
+    //user must have to provide the billing address or billing address id, if billing address id is provided then we will use that address otherwise we will create billing address. shipping address is optional, if shipping address id is provided then we will use that address otherwise we will use billing address for shipping address
     let billingAddress = new Address();
     if (data.billingAddressId) {
       const address = await this.addressesService.findOne(
@@ -106,19 +84,162 @@ export class OrdersService {
         productId: item.productId,
         quantity: item.quantity,
         price: products.find((p) => p.id === item.productId).sellPrice,
+        size: products
+          .find((p) => p.id === item.productId)
+          .sizes.find((s) => s.id === item.size.id).name,
+
+        color: products
+          .find((p) => p.id === item.productId)
+          .productInfo.find((info) => info.id === item.color.id).colorCode,
       };
     });
 
-    const order = await this.orderRepo.createOrder({
-      ...data,
-      user,
-      status: ORDER_STATUS.PENDING,
-      totalAmount,
-      billingAddress,
-      shippingAddress,
-      orderItems: newOrderItems,
+    const queryRunner = this.queryRunnerFactory.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const order = await this.orderRepo.createOrder(
+        {
+          ...data,
+          user,
+          status: ORDER_STATUS.PENDING,
+          totalAmount,
+          billingAddress,
+          shippingAddress,
+          orderItems: newOrderItems,
+        },
+        queryRunner,
+      );
+
+      if (order) {
+        for (const product of products) {
+          // updating the product quantity
+          product.quantity -= data.orderItems.find(
+            (item) => item.productId === product.id,
+          ).quantity;
+
+          // updating the product stock for color and size
+          const orderdProduct = data.orderItems.find(
+            (oi) => oi.productId === product.id,
+          );
+
+          const productInfo = product.productInfo.find(
+            (pf) => pf.id === orderdProduct.color.id,
+          );
+          const size = product.sizes.find(
+            (s) => s.id === orderdProduct.size.id,
+          );
+
+          productInfo.colorSizeWiseQuantity[size.name.toLowerCase()] -=
+            orderdProduct.quantity;
+
+          productInfo.colorWiseQuantity -= orderdProduct.quantity;
+
+          await this.orderRepo.updateProductStock(
+            product.id,
+            {
+              ...product,
+              quantity: product.quantity,
+              productInfo: product.productInfo,
+            },
+            queryRunner,
+          );
+        }
+      }
+
+      // const intent = await this.stripeService.createPaymentIntent(
+      //   totalAmount * 100,
+      // );
+
+      // console.log('intent', intent);
+
+      // const payment = await this.stripeService.createPayment(
+      //   {
+      //     amount: totalAmount,
+      //     order,
+      //     transaction_id: intent.id,
+      //   },
+      //   queryRunner,
+      // );
+
+      // console.log('payment', payment);
+
+      await queryRunner.commitTransaction();
+      return order;
+    } catch (error) {
+      console.log('error', error);
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException('Order processing failed');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  calculateTotalAmount(orderItems, products) {
+    let totalAmount = 0;
+    orderItems.forEach((item) => {
+      const product = products.find((p) => p.id === item.productId);
+      totalAmount += product.sellPrice * item.quantity;
     });
 
-    return order;
+    return totalAmount;
+  }
+
+  async orderItemsValidation(orderItems) {
+    const products = await Promise.all(
+      orderItems.map(async (item) => {
+        const product = await this.productsService.findOne(item.productId);
+        // console.log(product);
+        if (!product) {
+          throw new NotFoundException(
+            `Product not found with id: ${item.productId}`,
+          );
+        }
+
+        if (product.quantity < item.quantity) {
+          throw new BadRequestException(
+            `Insufficient stock for product id: ${item.productId}`,
+          );
+        }
+
+        const isSizeExits = product.sizes.filter(
+          (size) => size.id === item.size?.id,
+        );
+
+        if (!isSizeExits.length) {
+          throw new BadRequestException(
+            `Size not found for product id: ${item.productId}`,
+          );
+        }
+
+        const colorExits = product.productInfo.filter(
+          (info) => info.id === item.color?.id,
+        );
+
+        // console.log({ colorExits });
+
+        if (!colorExits.length) {
+          throw new BadRequestException(
+            `Color not found for product id: ${item.productId}`,
+          );
+        }
+
+        if (
+          colorExits[0]?.colorSizeWiseQuantity[
+            isSizeExits[0].name.toLowerCase()
+          ] < item.quantity
+        ) {
+          throw new BadRequestException(
+            `Insufficient stock for color: ${colorExits[0]?.colorCode} and product id: ${item.productId}`,
+          );
+        }
+
+        return product;
+      }),
+    );
+
+    return products;
   }
 }
