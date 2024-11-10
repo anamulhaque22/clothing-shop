@@ -4,7 +4,7 @@ const Checkbox = () => {
       <label
         className="relative flex items-center rounded-full cursor-pointer"
         htmlFor="login"
-        dataRippleDark="true"
+        // dataRippleDark="true"
       >
         <input
           id="login"

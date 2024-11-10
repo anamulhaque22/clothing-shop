@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Order } from './domain/order';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -13,6 +21,7 @@ export class OrdersController {
 
   @Post()
   @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.CREATED)
   async createOrder(
     @Body() data: CreateOrderDto,
     @Request() request,

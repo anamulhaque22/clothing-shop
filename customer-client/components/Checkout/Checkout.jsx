@@ -1,8 +1,13 @@
 "use client";
+import { PAYMENT_PROVIDER } from "@/constants/payment-provider";
+import { useCart } from "@/context/cart-context";
+import useToast from "@/hooks/useToast";
+import HTTP_CODES from "@/services/api/constants/http-codes";
+import { usePlaceOrderService } from "@/services/api/services/order";
 import { useGetPaymentIntent } from "@/services/api/services/payment";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -12,10 +17,6 @@ import BillingAddressForm from "./BillingAddressForm";
 import OrderSummery from "./OrderSummery";
 import PaymentMethod from "./PaymentMethod";
 import ShippingAddress from "./ShippingAddress";
-import ShippingMethod from "./ShippingMethod";
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
 
 const billingAddressValidationSchema = yup.object().shape({
   billingAddressId: yup.string().optional(),
@@ -54,25 +55,20 @@ const billingAddressValidationSchema = yup.object().shape({
 });
 
 const Checkout = () => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [paymentType, setPaymentType] = useState(PAYMENT_PROVIDER.COD);
+  const [error, setError] = useState(null);
+  const { cart } = useCart();
+  const fetchOrder = usePlaceOrderService();
   const fetchPaymentIntent = useGetPaymentIntent();
+  const showToast = useToast();
+  const router = useRouter();
+
+  const [clientSecret, setClientSecret] = useState("");
   const [isShippingAddressDifferent, setIsShippingAddressDifferent] =
     useState(false);
   const [loading, setLoading] = useState(false);
-  const [options, setOptions] = useState({
-    clientSecret: "",
-  });
-
-  const shippingAddress = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      streetAddress: "",
-      aptSuiteUnit: "",
-      city: "",
-      phone: "",
-      differentShippingAddress: false,
-    },
-  });
 
   const billingAddress = useForm({
     resolver: yupResolver(billingAddressValidationSchema),
@@ -88,39 +84,36 @@ const Checkout = () => {
     },
   });
 
-  useEffect(() => {
-    const savedClientSecret = localStorage.getItem("stripeClientSecret");
+  const shippingAddress = useForm({
+    resolver: yupResolver(billingAddressValidationSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      streetAddress: "",
+      aptSuiteUnit: "",
+      city: "",
+      phone: "",
+      differentShippingAddress: false,
+    },
+  });
 
+  useEffect(() => {
     const fetch = async () => {
       const res = await fetchPaymentIntent({
-        orderItems: [
-          {
-            productId: 1,
-            quantity: 1,
-            size: {
-              id: 3,
-            },
-            color: {
-              id: 1,
-            },
+        orderItems: cart?.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          size: {
+            id: item.size.id,
           },
-          {
-            productId: 3,
-            quantity: 1,
-            size: {
-              id: 3,
-            },
-            color: {
-              id: 3,
-            },
+          color: {
+            id: item.color.id,
           },
-        ],
+        })),
       });
 
       if (res.status === 200) {
-        setOptions({
-          clientSecret: res.data.clientSecret,
-        });
+        setClientSecret(res.data.clientSecret);
       } else {
         if (res.error) {
           enqueueSnackbar(res.error.message, { variant: "error" });
@@ -128,95 +121,39 @@ const Checkout = () => {
       }
     };
 
-    if (savedClientSecret) {
-      setOptions({
-        clientSecret: savedClientSecret,
-      });
-    } else {
+    if (cart?.length > 0 && paymentType === PAYMENT_PROVIDER.STRIPE) {
       fetch();
     }
-  }, [fetchPaymentIntent]);
-
-  // useEffect(() => {
-  //   const savedClientSecret = localStorage.getItem("clientSecret");
-  //   if (savedClientSecret) {
-  //     setOptions({
-  //       clientSecret: savedClientSecret,
-  //     });
-  //   } else {
-  //     fetch("http://localhost:8080/api/v1/orders", {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         orderItems: [
-  //           {
-  //             productId: 1,
-  //             quantity: 1,
-  //             size: {
-  //               id: 3,
-  //             },
-  //             color: {
-  //               id: 1,
-  //             },
-  //           },
-  //           {
-  //             productId: 3,
-  //             quantity: 1,
-  //             size: {
-  //               id: 3,
-  //             },
-  //             color: {
-  //               id: 3,
-  //             },
-  //           },
-  //         ],
-  //         billingAddressId: 2,
-  //         shippingAddressId: 2,
-  //       }),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6eyJpZCI6MX0sInNlc3Npb25JZCI6NzUsImlhdCI6MTczMDQ4NjM1OCwiZXhwIjoxNzMwNDkyMzU4fQ.clMTZTFpZQLDcBJN2BnCIrqqa_0pjkRsPHb11HdESfA`,
-  //       },
-  //     })
-  //       .then((res) => res.json())
-  //       .then((res) => {
-  //         console.log(res);
-  //         localStorage.setItem("clientSecret", res.metadata.clientSecret);
-  //         setOptions({
-  //           clientSecret: res.metadata.clientSecret,
-  //         });
-  //       });
-  //   }
-  // }, []);
-
-  // const result = await stripe.confirmCardPayment(
-  //   response.metadata.clientSecret,
-  //   {
-  //     payment_method: {
-  //       card: elemens,
-  //     },
-  //   }
-  // );
+  }, [fetchPaymentIntent, cart, paymentType]);
 
   const handleSetBillingAddressId = (id) => {
     billingAddress.setValue("billingAddressId", id);
   };
 
   const handleDifferentShippingAddress = (value) => {
-    console.log(value);
     setIsShippingAddressDifferent(value);
-    // shippingAddress.setValue(
-    //   "differentShippingAddress",
-
-    // );
   };
+
+  const handlePlaceOrder = async (data) => {
+    const orderData = await fetchOrder(data);
+    if (orderData.status !== HTTP_CODES.CREATED) {
+      showToast("Order processing failed!", "error");
+      return;
+    }
+    showToast("Order placed successfully!", "success");
+    localStorage.removeItem("cart");
+    router.push(`/orders/order-details/${orderData.data.id}`);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = await billingAddress.trigger();
-
     const billingAddressData = billingAddress.getValues();
-    console.log(billingAddressData);
 
-    console.log(isValid);
+    let shippingAddressData;
+    if (isShippingAddressDifferent) {
+      shippingAddressData = shippingAddress.getValues();
+    }
 
     if (!isValid) {
       window.scrollTo({
@@ -225,24 +162,97 @@ const Checkout = () => {
       });
       return;
     }
+
+    setLoading(true);
+
+    let reqBody;
+
+    if (billingAddressData?.billingAddressId) {
+      reqBody = {
+        ...reqBody,
+        billingAddressId: billingAddressData.billingAddressId,
+      };
+    } else {
+      reqBody = {
+        billingAddress: {
+          ...billingAddressData,
+        },
+      };
+    }
+
+    if (isShippingAddressDifferent) {
+      reqBody = {
+        ...reqBody,
+        shippingAddress: {
+          ...shippingAddressData,
+        },
+      };
+    } else {
+      if (billingAddressData?.billingAddressId) {
+        reqBody = {
+          ...reqBody,
+          shippingAddressId: billingAddressData.billingAddressId,
+        };
+      } else {
+        reqBody = {
+          ...reqBody,
+          shippingAddress: {
+            ...billingAddressData,
+          },
+        };
+      }
+    }
+
+    reqBody = {
+      ...reqBody,
+
+      orderItems: cart.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        size: {
+          id: item.size.id,
+        },
+        color: {
+          id: item.color.id,
+        },
+      })),
+    };
+
+    if (paymentType === PAYMENT_PROVIDER.STRIPE) {
+      if (!stripe || !elements) return;
+
+      const cardElement = elements.getElement(CardElement);
+
+      const { paymentIntent, error } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: `${billingAddressData.firstName} ${billingAddressData.lastName}`,
+            },
+          },
+        }
+      );
+
+      if (error) {
+        showToast(error?.message, "error");
+        return;
+      } else if (paymentIntent && paymentIntent?.status === "succeeded") {
+        handlePlaceOrder({
+          ...reqBody,
+          paymentType: PAYMENT_PROVIDER.STRIPE,
+          transaction_id: paymentIntent.id,
+        });
+      }
+    } else if (paymentType === PAYMENT_PROVIDER.COD) {
+      handlePlaceOrder({ ...reqBody, paymentType: PAYMENT_PROVIDER.COD });
+    }
   };
   return (
     <div className="container mb-11 md:mb-24">
       <div className="flex flex-col md:flex-row gap-x-8">
         <div className="w-full lg:w-[63%]">
-          <div className="text-[1.125rem] font-causten-medium breadcrumbs">
-            <ul className="mb-3">
-              <li>
-                <a>Home</a>
-              </li>
-              <li>
-                <a>My Account</a>
-              </li>
-              <li>
-                <a>Check Out</a>
-              </li>
-            </ul>
-          </div>
           {/* section heading */}
           <div className="lg:py-4">
             <SectionHeading text="Check Out" />
@@ -276,17 +286,16 @@ const Checkout = () => {
               </>
             )}
 
+            {/* <div className="custom-divider"></div> */}
+
+            {/* <ShippingMethod /> */}
+
             <div className="custom-divider"></div>
 
-            <ShippingMethod />
-
-            <div className="custom-divider"></div>
-
-            {options?.clientSecret && (
-              <Elements stripe={stripePromise} options={options}>
-                <PaymentMethod />
-              </Elements>
-            )}
+            <PaymentMethod
+              paymentType={paymentType}
+              onSetPaymentType={(type) => setPaymentType(type)}
+            />
 
             {/* <PaymentElement /> */}
             {/* <CardElement options={{ hidePostalCode: true }} /> */}

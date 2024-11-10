@@ -1,23 +1,60 @@
 "use client";
+import { useCart } from "@/context/cart-context";
 import Image from "next/image";
+import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import Product from "../Product/Product";
 import SectionHeading from "../Typography/SectionHeading";
-const sizeList = ["XS", "S", "M", "L", "XL", "XXL"];
-const colorList = ["red", "green", "blue", "yellow", "black", "white"];
+import Colors from "./Colors";
+import Ratting from "./Ratting";
+import Sizes from "./Sizes";
 const ProductsDetails = ({ product }) => {
-  const [size, setSize] = useState("");
-  const [color, setColor] = useState("");
+  const { addToCart } = useCart();
+  const [size, setSize] = useState(null);
+  const [color, setColor] = useState(null);
+  const [isValidProduct, setIsValidProduct] = useState(true);
 
-  // const [imagePrevScr, setImagePrevSrc] = useState();
-  // const [imageNextScr, setImageNextSrc] = useState();
-  // const [imageMainScr, setImageMainSrc] = useState();
+  const isColorExistOfSize = (sizes) => {
+    if (!size) return true;
 
-  // const handleImagePrev = (iamgeSrc) => {
-  //   setImageMainSrc(iamgeSrc);
-  // };
+    const selectedSize = size?.name?.toLowerCase();
+    const isValid = sizes[selectedSize] > 0 ? true : false;
+    // setIsValidProduct(isValid);
+    return sizes[selectedSize] > 0 ? true : false;
+  };
 
-  console.log({ product });
+  const handleSelectSize = (s) => {
+    setSize(s);
+    setColor(null);
+  };
+  const handleSelectColor = (color) => {
+    if (isColorExistOfSize(color?.colorSizeWiseQuantity)) setColor(color);
+    else
+      enqueueSnackbar("This color product is not exists!", {
+        variant: "error",
+      });
+  };
+
+  const handleAddToCart = () => {
+    if (size && color) {
+      addToCart({
+        title: product?.title,
+        productId: product?.id,
+        size,
+        color,
+        image: product?.images[0]?.imageUrl,
+        price: product?.sellPrice,
+      });
+    } else {
+      enqueueSnackbar("Select color and size to add to cart!", {
+        variant: "error",
+        anchorOrigin: {
+          horizontal: "right",
+          vertical: "top",
+        },
+      });
+    }
+  };
 
   return (
     <div className="container mb-7">
@@ -111,140 +148,29 @@ const ProductsDetails = ({ product }) => {
             {product?.title}
           </h2>
           {/* ratting  */}
-          <div className="flex items-center gap-5 lg:gap-6">
-            <div className="flex items-center gap-[5px]">
-              <Image
-                src="/images/icon/star/star-full.png"
-                alt="Feedback"
-                width={22}
-                height={22}
-              />
-              <Image
-                src="/images/icon/star/star-full.png"
-                alt="Feedback"
-                width={22}
-                height={22}
-              />
-              <Image
-                src="/images/icon/star/star-full.png"
-                alt="Feedback"
-                width={22}
-                height={22}
-              />
-              <Image
-                src="/images/icon/star/star-full.png"
-                alt="Feedback"
-                width={22}
-                height={22}
-              />
-              <Image
-                src="/images/icon/star/star-full.png"
-                alt="Feedback"
-                width={22}
-                height={22}
-              />
-              <span className="font-causten-medium text-base lg:text-[1.125rem] text-[#807D7E] ml-[5px]">
-                3.5
-              </span>
-            </div>
-
-            <div className="flex items-center gap-[15px]">
-              <Image
-                src={"/images/icon/message.png"}
-                width={20}
-                height={17}
-                alt="message icon"
-              />
-              <span className="font-causten-medium text-[1rem] lg:text-[1.125rem] text-[#807D7E]">
-                120 comment
-              </span>
-            </div>
-          </div>
+          <Ratting />
           {/* size start  */}
-          <div className="space-y-4 lg:space-y-5">
-            <div className="flex gap-5 items-center">
-              <h4 className="font-causten-semi-bold text-base lg:text-[1.125rem] text-[#3F4646]">
-                Select Size
-              </h4>
-              <div className="flex gap-4 items-center">
-                <h4 className="font-causten-medium text-base lg:text-[1.125rem] text-[#807D7E]">
-                  Size Guide{" "}
-                </h4>
-                <Image
-                  src={"/images/icon/arrow/right.svg"}
-                  width={16}
-                  height={12}
-                  alt="right arrow"
-                />
-              </div>
-            </div>
-            <div className="flex gap-5 font-causten-medium text-sm text-[#3C4242]">
-              {product?.sizes?.map((item) => (
-                <span
-                  key={item?.id}
-                  onClick={() => setSize(item)}
-                  className={
-                    "w-[40px] h-[40px] flex justify-center items-center text-center border border-[#BEBCBD] rounded-xl " +
-                    (size.name === item.name
-                      ? "bg-[#3C4242] border-[#3C4242] text-white"
-                      : "")
-                  }
-                >
-                  {item?.name}
-                </span>
-              ))}
-            </div>
-          </div>
+          <Sizes
+            sizes={product?.sizes}
+            onHandleSelectSize={handleSelectSize}
+            size={size}
+          />
           {/* size end */}
 
           {/* color start  */}
-          <div className="space-y-2">
-            <h4 className="font-causten-semi-bold text-base lg:text-[1.125rem] text-[#3F4646]">
-              Select Color
-            </h4>
-            <div className="flex gap-5 font-causten-medium text-sm text-[#3C4242]">
-              {product?.productInfo?.map((item) =>
-                item?.colorName !== "white" ? (
-                  <span
-                    key={item?.id}
-                    style={{
-                      border: `${
-                        color?.id === item?.id
-                          ? `1px solid ${item.colorCode}`
-                          : "none"
-                      }`,
-                    }}
-                    onClick={() => setColor(item)}
-                    className={
-                      " w-[30px] h-[30px] flex justify-center items-center text-center border border-[#BEBCBD] rounded-full" +
-                      (size === color ? ` border-[#3C4242] text-white` : "")
-                    }
-                  >
-                    <span
-                      className="w-[22px] h-[22px] rounded-full"
-                      style={{ backgroundColor: item.colorCode }}
-                    ></span>
-                  </span>
-                ) : (
-                  <span
-                    key={index}
-                    onClick={() => setColor(item)}
-                    className={
-                      " w-[30px] h-[30px] flex justify-center items-center text-center border border-[#BEBCBD] rounded-full"
-                    }
-                  >
-                    <span
-                      className="w-[22px] h-[22px] rounded-full"
-                      style={{ backgroundColor: item }}
-                    ></span>
-                  </span>
-                )
-              )}
-            </div>
-          </div>
+          <Colors
+            colors={product?.productInfo}
+            onHandleColor={handleSelectColor}
+            color={color}
+            isColorExistOfSize={isColorExistOfSize}
+          />
           {/* color end  */}
           <div className="flex gap-6">
-            <button className="font-causten-semi-bold text-[1.125rem] text-white bg-primary flex items-center gap-2 py-3 px-5 lg:px-10 rounded-lg">
+            <button
+              onClick={handleAddToCart}
+              className="font-causten-semi-bold text-[1.125rem] text-white bg-primary flex items-center gap-2 py-3 px-5 lg:px-10 rounded-lg disabled:bg-primary"
+              // disabled={size === null || color === null}
+            >
               <Image
                 src={"/images/icon/white-shopping.svg"}
                 width={15}
@@ -257,7 +183,7 @@ const ProductsDetails = ({ product }) => {
             </button>
             <button className="font-causten-semi-bold text-[1.125rem] text-white bg-white border border-[#3C4242] flex items-center gap-2 py-3 px-5 lg:px-10 rounded-lg">
               <span className="font-causten-semi-bold text-[1.125rem] text-[#3C4242]">
-                $63.00
+                ${product?.sellPrice}
               </span>
             </button>
           </div>

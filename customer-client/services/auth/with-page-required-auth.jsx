@@ -10,13 +10,25 @@ function withPageRequiredAuth(Component, options) {
     const router = useRouter();
 
     useEffect(() => {
-      if ((user && user?.role?.id) || !isLoaded) return;
+      const check = () => {
+        if ((user && user?.role?.id) || !isLoaded) return;
 
-      let redirectTo = "/login";
-      if (user) {
-        redirectTo = "/";
-      }
-      router.replace(redirectTo);
+        const currentLocation = window.location.toString();
+        const returnToPath =
+          currentLocation.replace(new URL(currentLocation).origin, "") || "/";
+        const params = new URLSearchParams({
+          returnTo: returnToPath,
+        });
+
+        let redirectTo = `/login?${params.toString()}`;
+
+        if (user) {
+          redirectTo = `/`;
+        }
+
+        router.replace(redirectTo);
+      };
+      check();
     }, [user, isLoaded, router]);
 
     return user && user?.role?.id ? <Component {...props} /> : null;

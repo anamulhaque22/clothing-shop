@@ -1,5 +1,6 @@
 import { OrderEntity } from 'src/orders/infrastructure/entities/order.entity';
 import { PAYMENT_STATUS } from 'src/payment/payment-status.enum';
+import { PAYMENT_PROVIDER } from 'src/stripe/payment-provider.enum';
 import { EntityHelper } from 'src/utils/entity-helper';
 import {
   Column,
@@ -26,11 +27,12 @@ export class PaymentEntity extends EntityHelper {
   })
   status: PAYMENT_STATUS;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: PAYMENT_METHOD,
-  // })
-  // paymentMethod: string;
+  @Column({
+    type: 'enum',
+    enum: PAYMENT_PROVIDER,
+    default: PAYMENT_PROVIDER.STRIPE,
+  })
+  payment_provider: PAYMENT_PROVIDER;
 
   @Column()
   transaction_id: string;

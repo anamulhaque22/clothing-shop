@@ -141,7 +141,7 @@ export class ProductRepositoryImpl implements ProductRepository {
 
     // checking existing product info and updating it. If not found, adding new product info
     const mappedProductInfo: ProductInfo[] = entity.productColors.map((pc) => {
-      const matchingInfo = payload.productInfo.find((pf) => pf?.id === pc.id);
+      const matchingInfo = payload?.productInfo?.find((pf) => pf?.id === pc.id);
       return matchingInfo
         ? {
             ...pc,
@@ -154,7 +154,7 @@ export class ProductRepositoryImpl implements ProductRepository {
         : pc;
     });
 
-    payload.productInfo.map((pi) => {
+    payload?.productInfo?.map((pi) => {
       if (!pi.id) {
         mappedProductInfo.push(pi);
       }

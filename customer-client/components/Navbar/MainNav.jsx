@@ -1,4 +1,5 @@
 "use client";
+import { useCart } from "@/context/cart-context";
 import { useGetHeaderCategoriesService } from "@/services/api/services/categories";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,6 +8,7 @@ const MainNav = () => {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const fetchCategories = useGetHeaderCategoriesService();
+  const { cart } = useCart();
 
   useEffect(() => {
     async function getCategories() {
@@ -18,8 +20,6 @@ const MainNav = () => {
     }
     getCategories();
   }, [fetchCategories]);
-
-  console.log({ categories });
   return (
     <>
       <div className="border-b border-b-[#BEBCBD]">
@@ -113,7 +113,13 @@ const MainNav = () => {
                       />
                     </Link>
                   </li>
-                  <li className="p-3 bg-off-white-light rounded-lg">
+                  <li className="p-3 bg-off-white-light rounded-lg indicator">
+                    {cart?.length > 0 && (
+                      <span className="indicator-item badge bg-primary text-white w-5 h-5">
+                        {cart?.length}
+                      </span>
+                    )}
+
                     <Link href={"/cart"}>
                       <Image
                         src={"/images/icon/shopping-cart.svg"}

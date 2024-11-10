@@ -60,7 +60,6 @@ export default function BillingAddressForm({ isShipping = false }) {
           <label
             className="relative flex items-center rounded-full cursor-pointer"
             htmlFor="login"
-            dataRippleDark="true"
           >
             <Controller
               name="saveInfoForFasterCheckout"

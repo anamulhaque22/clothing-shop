@@ -5,6 +5,7 @@ import { OrdersService } from 'src/orders/orders.service';
 import { PaymentService } from 'src/payment/payment.service';
 import Stripe from 'stripe';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
+import { PAYMENT_PROVIDER } from './payment-provider.enum';
 
 @Injectable()
 export class StripeService {
@@ -49,6 +50,11 @@ export class StripeService {
     await this.paymentService.createPayment({
       transaction_id: paymentIntent.id,
       amount: totalAmount,
+      payment_provider: PAYMENT_PROVIDER.STRIPE,
+    });
+
+    console.log({
+      transactionId: paymentIntent.id,
     });
 
     return {

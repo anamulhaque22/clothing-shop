@@ -8,6 +8,7 @@ import { TypeOrmConfigService } from '../typeorm-config.service';
 import { ProductSizeSeedModule } from './product-size/product-size-seed.module';
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
+import { UsersSeedModule } from './users/users-seed.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StatusSeedModule } from './status/status-seed.module';
     RoleSeedModule,
     StatusSeedModule,
     ProductSizeSeedModule,
+    UsersSeedModule,
   ],
 })
 export class SeedModule {}

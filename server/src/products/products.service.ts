@@ -31,6 +31,7 @@ export class ProductsService {
   async uploadProductIamge(files: {
     images?: Express.Multer.File[];
   }): Promise<ProductImage[]> {
+    console.log('files');
     let imageUploadedRes: CloudinaryResponse[];
     if (files.images && files?.images?.length > 0) {
       imageUploadedRes = await Promise.all(
@@ -266,7 +267,7 @@ export class ProductsService {
     if (category && category.id && !subCategory && !subCategory?.length) {
       const childCategories =
         await this.categoriesService.getCategoryWithSubCategories(category.id);
-      subCategory = childCategories;
+      subCategory = [...childCategories, category];
     }
     return this.productsRepo.findManyWithPagination({
       subCategory,

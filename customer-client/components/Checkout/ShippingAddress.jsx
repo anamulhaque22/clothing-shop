@@ -17,7 +17,7 @@ const ShippingAddress = ({
           <label
             className="relative flex cursor-pointer items-center rounded-full p-3"
             htmlFor="ripple-on"
-            dataRippleDark="true"
+            // dataRippleDark="true"
           >
             <input
               onChange={() => handleDifferentShippingAddress(false)}
@@ -66,7 +66,7 @@ const ShippingAddress = ({
                 viewBox="0 0 16 16"
                 fill="currentColor"
               >
-                <circle dataName="ellipse" cx="8" cy="8" r="8"></circle>
+                <circle dataname="ellipse" cx="8" cy="8" r="8"></circle>
               </svg>
             </div>
           </label>

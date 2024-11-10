@@ -3,8 +3,7 @@ export enum ProductSizesEnum {
   's' = 2,
   'm' = 3,
   'l' = 4,
-  'x' = 5,
-  'xl' = 6,
-  'xxl' = 7,
-  'xxxl' = 8,
+  'xl' = 5,
+  'xxl' = 6,
+  'xxxl' = 7,
 }

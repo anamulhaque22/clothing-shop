@@ -1,14 +1,17 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
+  IsString,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { CreateAddressDto } from 'src/addresses/dto/create-address.dto';
+import { PAYMENT_PROVIDER } from 'src/stripe/payment-provider.enum';
 
 class Color {
   @IsNumber()
@@ -68,4 +71,10 @@ export class CreateOrderDto {
   @Type(() => CreateAddressDto)
   @IsNotEmpty({ message: 'Shipping address is required' })
   shippingAddress?: CreateAddressDto | null;
+
+  @IsString()
+  transaction_id: string;
+
+  @IsEnum(PAYMENT_PROVIDER)
+  paymentType: PAYMENT_PROVIDER;
 }

@@ -78,10 +78,9 @@ export function useGetProductService() {
   const fetchBase = useFetchBase();
 
   return useCallback(
-    (productId, requestConfig) => {
+    (productId) => {
       return fetchBase(`${API_URL}/v1/products/${productId}`, {
         method: "GET",
-        ...requestConfig,
       }).then(wrapperFetchJsonResponse);
     },
     [fetchBase]

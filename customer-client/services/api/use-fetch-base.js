@@ -1,3 +1,4 @@
+"use client";
 import { useCallback } from "react";
 import { AUTH_REFRESH_URL } from "./config";
 
@@ -7,7 +8,7 @@ import { AUTH_REFRESH_URL } from "./config";
  */
 function useFetchBase() {
   return useCallback(async (input, init, tokens) => {
-    let headers;
+    let headers = {};
     if (!(init?.body instanceof FormData)) {
       headers = {
         ...headers,

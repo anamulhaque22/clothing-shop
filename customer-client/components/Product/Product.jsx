@@ -29,7 +29,7 @@ const Product = ({ productCategory, product }) => {
       <div className="flex justify-between items-center mt-7">
         <div className="overflow-hidden">
           <Link
-            href={`/products/${productCategory}/${product?.id}`}
+            href={`/products/details/${product?.id}`}
             className="truncate text-base font-causten-semi-bold text-secondary"
           >
             {product?.title}

@@ -7,8 +7,12 @@ import {
 import { AddressType } from 'src/addresses/address-type.enum';
 import { AddressesService } from 'src/addresses/addresses.service';
 import { Address } from 'src/addresses/domain/address';
+import { CreateAddressDto } from 'src/addresses/dto/create-address.dto';
 import { QueryRunnerFactory } from 'src/database/query-runner-factory';
+import { PAYMENT_STATUS } from 'src/payment/payment-status.enum';
+import { PaymentService } from 'src/payment/payment.service';
 import { ProductsService } from 'src/products/products.service';
+import { PAYMENT_PROVIDER } from 'src/stripe/payment-provider.enum';
 import { User } from 'src/users/domain/user';
 import { UsersService } from 'src/users/users.service';
 import { Order } from './domain/order';
@@ -19,6 +23,7 @@ import { ORDER_STATUS } from './orders.enum';
 @Injectable()
 export class OrdersService {
   constructor(
+    private readonly paymentService: PaymentService,
     private readonly orderRepo: OrderRepository,
     private readonly productsService: ProductsService,
     private readonly userService: UsersService,
@@ -45,39 +50,13 @@ export class OrdersService {
       products,
     );
 
-    //user must have to provide the billing address or billing address id, if billing address id is provided then we will use that address otherwise we will create billing address. shipping address is optional, if shipping address id is provided then we will use that address otherwise we will use billing address for shipping address
-    let billingAddress = new Address();
-    if (data.billingAddressId) {
-      const address = await this.addressesService.findOne(
-        data.billingAddressId,
-      );
-      if (!address) {
-        throw new NotFoundException('Billing address not found');
-      }
-      billingAddress = address;
-    } else {
-      const address = await this.addressesService.create(data.billingAddress);
-      billingAddress = address;
-    }
-
-    let shippingAddress = new Address();
-    if (data.shippingAddressId && !data.shippingAddress) {
-      const address = await this.addressesService.findOne(
-        data.shippingAddressId,
-      );
-      if (!address) {
-        throw new NotFoundException('Shipping address not found');
-      }
-      shippingAddress = address;
-    } else if (data.shippingAddress && !data.shippingAddressId) {
-      const address = await this.addressesService.create({
-        ...data.shippingAddress,
-        addressType: AddressType.SHIPPING,
+    const { billingAddress, shippingAddress } =
+      await this.checkingBillingAndShippingAddress({
+        billingAddressId: data.billingAddressId,
+        billingAddress: data.billingAddress,
+        shippingAddressId: data.shippingAddressId,
+        shippingAddress: data.shippingAddress,
       });
-      shippingAddress = address;
-    } else {
-      shippingAddress = billingAddress;
-    }
 
     let newOrderItems = data.orderItems.map((item) => {
       return {
@@ -149,22 +128,41 @@ export class OrdersService {
         }
       }
 
-      // const intent = await this.stripeService.createPaymentIntent(
-      //   totalAmount * 100,
-      // );
+      console.log('data.paymentType', data.paymentType);
 
-      // console.log('intent', intent);
+      switch (data.paymentType) {
+        case PAYMENT_PROVIDER.STRIPE:
+          const payment = await this.paymentService.getPaymentByTransactionId(
+            data.transaction_id,
+            queryRunner,
+          );
+          if (!payment) {
+            throw new NotFoundException('Payment not found');
+          }
 
-      // const payment = await this.stripeService.createPayment(
-      //   {
-      //     amount: totalAmount,
-      //     order,
-      //     transaction_id: intent.id,
-      //   },
-      //   queryRunner,
-      // );
-
-      // console.log('payment', payment);
+          await this.paymentService.updatePayment(
+            data.transaction_id,
+            {
+              orderId: order.id,
+              status: PAYMENT_STATUS.SUCCESS,
+            },
+            queryRunner,
+          );
+          break;
+        case PAYMENT_PROVIDER.COD:
+          await this.paymentService.createPayment(
+            {
+              amount: totalAmount,
+              orderId: order.id,
+              transaction_id: 'COD',
+              payment_provider: PAYMENT_PROVIDER.COD,
+            },
+            queryRunner,
+          );
+          break;
+        default:
+          throw new BadRequestException('Invalid payment type');
+      }
 
       await queryRunner.commitTransaction();
       return order;
@@ -241,5 +239,48 @@ export class OrdersService {
     );
 
     return products;
+  }
+
+  async checkingBillingAndShippingAddress(data: {
+    billingAddressId?: number;
+    billingAddress?: CreateAddressDto;
+    shippingAddressId?: number;
+    shippingAddress?: CreateAddressDto;
+  }) {
+    //user must have to provide the billing address or billing address id, if billing address id is provided then we will use that address otherwise we will create billing address. shipping address is optional, if shipping address id is provided then we will use that address otherwise we will use billing address for shipping address
+    let billingAddress = new Address();
+    if (data.billingAddressId) {
+      const address = await this.addressesService.findOne(
+        data.billingAddressId,
+      );
+      if (!address) {
+        throw new NotFoundException('Billing address not found');
+      }
+      billingAddress = address;
+    } else {
+      const address = await this.addressesService.create(data.billingAddress);
+      billingAddress = address;
+    }
+
+    let shippingAddress = new Address();
+    if (data.shippingAddressId && !data.shippingAddress) {
+      const address = await this.addressesService.findOne(
+        data.shippingAddressId,
+      );
+      if (!address) {
+        throw new NotFoundException('Shipping address not found');
+      }
+      shippingAddress = address;
+    } else if (data.shippingAddress && !data.shippingAddressId) {
+      const address = await this.addressesService.create({
+        ...data.shippingAddress,
+        addressType: AddressType.SHIPPING,
+      });
+      shippingAddress = address;
+    } else {
+      shippingAddress = billingAddress;
+    }
+
+    return { billingAddress, shippingAddress };
   }
 }

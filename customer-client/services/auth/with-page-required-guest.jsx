@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import useAuth from "./use-auth";
@@ -7,12 +8,15 @@ function withPageRequiredGuest(Component) {
     const { user, isLoaded } = useAuth();
     const router = useRouter();
 
+    console.log({ user, isLoaded });
+
     useEffect(() => {
       const check = () => {
         if (!user || !isLoaded) return;
 
-        let redirectTo = "/";
-        router.replace(redirectTo);
+        const params = new URLSearchParams(window.location.search);
+        const returnTo = params.get("returnTo") ?? "/";
+        router.replace(returnTo);
       };
       check();
     }, [user, isLoaded, router]);

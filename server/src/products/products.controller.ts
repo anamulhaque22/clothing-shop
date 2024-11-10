@@ -39,7 +39,7 @@ export class ProductsController {
 
   @Roles(RoleEnum.admin)
   @UseGuards(AuthGuard, RolesGuard)
-  @Post('image')
+  @Post('image/add')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -61,7 +61,7 @@ export class ProductsController {
 
   @Roles(RoleEnum.admin)
   @UseGuards(AuthGuard, RolesGuard)
-  @Delete('image')
+  @Delete('image/delete')
   @HttpCode(HttpStatus.OK)
   async removeImage(@Body() data: ImageRemoveDto[]): Promise<void> {
     return this.productsService.removeImage(data);

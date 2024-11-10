@@ -3,6 +3,7 @@
 import Cookies from "js-cookie";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AUTH_LOGOUT_URL, AUTH_ME_URL } from "../api/config";
+import HTTP_CODES from "../api/constants/http-codes";
 import useFetchBase from "../api/use-fetch-base";
 import {
   AuthActionsContext,
@@ -72,7 +73,7 @@ function AuthProvider(props) {
     setTokensInfoRef(tokens);
 
     try {
-      if (tokens.token) {
+      if (tokens?.token) {
         const response = await fetchBase(
           AUTH_ME_URL,
           {
@@ -85,6 +86,11 @@ function AuthProvider(props) {
             setTokensInfo,
           }
         );
+
+        if (response.status === HTTP_CODES.UNAUTHORIZED) {
+          logOut();
+          return;
+        }
         const data = await response.json();
         setUser(data);
       }
@@ -100,17 +106,6 @@ function AuthProvider(props) {
   }, [loadData]);
 
   useEffect(() => {
-    /*
-        event = {
-           data: {
-            tabId: string,
-            tokens: {
-                token: string,
-                refreshToken: string,
-                tokenExpires: number,
-            }}
-        }
-    */
     const onMessage = (event) => {
       if (event.data.tabId === tabId) return;
       if (!event.data.tokens) setUser(null);
