@@ -3,10 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
   Request,
   UnprocessableEntityException,
   UseGuards,
@@ -31,6 +33,7 @@ export class AddressesController {
   constructor(private readonly addressesService: AddressesService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() data: CreateAddressDto,
     @Request() request,
@@ -39,16 +42,19 @@ export class AddressesController {
   }
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   async findAll(): Promise<Address[]> {
     return this.addressesService.findAll();
   }
 
   @Get('user/address')
+  @HttpCode(HttpStatus.OK)
   async findByUserId(@Request() request): Promise<Address[]> {
     return this.addressesService.findByUserId(request.user.id);
   }
 
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   async findOne(
     @Param(
       'id',
@@ -61,7 +67,8 @@ export class AddressesController {
     return this.addressesService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: Address['id'],
     @Body() data: UpdateAddressDto,
@@ -70,7 +77,9 @@ export class AddressesController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: Address['id']): Promise<void> {
+    console.log({ id });
     return this.addressesService.remove(id);
   }
 }

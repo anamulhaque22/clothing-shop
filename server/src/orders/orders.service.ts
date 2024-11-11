@@ -56,7 +56,10 @@ export class OrdersService {
         billingAddress: data.billingAddress,
         shippingAddressId: data.shippingAddressId,
         shippingAddress: data.shippingAddress,
+        userId: data.userId,
       });
+
+    console.log({ billingAddress, shippingAddress });
 
     let newOrderItems = data.orderItems.map((item) => {
       return {
@@ -91,6 +94,8 @@ export class OrdersService {
         },
         queryRunner,
       );
+
+      console.log('order', order);
 
       if (order) {
         for (const product of products) {
@@ -132,6 +137,7 @@ export class OrdersService {
 
       switch (data.paymentType) {
         case PAYMENT_PROVIDER.STRIPE:
+          console.log('STRIPE');
           const payment = await this.paymentService.getPaymentByTransactionId(
             data.transaction_id,
             queryRunner,
@@ -150,6 +156,7 @@ export class OrdersService {
           );
           break;
         case PAYMENT_PROVIDER.COD:
+          console.log('COD');
           await this.paymentService.createPayment(
             {
               amount: totalAmount,
@@ -167,7 +174,7 @@ export class OrdersService {
       await queryRunner.commitTransaction();
       return order;
     } catch (error) {
-      console.log('error', error);
+      console.log({ error });
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException('Order processing failed');
     } finally {
@@ -246,8 +253,10 @@ export class OrdersService {
     billingAddress?: CreateAddressDto;
     shippingAddressId?: number;
     shippingAddress?: CreateAddressDto;
+    userId: User['id'];
   }) {
     //user must have to provide the billing address or billing address id, if billing address id is provided then we will use that address otherwise we will create billing address. shipping address is optional, if shipping address id is provided then we will use that address otherwise we will use billing address for shipping address
+
     let billingAddress = new Address();
     if (data.billingAddressId) {
       const address = await this.addressesService.findOne(
@@ -258,7 +267,16 @@ export class OrdersService {
       }
       billingAddress = address;
     } else {
-      const address = await this.addressesService.create(data.billingAddress);
+      const address = await this.addressesService.create(
+        {
+          ...data.billingAddress,
+          addressType: AddressType.BILLING,
+          isDefaultShipping: false,
+          isDefaultBilling: false,
+        },
+        data.userId,
+      );
+
       billingAddress = address;
     }
 
@@ -272,14 +290,21 @@ export class OrdersService {
       }
       shippingAddress = address;
     } else if (data.shippingAddress && !data.shippingAddressId) {
-      const address = await this.addressesService.create({
-        ...data.shippingAddress,
-        addressType: AddressType.SHIPPING,
-      });
+      const address = await this.addressesService.create(
+        {
+          ...data.shippingAddress,
+          addressType: AddressType.SHIPPING,
+          isDefaultShipping: false,
+          isDefaultBilling: false,
+        },
+        data.userId,
+      );
       shippingAddress = address;
     } else {
       shippingAddress = billingAddress;
     }
+
+    console.log({ billingAddress, shippingAddress });
 
     return { billingAddress, shippingAddress };
   }

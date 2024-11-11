@@ -2,7 +2,6 @@ import { Controller } from "react-hook-form";
 import InputText from "../Input/InputText";
 
 export default function BillingAddressForm({ isShipping = false }) {
-  console.log({ isShipping });
   return (
     <form>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">

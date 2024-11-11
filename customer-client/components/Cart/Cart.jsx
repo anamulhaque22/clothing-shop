@@ -2,7 +2,7 @@
 import { useCart } from "@/context/cart-context";
 import Image from "next/image";
 import Link from "next/link";
-import NoProductFound from "./NoProductFound";
+import EmptyCart from "./EmptyCart";
 
 const Cart = () => {
   const { cart, updateQuantity, removeFromCart, totalAmount } = useCart();
@@ -333,7 +333,7 @@ const Cart = () => {
       </div>
     </>
   ) : (
-    <NoProductFound />
+    <EmptyCart />
   );
 };
 

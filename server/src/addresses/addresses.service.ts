@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { Address } from './domain/address';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressRepository } from './infrastructure/address.repository';
 
 @Injectable()
@@ -29,8 +30,16 @@ export class AddressesService {
     return this.addressRepo.findById(id);
   }
 
-  async update(id: number, updateAddressDto): Promise<NullableType<Address>> {
-    return this.addressRepo.update(id, updateAddressDto);
+  async update(
+    id: number,
+    updateAddressDto: UpdateAddressDto,
+  ): Promise<NullableType<Address>> {
+    const result = await this.addressRepo.update(id, updateAddressDto);
+    if (!result) {
+      throw new UnprocessableEntityException('Address not found');
+    }
+    console.log({ result });
+    return result;
   }
 
   async remove(id: Address['id']): Promise<void> {

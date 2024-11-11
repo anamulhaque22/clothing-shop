@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const NoProductFound = () => {
+const EmptyCart = () => {
   return (
     <div className="flex flex-col items-center custom-shadow py-14 px-5 rounded-lg gap-5">
       <div className="w-[440px] h-[327px]">
@@ -27,4 +27,4 @@ const NoProductFound = () => {
   );
 };
 
-export default NoProductFound;
+export default EmptyCart;

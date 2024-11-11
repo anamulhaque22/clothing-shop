@@ -37,7 +37,7 @@ export class AddressEntity extends EntityHelper {
   @Column({
     type: 'enum',
     enum: AddressType,
-    default: AddressType.USER,
+    default: AddressType.HOME,
   })
   addressType: AddressType;
 
@@ -45,6 +45,15 @@ export class AddressEntity extends EntityHelper {
     onDelete: 'CASCADE',
   })
   user: UserEntity;
+
+  @Column({ default: false })
+  isDefaultShipping: boolean;
+
+  @Column({ default: false })
+  isDefaultBilling: boolean;
+
+  @Column({ default: false })
+  isOrderAddress: boolean;
 
   @DeleteDateColumn()
   deletedAt: Date;

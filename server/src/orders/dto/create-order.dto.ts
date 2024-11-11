@@ -73,7 +73,8 @@ export class CreateOrderDto {
   shippingAddress?: CreateAddressDto | null;
 
   @IsString()
-  transaction_id: string;
+  @IsOptional()
+  transaction_id?: string | null;
 
   @IsEnum(PAYMENT_PROVIDER)
   paymentType: PAYMENT_PROVIDER;

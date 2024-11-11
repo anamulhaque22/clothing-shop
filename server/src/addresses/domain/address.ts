@@ -9,4 +9,6 @@ export class Address {
   city: string;
   phone: string;
   addressType: AddressType;
+  isDefaultShipping: boolean;
+  isDefaultBilling: boolean;
 }

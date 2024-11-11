@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 import { AddressType } from '../address-type.enum';
 
 export class CreateAddressDto {
@@ -27,5 +27,9 @@ export class CreateAddressDto {
   @IsString()
   phone: string;
 
-  // userId: string;
+  @IsBoolean()
+  isDefaultShipping: boolean;
+
+  @IsBoolean()
+  isDefaultBilling: boolean;
 }

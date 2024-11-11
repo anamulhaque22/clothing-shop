@@ -176,6 +176,8 @@ const Checkout = () => {
       reqBody = {
         billingAddress: {
           ...billingAddressData,
+          isDefaultShipping: false,
+          isDefaultBilling: false,
         },
       };
     }
@@ -185,6 +187,8 @@ const Checkout = () => {
         ...reqBody,
         shippingAddress: {
           ...shippingAddressData,
+          isDefaultShipping: false,
+          isDefaultBilling: false,
         },
       };
     } else {
@@ -198,6 +202,8 @@ const Checkout = () => {
           ...reqBody,
           shippingAddress: {
             ...billingAddressData,
+            isDefaultShipping: false,
+            isDefaultBilling: false,
           },
         };
       }

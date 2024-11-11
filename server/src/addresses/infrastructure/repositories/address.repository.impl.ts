@@ -23,24 +23,28 @@ export class AddressRepositoryImpl implements AddressRepository {
   ): Promise<Address> {
     const persistenceModel = AddressMapper.toPersistence(data);
     let entities;
-    if (data.addressType === AddressType.USER && data?.id) {
-      entities = await this.addressRepository.save(
-        this.addressRepository.create({
-          ...persistenceModel,
-          user: { id: data.id },
-        }),
-      );
-    } else {
-      entities = await this.addressRepository.save(
-        this.addressRepository.create(persistenceModel),
-      );
-    }
+    // if (data.addressType === AddressType.HOME && data?.id) {
+    entities = await this.addressRepository.save(
+      this.addressRepository.create({
+        ...persistenceModel,
+        addressType: data.addressType || AddressType.HOME,
+        user: { id: data.id },
+      }),
+    );
+    // }
+    // else {
+    //   entities = await this.addressRepository.save(
+    //     this.addressRepository.create(persistenceModel),
+    //   );
+    // }
 
     return AddressMapper.toDomain(entities);
   }
 
   async findAll(): Promise<Address[]> {
-    const entities = await this.addressRepository.find();
+    const entities = await this.addressRepository.find({
+      withDeleted: false,
+    });
     return entities.map((entity) => AddressMapper.toDomain(entity));
   }
 
@@ -73,18 +77,17 @@ export class AddressRepositoryImpl implements AddressRepository {
       ...payload,
     });
 
-    const updatedEntity = await this.addressRepository.save(persistenceModel);
+    const updatedEntity = await this.addressRepository.save(
+      this.addressRepository.create(persistenceModel),
+    );
 
+    console.log({ updatedEntity });
     return AddressMapper.toDomain(updatedEntity);
   }
 
   async deleteById(id: Address['id']): Promise<void> {
-    const d = await this.addressRepository.softDelete({
+    await this.addressRepository.softDelete({
       id: id,
-      addressType: AddressType.USER,
     });
-
-    console.log({ d });
-    return;
   }
 }
