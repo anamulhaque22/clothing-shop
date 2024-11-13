@@ -11,4 +11,5 @@ export class Address {
   addressType: AddressType;
   isDefaultShipping: boolean;
   isDefaultBilling: boolean;
+  isOrderAddress?: boolean;
 }

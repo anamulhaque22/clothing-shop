@@ -16,6 +16,7 @@ import SectionHeading from "../Typography/SectionHeading";
 import BillingAddressForm from "./BillingAddressForm";
 import OrderSummery from "./OrderSummery";
 import PaymentMethod from "./PaymentMethod";
+import SelectAddress from "./SelectAddress";
 import ShippingAddress from "./ShippingAddress";
 
 const billingAddressValidationSchema = yup.object().shape({
@@ -59,7 +60,7 @@ const Checkout = () => {
   const elements = useElements();
   const [paymentType, setPaymentType] = useState(PAYMENT_PROVIDER.COD);
   const [error, setError] = useState(null);
-  const { cart } = useCart();
+  const { cart, clearCart } = useCart();
   const fetchOrder = usePlaceOrderService();
   const fetchPaymentIntent = useGetPaymentIntent();
   const showToast = useToast();
@@ -140,8 +141,8 @@ const Checkout = () => {
       showToast("Order processing failed!", "error");
       return;
     }
+    clearCart();
     showToast("Order placed successfully!", "success");
-    localStorage.removeItem("cart");
     router.push(`/orders/order-details/${orderData.data.id}`);
   };
 
@@ -152,7 +153,10 @@ const Checkout = () => {
 
     let shippingAddressData;
     if (isShippingAddressDifferent) {
-      shippingAddressData = shippingAddress.getValues();
+      const isValid = await shippingAddress.trigger();
+      if (isValid) {
+        shippingAddressData = shippingAddress.getValues();
+      }
     }
 
     if (!isValid) {
@@ -196,15 +200,6 @@ const Checkout = () => {
         reqBody = {
           ...reqBody,
           shippingAddressId: billingAddressData.billingAddressId,
-        };
-      } else {
-        reqBody = {
-          ...reqBody,
-          shippingAddress: {
-            ...billingAddressData,
-            isDefaultShipping: false,
-            isDefaultBilling: false,
-          },
         };
       }
     }
@@ -266,6 +261,10 @@ const Checkout = () => {
               Billing Details
             </h4>
           </div>
+
+          <SelectAddress
+            handleSetBillingAddressId={handleSetBillingAddressId}
+          />
 
           {/* checkout form  */}
           <div>

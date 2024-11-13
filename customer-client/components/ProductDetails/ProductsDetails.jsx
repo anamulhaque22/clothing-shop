@@ -42,7 +42,8 @@ const ProductsDetails = ({ product }) => {
         productId: product?.id,
         size,
         color,
-        image: product?.images[0]?.imageUrl,
+        image:
+          product?.images?.[0]?.imageUrl || "/images/product-placeholder.jpg",
         price: product?.sellPrice,
       });
     } else {
@@ -119,7 +120,10 @@ const ProductsDetails = ({ product }) => {
           </div>
           <div className="w-full md:w-[calc(100%-75px)] h-[70vh] md:h-full">
             <Image
-              src={product?.images[0]?.imageUrl}
+              src={
+                product?.images?.[0]?.imageUrl ||
+                "/images/product-placeholder.jpg"
+              }
               width={0}
               height={0}
               sizes="100vw"

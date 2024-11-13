@@ -15,8 +15,11 @@ import { ProductsService } from 'src/products/products.service';
 import { PAYMENT_PROVIDER } from 'src/stripe/payment-provider.enum';
 import { User } from 'src/users/domain/user';
 import { UsersService } from 'src/users/users.service';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { Order } from './domain/order';
+import { AllOrdersResponseDto } from './dto/all-orders-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { FilterOrderDto, SortOrderDto } from './dto/query-orders.dto';
 import { OrderRepository } from './infrastructure/order.repository';
 import { ORDER_STATUS } from './orders.enum';
 
@@ -182,6 +185,33 @@ export class OrdersService {
     }
   }
 
+  findManyWithPagination({
+    filterOptions,
+    sortOptions,
+    search,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterOrderDto | null;
+    sortOptions?: SortOrderDto[] | null;
+    search?: string | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<AllOrdersResponseDto[]> {
+    return this.orderRepo.findManyWithPagination({
+      filterOptions,
+      sortOptions,
+      search,
+      paginationOptions,
+    });
+  }
+
+  async findOne(id: Order['id'], user: { id: User['id']; role: User['role'] }) {
+    const result = await this.orderRepo.findOne(id, user);
+    if (!result) {
+      throw new NotFoundException(`Order not found with id: ${id}`);
+    }
+    return result;
+  }
+
   calculateTotalAmount(orderItems, products) {
     let totalAmount = 0;
     orderItems.forEach((item) => {
@@ -256,7 +286,7 @@ export class OrdersService {
     userId: User['id'];
   }) {
     //user must have to provide the billing address or billing address id, if billing address id is provided then we will use that address otherwise we will create billing address. shipping address is optional, if shipping address id is provided then we will use that address otherwise we will use billing address for shipping address
-
+    console.log(data);
     let billingAddress = new Address();
     if (data.billingAddressId) {
       const address = await this.addressesService.findOne(
@@ -273,6 +303,7 @@ export class OrdersService {
           addressType: AddressType.BILLING,
           isDefaultShipping: false,
           isDefaultBilling: false,
+          isOrderAddress: true,
         },
         data.userId,
       );
@@ -296,6 +327,7 @@ export class OrdersService {
           addressType: AddressType.SHIPPING,
           isDefaultShipping: false,
           isDefaultBilling: false,
+          isOrderAddress: true,
         },
         data.userId,
       );

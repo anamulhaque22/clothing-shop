@@ -37,6 +37,7 @@ export class AddressMapper {
     addressEntity.aptSuiteUnit = domain.aptSuiteUnit;
     addressEntity.city = domain.city;
     addressEntity.phone = domain.phone;
+    addressEntity.isOrderAddress = domain.isOrderAddress || false;
     return addressEntity;
   }
 }

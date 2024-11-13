@@ -61,14 +61,24 @@ const MainNav = () => {
                 <ul className="menu menu-horizontal font-causten-medium font-medium text-secondary-light text-xl">
                   {/* Navbar menu content here */}
                   <li className="text-secondary font-bold">
-                    <Link href={"/"}>Shop</Link>
+                    <Link
+                      className="active:!bg-transparent active:!text-secondary-light"
+                      href={"/"}
+                    >
+                      Shop
+                    </Link>
                   </li>
 
                   {categories
                     .filter((c) => c.isVisibleInMenu)
                     .map((c) => (
                       <li key={c.id}>
-                        <Link href={`/products/${c.id}`}>{c.name}</Link>
+                        <Link
+                          className="active:!bg-transparent active:!text-secondary-light"
+                          href={`/products/${c.id}`}
+                        >
+                          {c.name}
+                        </Link>
                       </li>
                     ))}
                 </ul>

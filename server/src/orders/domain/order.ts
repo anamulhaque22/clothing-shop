@@ -6,7 +6,6 @@ export class OrderItem {
   productId: number;
   quantity: number;
   price?: number; // order pleaceing time price will be null and after validation it will be set from product price
-
   size: string;
   color: string;
 }
@@ -20,4 +19,5 @@ export class Order {
   shippingAddress: Address;
   status: string;
   transactionId?: string;
+  createdAt?: Date;
 }

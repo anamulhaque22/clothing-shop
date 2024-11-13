@@ -1,4 +1,3 @@
-import { Controller } from "react-hook-form";
 import InputText from "../Input/InputText";
 
 export default function BillingAddressForm({ isShipping = false }) {
@@ -54,7 +53,7 @@ export default function BillingAddressForm({ isShipping = false }) {
                   type="button"
                   value="Continue to delivery"
                 /> */}
-      {!isShipping && (
+      {/* {!isShipping && (
         <div className="flex items-center">
           <label
             className="relative flex items-center rounded-full cursor-pointer"
@@ -104,7 +103,7 @@ export default function BillingAddressForm({ isShipping = false }) {
             Save my information for a faster checkout
           </label>
         </div>
-      )}
+      )} */}
     </form>
   );
 }

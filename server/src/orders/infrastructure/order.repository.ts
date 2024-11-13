@@ -1,6 +1,11 @@
 import { Product } from 'src/products/domain/product';
+import { User } from 'src/users/domain/user';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { QueryRunner } from 'typeorm';
 import { Order } from '../domain/order';
+import { AllOrdersResponseDto } from '../dto/all-orders-response.dto';
+import { OrderDetailsResponseDto } from '../dto/order-details-reponse.dto';
+import { FilterOrderDto, SortOrderDto } from '../dto/query-orders.dto';
 
 export abstract class OrderRepository {
   abstract createOrder(
@@ -13,6 +18,23 @@ export abstract class OrderRepository {
     data: Partial<Product>,
     queryRunner: QueryRunner,
   ): Promise<void>;
+
+  abstract findManyWithPagination({
+    filterOptions,
+    sortOptions,
+    search,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterOrderDto | null;
+    sortOptions?: SortOrderDto[] | null;
+    search?: string | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<AllOrdersResponseDto[]>;
+
+  abstract findOne(
+    id: Order['id'],
+    user: { id: User['id']; role: User['role'] },
+  ): Promise<OrderDetailsResponseDto>;
   // abstract getOrderById(id: number): Promise<Order>;
   // abstract getOrdersByUserId(userId: number): Promise<Order[]>;
   // abstract updateOrder(order: Order): Promise<Order>;

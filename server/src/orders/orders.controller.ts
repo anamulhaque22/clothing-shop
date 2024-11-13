@@ -1,15 +1,26 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { Roles } from 'src/roles/roles.decorators';
+import { RoleEnum } from 'src/roles/roles.enum';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { InfinityPaginationResponseDto } from 'src/utils/dto/infinity-pagination-response.dto';
+import { infinityPagination } from 'src/utils/infinity-pagination';
 import { Order } from './domain/order';
+import { AllOrdersResponseDto } from './dto/all-orders-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderDetailsResponseDto } from './dto/order-details-reponse.dto';
+import { QueryOrdersDto } from './dto/query-orders.dto';
 import { OrdersService } from './orders.service';
 
 @Controller({
@@ -27,5 +38,44 @@ export class OrdersController {
     @Request() request,
   ): Promise<Order> {
     return this.ordresService.createOrder({ ...data, userId: request.user.id });
+  }
+
+  @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @HttpCode(HttpStatus.OK)
+  async findAll(
+    @Query() query: QueryOrdersDto,
+  ): Promise<InfinityPaginationResponseDto<AllOrdersResponseDto>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) limit = 10;
+
+    return infinityPagination(
+      await this.ordresService.findManyWithPagination({
+        filterOptions: query?.filters,
+        sortOptions: query?.sort,
+        search: query?.search,
+        paginationOptions: {
+          page,
+          limit,
+        },
+      }),
+      { page, limit },
+    );
+  }
+
+  @Get(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @HttpCode(HttpStatus.OK)
+  async findOne(
+    @Param('id') id: Order['id'],
+    @Request() request,
+  ): Promise<OrderDetailsResponseDto> {
+    return this.ordresService.findOne(id, {
+      id: request.user.id,
+      role: request.user.role,
+    });
   }
 }

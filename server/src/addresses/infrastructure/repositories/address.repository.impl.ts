@@ -23,7 +23,7 @@ export class AddressRepositoryImpl implements AddressRepository {
   ): Promise<Address> {
     const persistenceModel = AddressMapper.toPersistence(data);
     let entities;
-    // if (data.addressType === AddressType.HOME && data?.id) {
+
     entities = await this.addressRepository.save(
       this.addressRepository.create({
         ...persistenceModel,
@@ -31,12 +31,6 @@ export class AddressRepositoryImpl implements AddressRepository {
         user: { id: data.id },
       }),
     );
-    // }
-    // else {
-    //   entities = await this.addressRepository.save(
-    //     this.addressRepository.create(persistenceModel),
-    //   );
-    // }
 
     return AddressMapper.toDomain(entities);
   }
@@ -44,6 +38,7 @@ export class AddressRepositoryImpl implements AddressRepository {
   async findAll(): Promise<Address[]> {
     const entities = await this.addressRepository.find({
       withDeleted: false,
+      where: { isOrderAddress: false },
     });
     return entities.map((entity) => AddressMapper.toDomain(entity));
   }

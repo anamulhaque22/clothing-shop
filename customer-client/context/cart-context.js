@@ -100,7 +100,10 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    setCartToLocalStorage([]);
+  };
 
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.quantity * item.price,

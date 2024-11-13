@@ -32,4 +32,8 @@ export class CreateAddressDto {
 
   @IsBoolean()
   isDefaultBilling: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isOrderAddress: boolean;
 }
