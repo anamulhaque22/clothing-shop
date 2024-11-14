@@ -1,8 +1,7 @@
-import OrderdItems from "@/components/UserProfile/OrderdItem/OrderdItems";
-import React from "react";
+import OrderList from "./page-content";
 
 const Orders = () => {
-  return <OrderdItems />;
+  return <OrderList />;
 };
 
 export default Orders;

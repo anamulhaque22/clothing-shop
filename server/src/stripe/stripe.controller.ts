@@ -28,7 +28,6 @@ export class StripeController {
     @RawBody() body: any,
     @Headers() headers: Record<string, string>,
   ) {
-    console.log('Stripe webhook received');
     return this.stripeService.paymentIntentWebhook(body, headers);
   }
 }

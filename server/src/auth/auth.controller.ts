@@ -112,7 +112,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@Request() request): Promise<void> {
-    console.log({ user: request.user });
     return this.authService.logout({
       sessionId: request.user.sessionId,
     });

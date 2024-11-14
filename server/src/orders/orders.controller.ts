@@ -46,6 +46,7 @@ export class OrdersController {
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() query: QueryOrdersDto,
+    @Request() request,
   ): Promise<InfinityPaginationResponseDto<AllOrdersResponseDto>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
@@ -53,6 +54,10 @@ export class OrdersController {
 
     return infinityPagination(
       await this.ordresService.findManyWithPagination({
+        user: {
+          id: request.user.id,
+          role: request.user.role,
+        },
         filterOptions: query?.filters,
         sortOptions: query?.sort,
         search: query?.search,

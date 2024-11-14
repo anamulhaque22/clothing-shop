@@ -79,7 +79,6 @@ export class AddressesController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: Address['id']): Promise<void> {
-    console.log({ id });
     return this.addressesService.remove(id);
   }
 }

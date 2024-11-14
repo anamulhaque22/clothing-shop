@@ -96,7 +96,6 @@ export class ProductRepositoryImpl implements ProductRepository {
     }
 
     if (size) {
-      console.log({ size });
       where.sizes = size.map((s) => ({ id: s.id }));
     }
 

@@ -67,7 +67,6 @@ export class UsersService {
         clonedPayload.email,
       );
 
-      console.log({ userObject });
       if (userObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,

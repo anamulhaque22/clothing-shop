@@ -31,7 +31,6 @@ export class ProductsService {
   async uploadProductIamge(files: {
     images?: Express.Multer.File[];
   }): Promise<ProductImage[]> {
-    console.log('files');
     let imageUploadedRes: CloudinaryResponse[];
     if (files.images && files?.images?.length > 0) {
       imageUploadedRes = await Promise.all(
@@ -294,7 +293,6 @@ export class ProductsService {
         'images',
       ],
     });
-    console.log(products);
     const transformedProducts = products.map((product) => {
       const transformedProduct = {
         ...product,

@@ -38,7 +38,6 @@ export class AddressesService {
     if (!result) {
       throw new UnprocessableEntityException('Address not found');
     }
-    console.log({ result });
     return result;
   }
 

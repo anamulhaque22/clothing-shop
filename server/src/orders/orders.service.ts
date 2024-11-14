@@ -12,6 +12,7 @@ import { QueryRunnerFactory } from 'src/database/query-runner-factory';
 import { PAYMENT_STATUS } from 'src/payment/payment-status.enum';
 import { PaymentService } from 'src/payment/payment.service';
 import { ProductsService } from 'src/products/products.service';
+import { RoleEnum } from 'src/roles/roles.enum';
 import { PAYMENT_PROVIDER } from 'src/stripe/payment-provider.enum';
 import { User } from 'src/users/domain/user';
 import { UsersService } from 'src/users/users.service';
@@ -62,8 +63,6 @@ export class OrdersService {
         userId: data.userId,
       });
 
-    console.log({ billingAddress, shippingAddress });
-
     let newOrderItems = data.orderItems.map((item) => {
       return {
         productId: item.productId,
@@ -97,8 +96,6 @@ export class OrdersService {
         },
         queryRunner,
       );
-
-      console.log('order', order);
 
       if (order) {
         for (const product of products) {
@@ -136,11 +133,8 @@ export class OrdersService {
         }
       }
 
-      console.log('data.paymentType', data.paymentType);
-
       switch (data.paymentType) {
         case PAYMENT_PROVIDER.STRIPE:
-          console.log('STRIPE');
           const payment = await this.paymentService.getPaymentByTransactionId(
             data.transaction_id,
             queryRunner,
@@ -159,7 +153,6 @@ export class OrdersService {
           );
           break;
         case PAYMENT_PROVIDER.COD:
-          console.log('COD');
           await this.paymentService.createPayment(
             {
               amount: totalAmount,
@@ -177,7 +170,6 @@ export class OrdersService {
       await queryRunner.commitTransaction();
       return order;
     } catch (error) {
-      console.log({ error });
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException('Order processing failed');
     } finally {
@@ -186,16 +178,31 @@ export class OrdersService {
   }
 
   findManyWithPagination({
+    user,
     filterOptions,
     sortOptions,
     search,
     paginationOptions,
   }: {
+    user: {
+      id: User['id'];
+      role: User['role'];
+    };
     filterOptions?: FilterOrderDto | null;
     sortOptions?: SortOrderDto[] | null;
     search?: string | null;
     paginationOptions: IPaginationOptions;
   }): Promise<AllOrdersResponseDto[]> {
+    if (Number(user.role.id) === Number(RoleEnum.user)) {
+      return this.orderRepo.findManyWithPagination({
+        userId: user.id,
+        filterOptions,
+        sortOptions,
+        search,
+        paginationOptions,
+      });
+    }
+    // if the user is admin then return all the orders
     return this.orderRepo.findManyWithPagination({
       filterOptions,
       sortOptions,
@@ -226,7 +233,7 @@ export class OrdersService {
     const products = await Promise.all(
       orderItems.map(async (item) => {
         const product = await this.productsService.findOne(item.productId);
-        // console.log(product);
+
         if (!product) {
           throw new NotFoundException(
             `Product not found with id: ${item.productId}`,
@@ -252,8 +259,6 @@ export class OrdersService {
         const colorExits = product.productInfo.filter(
           (info) => info.id === item.color?.id,
         );
-
-        // console.log({ colorExits });
 
         if (!colorExits.length) {
           throw new BadRequestException(
@@ -286,7 +291,7 @@ export class OrdersService {
     userId: User['id'];
   }) {
     //user must have to provide the billing address or billing address id, if billing address id is provided then we will use that address otherwise we will create billing address. shipping address is optional, if shipping address id is provided then we will use that address otherwise we will use billing address for shipping address
-    console.log(data);
+
     let billingAddress = new Address();
     if (data.billingAddressId) {
       const address = await this.addressesService.findOne(
@@ -335,8 +340,6 @@ export class OrdersService {
     } else {
       shippingAddress = billingAddress;
     }
-
-    console.log({ billingAddress, shippingAddress });
 
     return { billingAddress, shippingAddress };
   }

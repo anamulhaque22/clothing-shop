@@ -91,7 +91,6 @@ export class ProductsController {
   async findOneById(
     @Param('id') id: Product['id'],
   ): Promise<NullableType<Product>> {
-    console.log(typeof id);
     return this.productsService.findOne(id);
   }
 
@@ -153,7 +152,6 @@ export class ProductsController {
     if (limit > 50) {
       limit = 50;
     }
-    console.log(query);
 
     return infinityPagination(
       await this.productsService.findManyWithPagination({

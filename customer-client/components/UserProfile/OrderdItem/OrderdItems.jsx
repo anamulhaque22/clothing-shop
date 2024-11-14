@@ -1,9 +1,9 @@
 import Link from "next/link";
-import React from "react";
 
 const OrderdItems = () => {
   return (
     <div className="overflow-x-auto rounded-md w-full font-causten-medium custom-shadow py-6 px-5">
+      <div></div>
       <table className="table w-full">
         <thead>
           <tr className="text-secondary text-lg">

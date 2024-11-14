@@ -76,7 +76,6 @@ export class AddressRepositoryImpl implements AddressRepository {
       this.addressRepository.create(persistenceModel),
     );
 
-    console.log({ updatedEntity });
     return AddressMapper.toDomain(updatedEntity);
   }
 

@@ -20,11 +20,13 @@ export abstract class OrderRepository {
   ): Promise<void>;
 
   abstract findManyWithPagination({
+    userId,
     filterOptions,
     sortOptions,
     search,
     paginationOptions,
   }: {
+    userId?: User['id'] | null;
     filterOptions?: FilterOrderDto | null;
     sortOptions?: SortOrderDto[] | null;
     search?: string | null;

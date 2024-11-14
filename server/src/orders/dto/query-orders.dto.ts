@@ -44,7 +44,6 @@ export class QueryOrdersDto {
 
   @IsOptional()
   @Transform(({ value }) => {
-    console.log(JSON.parse(value));
     return value ? plainToInstance(SortOrderDto, JSON.parse(value)) : undefined;
   })
   @ValidateNested({ each: true })
@@ -53,7 +52,6 @@ export class QueryOrdersDto {
 
   @IsOptional()
   @Transform(({ value }) => {
-    console.log(JSON.parse(value));
     return value
       ? plainToInstance(FilterOrderDto, JSON.parse(value))
       : undefined;

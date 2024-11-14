@@ -53,10 +53,6 @@ export class StripeService {
       payment_provider: PAYMENT_PROVIDER.STRIPE,
     });
 
-    console.log({
-      transactionId: paymentIntent.id,
-    });
-
     return {
       clientSecret: paymentIntent.client_secret,
     };

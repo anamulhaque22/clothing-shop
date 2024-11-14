@@ -54,11 +54,13 @@ export class OrderRepositoryImpl implements OrderRepository {
   }
 
   async findManyWithPagination({
+    userId,
     filterOptions,
     sortOptions,
     search,
     paginationOptions,
   }: {
+    userId?: User['id'] | null;
     filterOptions?: FilterOrderDto | null;
     sortOptions?: SortOrderDto[] | null;
     search?: string | null;
@@ -71,6 +73,8 @@ export class OrderRepositoryImpl implements OrderRepository {
       where.payments = {
         status: filterOptions.paymentStatus,
       };
+
+    if (userId) where.user = { id: userId };
 
     const entities = await this.orderRepo.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
@@ -115,9 +119,6 @@ export class OrderRepositoryImpl implements OrderRepository {
     },
   ): Promise<NullableType<OrderDetailsResponseDto>> {
     let entity;
-
-    console.log(user.role.id, RoleEnum.admin);
-    console.log(Number(user.role.id) === Number(RoleEnum.admin));
 
     if (Number(user.role.id) === Number(RoleEnum.admin)) {
       entity = await this.orderRepo.findOne({

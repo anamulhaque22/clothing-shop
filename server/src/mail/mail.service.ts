@@ -26,8 +26,6 @@ export class MailService {
 
     url.searchParams.set('hash', mailData.data.hash);
 
-    console.log({ url });
-
     await this.mailerService.sendMail({
       to: mailData.to,
       subject: emailConfirmTitle,

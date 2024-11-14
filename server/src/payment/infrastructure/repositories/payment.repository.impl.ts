@@ -79,8 +79,6 @@ export class PaymentRepositoryImpl implements PaymentRepository {
         where: { transaction_id },
       });
 
-      console.log({ payment });
-
       await queryRunner.manager.save(PaymentEntity, {
         ...payment,
         ...data,

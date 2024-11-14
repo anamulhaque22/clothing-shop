@@ -269,8 +269,6 @@ export class AuthService {
       },
     );
 
-    console.log({ hash });
-
     await this.mailService.forgotPassword({
       to: email,
       data: {
@@ -281,7 +279,6 @@ export class AuthService {
   }
 
   async resetPassword(hash: string, password: string): Promise<void> {
-    console.log({ hash, password });
     let userId: User['id'];
 
     try {
@@ -292,11 +289,8 @@ export class AuthService {
           infer: true,
         }),
       });
-      console.log({ jwtData });
 
       userId = jwtData.forgotUserId;
-
-      console.log({ userId });
     } catch (error) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,

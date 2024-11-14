@@ -23,7 +23,6 @@ export class QueryProductDto {
 
   @IsOptional()
   @Transform(({ value }) => {
-    console.log({ value });
     return value
       ? value.split(',').map((v) =>
           plainToInstance(QueryCategoryDto, {
