@@ -23,23 +23,35 @@ export const useGetOrdersService = () => {
 
   return useCallback(
     (ordersReq, reqConfig) => {
+      console.log(ordersReq);
       const requestUrl = new URL(`${API_URL}/v1/orders/`);
       if (ordersReq) {
         if (ordersReq.page)
-          requestUrl.searchParams.append("page", ordersReq.page);
+          requestUrl.searchParams.append("page", ordersReq.page.toString());
 
         if (ordersReq.limit)
-          requestUrl.searchParams.append("limit", ordersReq.limit);
+          requestUrl.searchParams.append("limit", ordersReq.limit.toString());
 
         if (ordersReq?.sort)
-          requestUrl.searchParams.append("sort", ordersReq.sort);
+          requestUrl.searchParams.append(
+            "sort",
+            JSON.stringify(ordersReq.sort)
+          );
+
+        if (ordersReq?.filters)
+          requestUrl.searchParams.append(
+            "filters",
+            JSON.stringify(ordersReq.filters)
+          );
 
         if (ordersReq?.status)
-          requestUrl.searchParams.append("status", ordersReq.status);
+          requestUrl.searchParams.append("status", ordersReq.status.toString());
 
         if (ordersReq?.search)
-          requestUrl.searchParams.append("search", ordersReq.search);
+          requestUrl.searchParams.append("search", ordersReq.search.toString());
       }
+
+      console.log(requestUrl);
       return fetch(requestUrl, {
         method: "GET",
         ...reqConfig,
