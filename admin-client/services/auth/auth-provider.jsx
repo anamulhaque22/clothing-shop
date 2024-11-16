@@ -90,8 +90,6 @@ function AuthProvider({ children }) {
           }
         );
 
-        console.log({ status: response.status });
-
         if (response.status === HTTP_CODES.UNAUTHORIZED) {
           logOut();
           return;

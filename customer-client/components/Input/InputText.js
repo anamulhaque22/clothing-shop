@@ -26,7 +26,7 @@ function InputText({
           <input
             type={type || "text"}
             placeholder={placeholder || ""}
-            className="input  input-bordered w-full focus:outline-none "
+            className="input  input-bordered w-full focus:outline-none"
             name={name}
             {...field}
           />

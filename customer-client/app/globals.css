@@ -214,3 +214,9 @@
 .cross::after {
   transform: rotate(-45deg);
 }
+
+.order-search.input:focus,
+.order-search.input:focus-within,
+.order-search.input input:focus {
+  outline: none !important;
+}

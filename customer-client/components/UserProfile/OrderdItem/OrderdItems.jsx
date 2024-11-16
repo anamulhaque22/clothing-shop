@@ -1,20 +1,32 @@
 "use client";
 import { useOrderListQuery } from "@/app/(layout-with-header-footer)/(profile)/orders/queries/orders-query";
+import { ORDER_STATUS } from "@/constants/order-status";
 import { SORT_TYPE } from "@/constants/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import moment from "moment";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { TableVirtuoso } from "react-virtuoso";
-
 import { IoCaretDownSharp, IoCaretUpSharp } from "react-icons/io5";
+import { TableVirtuoso } from "react-virtuoso";
 import OrderFilter from "./OrderFilter";
+import OrderSearch from "./OrderSearch";
 
-const t = Array.from({ length: 10 }, (_, i) => ({}));
+const STATUS_COLOR = {
+  [ORDER_STATUS.PENDING]: "text-yellow-500 bg-yellow-100",
+  [ORDER_STATUS.PROCESSING]: "text-blue-500 bg-blue-100",
+  [ORDER_STATUS.COMFIRMED]: "text-indigo-500 bg-indigo-100",
+  [ORDER_STATUS.SHIPPED]: "text-purple-500 bg-purple-100",
+  [ORDER_STATUS.OUT_FOR_DELIVERY]: "text-orange-500 bg-orange-100",
+  [ORDER_STATUS.DELIVERED]: "text-green-500 bg-green-100",
+  [ORDER_STATUS.COMPLETED]: "text-teal-500 bg-teal-100",
+  [ORDER_STATUS.CANCELLED]: "text-red-500 bg-red-100",
+  [ORDER_STATUS.RETURNED]: "text-pink-500 bg-pink-100",
+  [ORDER_STATUS.REFUNDED]: "text-gray-500 bg-gray-100",
+  [ORDER_STATUS.FAILED]: "text-red-600 bg-red-100",
+};
 
 const OrderdItems = () => {
-  const [testData, setTestData] = useState(t);
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }, setSort] = useState(() => {
@@ -61,14 +73,7 @@ const OrderdItems = () => {
   return (
     <div className="overflow-x-auto rounded-md w-full font-causten-medium custom-shadow py-6 px-5">
       <div className="flex justify-between">
-        <select className="select select-bordered w-full max-w-xs focus:outline-none  focus:bg-white">
-          <option disabled selected>
-            All Category
-          </option>
-          <option>Small Apple</option>
-          <option>Small Orange</option>
-          <option>Small Tomato</option>
-        </select>
+        <OrderSearch />
 
         <OrderFilter />
       </div>
@@ -191,7 +196,15 @@ const OrderdItems = () => {
               <td className="py-4 text-left pl-2 pr-3">
                 {moment(order?.createdAt).format("MMMM DD, YYYY")}
               </td>
-              <td className="text-left pl-2 pr-3">{order.status}</td>
+              <td className={`text-left pl-2 pr-3 `}>
+                <span
+                  className={`px-3 py-1 rounded-full ${
+                    STATUS_COLOR[order?.status]
+                  }`}
+                >
+                  {order.status}
+                </span>
+              </td>
               <td className="text-left pl-2 pr-3">{order?.payment?.status}</td>
               <td className="text-left pl-2 pr-3">${order.totalAmount}</td>
               <td className="text-left pl-2 pr-3">

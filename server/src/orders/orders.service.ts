@@ -74,6 +74,9 @@ export class OrdersService {
 
         color: products
           .find((p) => p.id === item.productId)
+          .productInfo.find((info) => info.id === item.color.id).colorName,
+        colorCode: products
+          .find((p) => p.id === item.productId)
           .productInfo.find((info) => info.id === item.color.id).colorCode,
       };
     });

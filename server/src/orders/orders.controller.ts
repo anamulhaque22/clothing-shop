@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Request,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
@@ -70,6 +71,9 @@ export class OrdersController {
     );
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleEnum.admin, RoleEnum.user)

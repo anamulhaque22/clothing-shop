@@ -8,6 +8,7 @@ export class OrderItem {
   price?: number; // order pleaceing time price will be null and after validation it will be set from product price
   size: string;
   color: string;
+  colorCode: string;
 }
 
 export class Order {

@@ -1,10 +1,10 @@
-import { ProductEntity } from 'src/products/infrastructure/entities/product.entity';
-import { EntityHelper } from 'src/utils/entity-helper';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { OrderEntity } from './order.entity';
+import { ProductEntity } from "src/products/infrastructure/entities/product.entity";
+import { EntityHelper } from "src/utils/entity-helper";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { OrderEntity } from "./order.entity";
 
 @Entity({
-  name: 'order_items',
+  name: "order_items",
 })
 export class OrderItemEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
@@ -16,7 +16,7 @@ export class OrderItemEntity extends EntityHelper {
   @ManyToOne(() => ProductEntity)
   product: ProductEntity;
 
-  @Column('decimal')
+  @Column("decimal")
   price: number;
 
   @ManyToOne(() => OrderEntity, (order) => order.orderItems)
@@ -27,4 +27,7 @@ export class OrderItemEntity extends EntityHelper {
 
   @Column()
   color: string;
+
+  @Column()
+  colorCode: string;
 }

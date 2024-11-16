@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback } from "react";
-import { useAuthTokens } from "./auth-context";
+import useAuthTokens from "../auth/use-auth-tokens";
+import useFetchBase from "./use-fetch-base";
 
 function useFetch() {
   const { tokensInfoRef, setTokensInfo } = useAuthTokens();

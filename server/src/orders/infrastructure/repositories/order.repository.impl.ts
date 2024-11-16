@@ -11,7 +11,7 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { User } from 'src/users/domain/user';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { FindOptionsWhere, QueryRunner, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, QueryRunner, Repository } from 'typeorm';
 import { OrderEntity } from '../entities/order.entity';
 import { OrderMapper } from '../mappers/order.mapper';
 import { OrderRepository } from '../order.repository';
@@ -66,15 +66,31 @@ export class OrderRepositoryImpl implements OrderRepository {
     search?: string | null;
     paginationOptions: IPaginationOptions;
   }): Promise<AllOrdersResponseDto[]> {
-    const where: FindOptionsWhere<OrderEntity> = {};
-    if (filterOptions?.status) where.status = filterOptions.status;
+    const baseCondition: FindOptionsWhere<OrderEntity> = {};
+    if (filterOptions?.status) baseCondition.status = filterOptions.status;
 
     if (filterOptions?.paymentStatus)
-      where.payments = {
+      baseCondition.payments = {
         status: filterOptions.paymentStatus,
       };
 
-    if (userId) where.user = { id: userId };
+    if (userId) baseCondition.user = { id: userId };
+
+    const where: FindOptionsWhere<OrderEntity>[] = [];
+
+    if (userId) {
+      where.push(baseCondition);
+    } else {
+      if (search) {
+        where.push(
+          { ...baseCondition, user: { email: ILike(`%${search}%`) } },
+          { ...baseCondition, user: { firstName: ILike(`%${search}%`) } },
+          { ...baseCondition, user: { lastName: ILike(`%${search}%`) } },
+        );
+      } else {
+        where.push(baseCondition);
+      }
+    }
 
     const entities = await this.orderRepo.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
@@ -127,8 +143,10 @@ export class OrderRepositoryImpl implements OrderRepository {
         },
 
         relations: {
+          shippingAddress: true,
           billingAddress: true,
           successPayment: true,
+          payments: true,
           user: true,
           orderItems: {
             product: true,
@@ -145,8 +163,10 @@ export class OrderRepositoryImpl implements OrderRepository {
         },
 
         relations: {
+          shippingAddress: true,
           billingAddress: true,
           successPayment: true,
+          payments: true,
           user: true,
           orderItems: {
             product: true,
@@ -163,11 +183,27 @@ export class OrderRepositoryImpl implements OrderRepository {
           billingAddress: entity.billingAddress,
           createdAt: entity.createdAt,
           status: entity.status,
-          // orderItems:
+          successPayment: entity?.successPayment
+            ? {
+                id: entity.successPayment.id,
+                status: entity.successPayment.status,
+                payment_provider: entity.successPayment.payment_provider,
+                transaction_id: entity.successPayment.transaction_id,
+              }
+            : null,
+          payments: entity?.payments
+            ? entity.payments.map((p) => ({
+                id: p.id,
+                status: p.status,
+                payment_provider: p.payment_provider,
+                transaction_id: p.transaction_id,
+              }))
+            : null,
           user: entity.user,
           orderItems: entity.orderItems.map((oi) => ({
             id: oi.id,
             color: oi.color,
+            colorCode: oi.colorCode,
             price: oi.price,
             quantity: oi.quantity,
             size: oi.size,

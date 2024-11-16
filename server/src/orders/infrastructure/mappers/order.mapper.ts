@@ -53,6 +53,7 @@ export class OrderMapper {
       orderItem.price = item.price * item.quantity;
       orderItem.size = item.size;
       orderItem.color = item.color;
+      orderItem.colorCode = item.colorCode;
       orderItem.product = new ProductEntity();
       orderItem.product.id = item.productId;
       return orderItem;

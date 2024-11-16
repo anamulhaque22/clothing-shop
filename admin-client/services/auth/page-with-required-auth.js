@@ -3,14 +3,15 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import useAuth from "./use-auth";
 
-function withPageRequiredAuth(component) {
+function withPageRequiredAuth(Component) {
   return function WithPageRequiredAuth(props) {
-    const { user, isLoaded } = useAuth();
     const router = useRouter();
+    const { user, isLoaded } = useAuth();
 
     useEffect(() => {
       const check = () => {
         if ((user && user?.role?.id && user?.role?.id === 1) || !isLoaded)
+          // admin role id is 1
           return;
 
         const currentLocation = window.location.toString();
@@ -21,7 +22,6 @@ function withPageRequiredAuth(component) {
           returnTo: returnToPath,
         });
 
-        console.log({ params });
         let redirectTo = `/login?${params.toString()}`;
 
         if (user) redirectTo = "/";
@@ -31,9 +31,9 @@ function withPageRequiredAuth(component) {
       check();
     }, [user, isLoaded, router]);
 
-    return user && user?.role?.id && user?.role?.id === 1
-      ? component(props)
-      : null;
+    return user && user?.role?.id && user?.role?.id === 1 ? (
+      <Component {...props} />
+    ) : null;
   };
 }
 

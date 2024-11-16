@@ -22,6 +22,7 @@ async function bootstrap() {
     origin: [
       configService.getOrThrow('app.frontendDomain', { infer: true }),
       'https://clothing-shop-delta.vercel.app',
+      'http://localhost:3001',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,

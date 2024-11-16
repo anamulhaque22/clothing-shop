@@ -7,8 +7,6 @@ function useFetchBase() {
     let headers;
 
     if (!(init?.body instanceof FormData)) {
-      console.log({ tokens });
-
       headers = {
         ...headers,
         "Content-Type": "application/json",
