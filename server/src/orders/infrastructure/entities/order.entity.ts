@@ -11,6 +11,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { OrderItemEntity } from "./order-item.entity";
 
@@ -48,9 +49,14 @@ export class OrderEntity extends EntityHelper {
   @OneToMany(() => PaymentEntity, (payment) => payment.order, { cascade: true })
   payments: PaymentEntity[];
 
-  @OneToOne(() => PaymentEntity, (payment) => payment.order)
+  @OneToOne(() => PaymentEntity, (payment) => payment.order, {
+    cascade: true,
+  })
   successPayment: PaymentEntity;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

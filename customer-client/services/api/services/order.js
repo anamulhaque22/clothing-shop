@@ -51,7 +51,6 @@ export const useGetOrdersService = () => {
           requestUrl.searchParams.append("search", ordersReq.search.toString());
       }
 
-      console.log(requestUrl);
       return fetch(requestUrl, {
         method: "GET",
         ...reqConfig,
@@ -61,13 +60,15 @@ export const useGetOrdersService = () => {
   );
 };
 
+// get a single order
 export function useGetOrderService() {
   const fetch = useFetch();
 
   return useCallback(
-    (orderId) => {
+    (orderId, requestConfig) => {
       return fetch(`${API_URL}/v1/orders/${orderId}`, {
         method: "GET",
+        ...requestConfig,
       }).then(wrapperFetchJsonResponse);
     },
     [fetch]

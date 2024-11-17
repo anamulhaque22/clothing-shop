@@ -156,6 +156,7 @@ export class OrdersService {
           );
           break;
         case PAYMENT_PROVIDER.COD:
+          console.log('COD');
           await this.paymentService.createPayment(
             {
               amount: totalAmount,
@@ -220,6 +221,34 @@ export class OrdersService {
       throw new NotFoundException(`Order not found with id: ${id}`);
     }
     return result;
+  }
+
+  async updateOrderStatus(
+    id: Order['id'],
+    orderStatus: ORDER_STATUS,
+    user: { id: User['id']; role: User['role'] },
+  ): Promise<void> {
+    const order = await this.orderRepo.findOne(id, user);
+    if (!order) {
+      throw new NotFoundException(`Order not found with id: ${id}`);
+    }
+    let data;
+    if (
+      order.successPayment?.payment_provider === PAYMENT_PROVIDER.COD &&
+      orderStatus === ORDER_STATUS.COMPLETED
+    ) {
+      data = await this.orderRepo.updateOrderStatus(id, {
+        status: orderStatus,
+        paymentStatus: PAYMENT_STATUS.SUCCESS,
+      });
+      return;
+    } else {
+      data = await this.orderRepo.updateOrderStatus(id, {
+        status: orderStatus,
+        paymentStatus: PAYMENT_STATUS[order.successPayment?.status],
+      });
+      return;
+    }
   }
 
   calculateTotalAmount(orderItems, products) {

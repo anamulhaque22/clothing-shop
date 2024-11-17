@@ -20,6 +20,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
     const payment = new PaymentEntity();
     payment.amount = data.amount;
     payment.transaction_id = data.transaction_id;
+    payment.payment_provider = data.payment_provider;
 
     let order = new OrderEntity();
     if (data?.orderId) {

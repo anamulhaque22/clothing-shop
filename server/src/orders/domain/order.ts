@@ -21,4 +21,5 @@ export class Order {
   status: string;
   transactionId?: string;
   createdAt?: Date;
+  updatedAt?: Date;
 }

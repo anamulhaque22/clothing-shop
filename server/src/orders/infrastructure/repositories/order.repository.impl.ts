@@ -4,6 +4,8 @@ import { Order } from 'src/orders/domain/order';
 import { AllOrdersResponseDto } from 'src/orders/dto/all-orders-response.dto';
 import { OrderDetailsResponseDto } from 'src/orders/dto/order-details-reponse.dto';
 import { FilterOrderDto, SortOrderDto } from 'src/orders/dto/query-orders.dto';
+import { ORDER_STATUS } from 'src/orders/orders.enum';
+import { PAYMENT_STATUS } from 'src/payment/payment-status.enum';
 import { Product } from 'src/products/domain/product';
 import { ProductEntity } from 'src/products/infrastructure/entities/product.entity';
 import { ProductMapper } from 'src/products/infrastructure/mappers/product.mapper';
@@ -183,6 +185,7 @@ export class OrderRepositoryImpl implements OrderRepository {
           billingAddress: entity.billingAddress,
           createdAt: entity.createdAt,
           status: entity.status,
+          updatedAt: entity.updatedAt,
           successPayment: entity?.successPayment
             ? {
                 id: entity.successPayment.id,
@@ -216,5 +219,53 @@ export class OrderRepositoryImpl implements OrderRepository {
           })),
         }
       : null;
+  }
+
+  async updateOrder(id: Order['id'], data: Partial<Order>): Promise<Order> {
+    const clonedPayload = { ...data };
+    const order = await this.orderRepo.findOne({
+      where: { id },
+    });
+
+    const entity = await this.orderRepo.save(
+      this.orderRepo.create(
+        OrderMapper.toPersistence({
+          ...OrderMapper.toDomain(order),
+          ...clonedPayload,
+        }),
+      ),
+    );
+
+    return OrderMapper.toDomain(entity);
+  }
+  async updateOrderStatus(
+    id: Order['id'],
+    data: {
+      status: ORDER_STATUS;
+      paymentStatus: PAYMENT_STATUS;
+    },
+  ): Promise<boolean> {
+    console.log('data', data);
+    const order = await this.orderRepo.findOne({
+      where: { id },
+      relations: ['successPayment'],
+    });
+
+    console.log({
+      amount: order.successPayment.amount,
+    });
+
+    const result = await this.orderRepo.save(
+      this.orderRepo.create({
+        ...order,
+        status: data.status,
+        successPayment: {
+          ...order.successPayment,
+          amount: order.successPayment.amount,
+          status: data.paymentStatus,
+        },
+      }),
+    );
+    return result ? true : false;
   }
 }

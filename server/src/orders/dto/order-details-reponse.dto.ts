@@ -22,6 +22,7 @@ export class OrderDetailsResponseDto extends PickType(Order, [
   'billingAddress',
   'shippingAddress',
   'user',
+  'updatedAt',
 ]) {
   orderItems: OrderItemsResponseDto[];
   payments?: Payment[] | null;

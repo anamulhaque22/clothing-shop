@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   Request,
@@ -22,6 +23,8 @@ import { AllOrdersResponseDto } from './dto/all-orders-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderDetailsResponseDto } from './dto/order-details-reponse.dto';
 import { QueryOrdersDto } from './dto/query-orders.dto';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { ORDER_STATUS } from './orders.enum';
 import { OrdersService } from './orders.service';
 
 @Controller({
@@ -86,5 +89,24 @@ export class OrdersController {
       id: request.user.id,
       role: request.user.role,
     });
+  }
+
+  @Patch(':id/status')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.admin)
+  @HttpCode(HttpStatus.OK)
+  async updateOrderStatus(
+    @Param('id') id: Order['id'],
+    @Body() data: UpdateOrderStatusDto,
+    @Request() request,
+  ) {
+    return await this.ordresService.updateOrderStatus(
+      id,
+      ORDER_STATUS[data.orderStatus],
+      {
+        id: request.user.id,
+        role: request.user.role,
+      },
+    );
   }
 }

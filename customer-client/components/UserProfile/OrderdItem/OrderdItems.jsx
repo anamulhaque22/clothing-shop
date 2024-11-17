@@ -10,7 +10,6 @@ import { useCallback, useMemo, useState } from "react";
 import { IoCaretDownSharp, IoCaretUpSharp } from "react-icons/io5";
 import { TableVirtuoso } from "react-virtuoso";
 import OrderFilter from "./OrderFilter";
-import OrderSearch from "./OrderSearch";
 
 const STATUS_COLOR = {
   [ORDER_STATUS.PENDING]: "text-yellow-500 bg-yellow-100",
@@ -73,7 +72,7 @@ const OrderdItems = () => {
   return (
     <div className="overflow-x-auto rounded-md w-full font-causten-medium custom-shadow py-6 px-5">
       <div className="flex justify-between">
-        <OrderSearch />
+        {/* <OrderSearch /> */}
 
         <OrderFilter />
       </div>
@@ -209,7 +208,7 @@ const OrderdItems = () => {
               <td className="text-left pl-2 pr-3">${order.totalAmount}</td>
               <td className="text-left pl-2 pr-3">
                 <Link
-                  href={"/order-details"}
+                  href={`/orders/details/${order.id}`}
                   className="bg-primary text-white px-3 py-1 inline-block rounded-md"
                 >
                   Order Details
