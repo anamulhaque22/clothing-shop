@@ -1,4 +1,6 @@
 "use client";
+import { ROLES } from "@/constants";
+import useToast from "@/hooks/useToast";
 import { useAuthLoginService } from "@/services/api/services/auth";
 import HTTP_CODES from "@/services/api/types/http-codes";
 import withPageRequiredGuest from "@/services/auth/page-with-required-guest";
@@ -22,6 +24,7 @@ function Login() {
   const fetchAuthLogin = useAuthLoginService();
   const { setTokensInfo } = useAuthTokens();
   const { setUser } = useAuthActions();
+  const showToast = useToast();
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -30,7 +33,7 @@ function Login() {
     },
   });
 
-  const { handleSubmit, setError } = methods;
+  const { handleSubmit, setError, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
     const { data, status } = await fetchAuthLogin(formData);
@@ -47,6 +50,14 @@ function Login() {
     }
 
     if (status === HTTP_CODES.OK) {
+      if (data?.user?.role?.id !== ROLES.ADMIN) {
+        showToast(
+          "Access Denied: You do not have the required permissions to access this page.",
+          "error"
+        );
+        reset();
+        return;
+      }
       setTokensInfo({
         token: data.token,
         refreshToken: data.refreshToken,

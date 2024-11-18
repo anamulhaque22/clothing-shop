@@ -1,6 +1,7 @@
 import { ThemeProviders } from "@/contexts/ThemeContext";
 import AuthProvider from "@/services/auth/auth-provider";
 // import { Head } from "next/document";
+import SnackbarProvider from "@/components/snackbar-provider";
 import queryClient from "@/services/react-query/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Inter, Public_Sans } from "next/font/google";
@@ -17,11 +18,13 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/images/euphoria.png" as="image" />
       </Head> */}
       <body className={`${inter.className} ${public_sans.className}`}>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <ThemeProviders>{children}</ThemeProviders>
-          </AuthProvider>
-        </QueryClientProvider>
+        <SnackbarProvider maxSnack={3}>
+          <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+              <ThemeProviders>{children}</ThemeProviders>
+            </AuthProvider>
+          </QueryClientProvider>
+        </SnackbarProvider>
       </body>
     </html>
   );
