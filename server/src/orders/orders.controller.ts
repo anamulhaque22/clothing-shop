@@ -94,12 +94,12 @@ export class OrdersController {
   @Patch(':id/status')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(RoleEnum.admin)
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async updateOrderStatus(
     @Param('id') id: Order['id'],
     @Body() data: UpdateOrderStatusDto,
     @Request() request,
-  ) {
+  ): Promise<void> {
     return await this.ordresService.updateOrderStatus(
       id,
       ORDER_STATUS[data.orderStatus],

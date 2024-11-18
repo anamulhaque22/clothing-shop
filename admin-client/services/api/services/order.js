@@ -76,3 +76,19 @@ export function useGetOrderService() {
     [fetch]
   );
 }
+
+// update order status
+export function useUpdateOrderStatusService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (orderId, status, requestConfig) => {
+      return fetch(`${API_URL}/v1/orders/${orderId}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ orderStatus: status }),
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetch]
+  );
+}

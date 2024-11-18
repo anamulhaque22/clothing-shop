@@ -81,7 +81,6 @@ export class OrderRepositoryImpl implements OrderRepository {
     const where: FindOptionsWhere<OrderEntity>[] = [];
 
     if (!userId) {
-      console.log('search', search);
       if (!search) {
         where.push(baseCondition);
       } else {
@@ -252,14 +251,9 @@ export class OrderRepositoryImpl implements OrderRepository {
       paymentStatus: PAYMENT_STATUS;
     },
   ): Promise<boolean> {
-    console.log('data', data);
     const order = await this.orderRepo.findOne({
       where: { id },
       relations: ['successPayment'],
-    });
-
-    console.log({
-      amount: order.successPayment.amount,
     });
 
     const result = await this.orderRepo.save(

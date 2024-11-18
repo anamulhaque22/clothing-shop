@@ -1,5 +1,10 @@
 "use client";
-import { useGetOrderService } from "@/services/api/services/order";
+import { ORDER_STATUS } from "@/constants/order-status";
+import useToast from "@/hooks/useToast";
+import {
+  useGetOrderService,
+  useUpdateOrderStatusService,
+} from "@/services/api/services/order";
 import HTTP_CODES from "@/services/api/types/http-codes";
 import withPageRequiredAuth from "@/services/auth/page-with-required-auth";
 import moment from "moment";
@@ -15,10 +20,11 @@ import ShippingInfo from "./components/ShippingInfo";
 function OrderDetails() {
   const params = useParams();
   const fetchGetOrder = useGetOrderService();
+  const fetchUpdateOrderStatus = useUpdateOrderStatusService();
   const [order, setOrder] = useState(null);
+  const showToast = useToast();
 
   const orderId = Array.isArray(params.id) ? params.id[0] : params.id;
-  // console.log(orderId);
 
   useEffect(() => {
     const getOrder = async () => {
@@ -30,6 +36,20 @@ function OrderDetails() {
     };
     getOrder();
   }, [orderId, fetchGetOrder]);
+
+  const handleUpdateOrderStatus = async (orderStatus) => {
+    const { status } = await fetchUpdateOrderStatus(orderId, orderStatus);
+
+    if (status === HTTP_CODES.NO_CONTENT) {
+      setOrder({
+        ...order,
+        status: orderStatus,
+      });
+      showToast("Order status updated successfully", "success");
+    } else {
+      showToast("Failed to update order status", "error");
+    }
+  };
 
   return (
     order && (
@@ -49,13 +69,17 @@ function OrderDetails() {
 
             <div className="flex items-center gap-x-2">
               <div className="flex gap-x-1 items-stretch">
-                <select className="select h-full select-bordered w-full max-w-lg focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary text-text">
-                  <option disabled selected>
-                    Normal
-                  </option>
-                  <option>Normal Apple</option>
-                  <option>Normal Orange</option>
-                  <option>Normal Tomato</option>
+                <select
+                  className="select select-bordered w-full max-w-xs focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary text-text"
+                  onChange={(e) => handleUpdateOrderStatus(e.target.value)}
+                  value={order?.status}
+                >
+                  <option value={""}>Order Status</option>
+                  {Object.keys(ORDER_STATUS).map((key, index) => (
+                    <option key={index} value={ORDER_STATUS[key]}>
+                      {ORDER_STATUS[key]}
+                    </option>
+                  ))}
                 </select>
                 <button
                   type="submit"
@@ -79,7 +103,7 @@ function OrderDetails() {
           <BillingInfo address={order?.billingAddress} />
         </div>
 
-        <div className="flex justify-between py-6 px-4 gap-x-5">
+        <div className="flex justify-between mt-5 gap-x-5">
           <div className="w-[70%]">
             <OrderdProducts
               orderItems={order?.orderItems}
