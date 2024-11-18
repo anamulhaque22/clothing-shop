@@ -6,7 +6,7 @@ export const useOrderListQuery = ({ sort, filter, search }) => {
   const fetch = useGetOrdersService();
 
   const query = useInfiniteQuery({
-    queryKey: ["orders", sort, filter],
+    queryKey: ["orders", sort, filter, search],
     initialPageParam: 1,
     queryFn: async ({ pageParam, signal }) => {
       const { status, data } = await fetch(

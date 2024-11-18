@@ -60,8 +60,10 @@ export default function OrderList() {
     return undefined;
   }, [searchParams]);
 
+  console.log({ search });
+
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useOrderListQuery({ filter, sort: { order, orderBy }, search });
+    useOrderListQuery({ filter, sort: { order, orderBy }, search: search });
 
   // const test = useOrderListQuery({ filter, sort: { order, orderBy } });
   // console.log(test);

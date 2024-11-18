@@ -80,18 +80,25 @@ export class OrderRepositoryImpl implements OrderRepository {
 
     const where: FindOptionsWhere<OrderEntity>[] = [];
 
-    if (userId) {
-      where.push(baseCondition);
-    } else {
-      if (search) {
-        where.push(
-          { ...baseCondition, user: { email: ILike(`%${search}%`) } },
-          { ...baseCondition, user: { firstName: ILike(`%${search}%`) } },
-          { ...baseCondition, user: { lastName: ILike(`%${search}%`) } },
-        );
-      } else {
+    if (!userId) {
+      console.log('search', search);
+      if (!search) {
         where.push(baseCondition);
+      } else {
+        const orderId = isNaN(Number(search)) ? null : Number(search);
+
+        if (orderId) {
+          where.push({ ...baseCondition, id: orderId });
+        } else {
+          where.push(
+            { ...baseCondition, user: { email: ILike(`%${search}%`) } },
+            { ...baseCondition, user: { firstName: ILike(`%${search}%`) } },
+            { ...baseCondition, user: { lastName: ILike(`%${search}%`) } },
+          );
+        }
       }
+    } else {
+      where.push(baseCondition);
     }
 
     const entities = await this.orderRepo.find({
