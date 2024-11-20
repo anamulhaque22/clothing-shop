@@ -9,16 +9,17 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
-import { CategoryEntity } from 'src/categories/infrastructure/entities/category.entity';
-import { ProductSizeEntity } from 'src/product-sizes/infrastructure/entities/product-size.entity';
-import { EntityHelper } from 'src/utils/entity-helper';
-import { ProductColorEntity } from './product-color.entity';
-import { ProductImageEntity } from './product-image.entity';
+import { CategoryEntity } from "src/categories/infrastructure/entities/category.entity";
+import { ProductSizeEntity } from "src/product-sizes/infrastructure/entities/product-size.entity";
+import { ProductVisibility } from "src/products/product-visibility.enum";
+import { EntityHelper } from "src/utils/entity-helper";
+import { ProductColorEntity } from "./product-color.entity";
+import { ProductImageEntity } from "./product-image.entity";
 
 @Entity({
-  name: 'product',
+  name: "product",
 })
 export class ProductEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
@@ -27,13 +28,13 @@ export class ProductEntity extends EntityHelper {
   @Column()
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   description: string;
 
-  @Column({ type: 'float' })
+  @Column({ type: "float" })
   buyPrice: number;
 
-  @Column({ type: 'float' })
+  @Column({ type: "float" })
   sellPrice: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.products, {
@@ -44,11 +45,11 @@ export class ProductEntity extends EntityHelper {
   @Column()
   quantity: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  @Column({ type: "decimal", precision: 5, scale: 2 })
   discount: number;
 
-  @Column({ type: 'enum', enum: ['Hidden', 'Visible'] })
-  visibility: 'Hidden' | 'Visible';
+  @Column({ type: "enum", enum: ProductVisibility })
+  visibility: ProductVisibility;
 
   @OneToMany(() => ProductColorEntity, (productColor) => productColor.product, {
     cascade: true,

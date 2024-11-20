@@ -72,6 +72,7 @@ export class ProductsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createProduct(@Body() data: CreateProductDto): Promise<Product> {
+    console.log(data.visibility);
     return this.productsService.create(data);
   }
 

@@ -2,6 +2,7 @@ import { Category } from 'src/categories/domain/category';
 import { CategoryEntity } from 'src/categories/infrastructure/entities/category.entity';
 import { ProductSizeEntity } from 'src/product-sizes/infrastructure/entities/product-size.entity';
 import { Image, Product, ProductInfo, Size } from 'src/products/domain/product';
+import { ProductVisibility } from 'src/products/product-visibility.enum';
 import { ProductColorEntity } from '../entities/product-color.entity';
 import { ProductImageEntity } from '../entities/product-image.entity';
 import { ProductEntity } from '../entities/product.entity';
@@ -60,9 +61,11 @@ export class ProductMapper {
     product.sizes = domainSizes;
     product.images = domainImages;
     product.productInfo = domainProductInfo;
+    product.visibility = ProductVisibility[raw.visibility];
 
     return product;
   }
+
   static toPersistence(product: Product): ProductEntity {
     let category: CategoryEntity | undefined = undefined;
     if (product.category && product.category.id) {
@@ -116,6 +119,7 @@ export class ProductMapper {
     productEntity.sizes = sizes;
     productEntity.images = images;
     productEntity.productColors = productColors;
+    console.log({ visi: product.visibility });
     productEntity.visibility = product.visibility;
 
     return productEntity;

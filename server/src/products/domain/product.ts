@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
 import { Category } from 'src/categories/domain/category';
+import { ProductVisibility } from '../product-visibility.enum';
 export class Size {
   id: number;
   name?: string;
@@ -41,5 +42,5 @@ export class Product {
   productInfo: ProductInfo[];
 
   @Expose({ groups: ['admin'] })
-  visibility: 'Hidden' | 'Visible';
+  visibility: ProductVisibility;
 }

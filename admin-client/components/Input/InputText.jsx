@@ -10,6 +10,7 @@ function InputText({
   labelTitle,
   labelStyle,
   containerStyle,
+  inputStyle,
 }) {
   return (
     <Controller
@@ -26,7 +27,9 @@ function InputText({
           <input
             type={type || "text"}
             placeholder={placeholder || ""}
-            className="input text-text  input-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary"
+            className={`input text-text  input-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary ${
+              inputStyle || ""
+            }`}
             name={name}
             {...field}
           />

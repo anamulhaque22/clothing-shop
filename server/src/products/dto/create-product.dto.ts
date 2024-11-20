@@ -9,6 +9,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { ProductVisibility } from '../product-visibility.enum';
 
 class SizeDto {
   @IsNumber()
@@ -74,8 +75,8 @@ export class CreateProductDto {
   @ValidateNested({ each: true })
   images: ImageDto[];
 
-  @IsEnum(['Hidden', 'Visible'])
-  visibility: 'Hidden' | 'Visible';
+  @IsEnum(ProductVisibility)
+  visibility: ProductVisibility;
 
   @IsArray()
   @Type(() => ProductInfoDto)

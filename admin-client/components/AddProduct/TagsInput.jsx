@@ -41,7 +41,7 @@ export default function TagsInput({ tags, onSetTags }) {
     onSetTags(tags.filter((_, index) => index !== indexToRemove));
   };
   return (
-    <div className="basis-1/2 flex flex-col relative overflow-hidden">
+    <div className="flex flex-col relative overflow-hidden">
       <label htmlFor="tags" className="label label-text text-text">
         Tags:
       </label>
@@ -79,7 +79,7 @@ export default function TagsInput({ tags, onSetTags }) {
           onChange={handleTag}
           id="tags"
           name="tags"
-          className=" min-w-[1ch] -outline-offset-2 overflow-hidden min-h-10 h-10"
+          className=" min-w-[3ch] -outline-offset-2 overflow-hidden min-h-10 h-10"
           style={{ width: `${typingInputWidth}ch` }}
           placeholder="Type here"
           onKeyDown={handleKeyDown}

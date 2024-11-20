@@ -1,8 +1,15 @@
 import Image from "next/image";
 import { useRef } from "react";
+import InputError from "../Input/InputError";
 import SizeWiseQuantity from "./SizeWiseQuantity";
 
-const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
+const ColorPickerFromImage = ({
+  productInfo,
+  setProductInfo,
+  sizes,
+  name,
+  errors,
+}) => {
   const canvasRef = useRef([]);
   const imgRefs = useRef([]);
   const imgContainerRef = useRef();
@@ -18,13 +25,15 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
 
     reader.onloadend = () => {
       const newImage = reader.result;
-      setProductInfo((prevProductInfo) => [
-        ...prevProductInfo,
+      setProductInfo(name, [
+        ...productInfo,
         {
           image: file,
           color: "",
-          colorWiseQuantity: "",
-          colorSizeWiseQuantity: Object.fromEntries(sizes?.map((s) => [s, 0])),
+          colorWiseQuantity: null,
+          colorSizeWiseQuantity: Object.fromEntries(
+            sizes?.map((s) => [s.name, 0])
+          ),
           previewImage: newImage,
         },
       ]); // setting image preview
@@ -69,7 +78,7 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
       }
       return info;
     });
-    setProductInfo(updatedProductInfo);
+    setProductInfo(name, updatedProductInfo);
   };
 
   // handle size wise quantity
@@ -81,19 +90,19 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
           ...info,
           colorSizeWiseQuantity: {
             ...info.colorSizeWiseQuantity,
-            [size]: value,
+            [size?.name?.toLowerCase()]: Number(value),
           },
         };
       }
       return info;
     });
-    setProductInfo(updatedProductInfo);
+    setProductInfo(name, updatedProductInfo);
   };
 
   // delete image from product info
   const deleteImage = (index) => {
     const updatedProductInfo = productInfo.filter((_, i) => i !== index);
-    setProductInfo(updatedProductInfo);
+    setProductInfo(name, updatedProductInfo);
   };
 
   // handle color name
@@ -108,7 +117,7 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
       }
       return info;
     });
-    setProductInfo(updatedProductInfo);
+    setProductInfo(name, updatedProductInfo);
   };
 
   const handleColorWiseQuantity = (e, index) => {
@@ -117,12 +126,12 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
       if (i === index) {
         return {
           ...info,
-          colorWiseQuantity: value,
+          colorWiseQuantity: Number(value),
         };
       }
       return info;
     });
-    setProductInfo(updatedProductInfo);
+    setProductInfo(name, updatedProductInfo);
   };
 
   return (
@@ -131,7 +140,7 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
         type="file"
         accept="image/*"
         onChange={handleImageChange}
-        required={productInfo?.length === 0}
+        // required={productInfo?.length === 0}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-5 mt-4">
@@ -164,52 +173,80 @@ const ColorPickerFromImage = ({ productInfo, setProductInfo, sizes }) => {
             )}
             {/* product image and color wise product info  */}
             <div>
-              <div className="mt-4 mb-4 flex items-center gap-x-3">
-                <p className="text-sm">Click on IMAGE to pick Color:</p>
-                <div
-                  style={{
-                    backgroundColor: info.color,
-                    width: "30px",
-                    height: "30px",
-                    margin: "5px",
-                  }}
-                ></div>
+              <div className="mt-4 mb-4 flex flex-col gap-x-3">
+                <div className="flex items-center">
+                  <p className="text-sm">Click on IMAGE to pick Color:</p>
+                  <div
+                    style={{
+                      backgroundColor: info.color,
+                      width: "30px",
+                      height: "30px",
+                      margin: "5px",
+                      border: "1px solid #fff",
+                      borderRadius: "6px",
+                    }}
+                  ></div>
+                </div>
+                <InputError>
+                  {errors?.[index]?.color?.message &&
+                    errors[index]?.color?.message}
+                </InputError>
               </div>
 
-              <div className="flex items-center gap-x-3 mb-3">
-                <label htmlFor="color-wise-quantity" className="text-sm">
-                  Color Name:
-                </label>
-                <input
-                  type="text"
-                  required
-                  id="color-wise-quantity"
-                  className="bg-secondary w-full input input-bordered  h-8 focus:outline-1 focus:outline-offset-1"
-                  onChange={(e) => handleColorName(e, index)}
-                />
+              <div className="flex flex-col gap-x-3 mb-3">
+                <div className="flex">
+                  <label htmlFor="color-name" className="text-sm">
+                    Color Name:
+                  </label>
+                  <input
+                    value={info?.colorName || ""}
+                    type="text"
+                    id="color-name"
+                    className="bg-secondary w-full input input-bordered  h-8 focus:outline-1 focus:outline-offset-1"
+                    onChange={(e) => handleColorName(e, index)}
+                  />
+                </div>
+
+                <InputError>
+                  {errors?.[index]?.colorName?.message &&
+                    errors[index]?.colorName?.message}
+                </InputError>
               </div>
 
-              <div className="flex items-center gap-x-3 mb-3">
-                <label htmlFor="color-wise-quantity" className="text-sm">
-                  Color Wise Quantity:
-                </label>
-                <input
-                  type="number"
-                  id="color-wise-quantity"
-                  className="w-16 input  input-bordered  h-8 focus:outline-1 focus:outline-offset-1 bg-secondary"
-                  required
-                  onChange={(e) => handleColorWiseQuantity(e, index)}
-                />
+              <div className="flex flex-col gap-x-3 mb-3">
+                <div className="flex items-center">
+                  <label htmlFor="color-wise-quantity" className="text-sm">
+                    Color Wise Quantity:
+                  </label>
+                  <input
+                    type="number"
+                    value={info?.colorWiseQuantity || 0}
+                    id="color-wise-quantity"
+                    className="w-16 input  input-bordered  h-8 focus:outline-1 focus:outline-offset-1 bg-secondary"
+                    onChange={(e) => handleColorWiseQuantity(e, index)}
+                  />
+                </div>
+
+                <InputError>
+                  {errors?.[index]?.colorWiseQuantity?.message &&
+                    errors[index]?.colorWiseQuantity?.message}
+                </InputError>
               </div>
 
               {sizes?.length > 0 && (
-                <SizeWiseQuantity
-                  info={info}
-                  onHandleSizeWiseQuantity={(e, size) =>
-                    handleSizeWiseQuantity(e, index, size)
-                  }
-                  sizes={sizes}
-                />
+                <>
+                  <SizeWiseQuantity
+                    info={info}
+                    onHandleSizeWiseQuantity={(e, size) =>
+                      handleSizeWiseQuantity(e, index, size)
+                    }
+                    sizes={sizes}
+                  />
+                  <InputError>
+                    {errors?.[index]?.colorSizeWiseQuantity?.message &&
+                      errors[index]?.colorSizeWiseQuantity?.message}
+                  </InputError>
+                </>
               )}
 
               <div className="flex justify-center mt-3">

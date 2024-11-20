@@ -132,7 +132,7 @@ export class ProductsService {
         }
       });
     }
-
+    console.log({ formService: clonedPayload.visibility });
     return await this.productsRepo.create(clonedPayload);
 
     // // Save product sizes

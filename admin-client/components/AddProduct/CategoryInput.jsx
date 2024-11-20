@@ -1,64 +1,59 @@
-import { useState } from "react";
-const categories = [
-  {
-    id: 1,
-    name: "Men",
-    subCategory: [
-      {
-        id: 143,
-        name: "Shirt",
-        subCategory: [
-          {
-            id: 1,
-            name: "Full Sleeve",
-            subCategory: [
-              { id: 42, name: "Formal" },
-              { id: 43, name: "Casual" },
-            ],
-          },
-          {
-            id: 2,
-            name: "Half Sleeve",
-            subCategory: [
-              { id: 42, name: "Formal" },
-              { id: 43, name: "Casual" },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Women",
-    subCategory: [
-      {
-        id: 143,
-        name: "Shirt",
-        subCategory: [
-          {
-            id: 1,
-            name: "Full Sleeve",
-            subCategory: [
-              { id: 42, name: "Formal" },
-              { id: 43, name: "Casual" },
-            ],
-          },
-          {
-            id: 2,
-            name: "Half Sleeve",
-            subCategory: [
-              { id: 42, name: "Formal" },
-              { id: 43, name: "Casual" },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
-export default function CategoryInput({ category, setCategory }) {
+import { useGetCategoriesService } from "@/services/api/services/categories";
+import HTTP_CODES from "@/services/api/types/http-codes";
+import { useEffect, useMemo, useState } from "react";
+
+const groupCategoriesByParent = (categories) => {
+  const result = [];
+
+  // First, create a map of categories by their IDs
+  const categoriesMap = new Map();
+  categories.forEach((category) => {
+    categoriesMap.set(category.id, { ...category, subCategory: [] });
+  });
+
+  // Step 2: Populate the result with the top-level categories
+  categories.forEach((category) => {
+    if (category.isVisibleInMenu) {
+      result.push(categoriesMap.get(category.id));
+    }
+
+    // If it has a parentCategory, push it into the parent's subCategory
+    if (category.parentCategory) {
+      const parent = categoriesMap.get(category.parentCategory.id);
+      if (parent) {
+        parent.subCategory.push(categoriesMap.get(category.id));
+      }
+    }
+  });
+
+  return result;
+};
+export default function CategoryInput({ setValue, getValues, name }) {
+  const [categories, setCategories] = useState([]);
+  const fetchCategories = useGetCategoriesService();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { status, data } = await fetchCategories();
+      if (status === HTTP_CODES.OK) {
+        setCategories(data);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleCategorySelect = (category) => {
+    setValue(name, category, { shouldValidate: true });
+    setIsOpen(false); // Close dropdown after selection
+  };
+
+  const groupedCategories = useMemo(
+    () => groupCategoriesByParent(categories),
+    [categories]
+  );
+
+  const category = getValues(name) || null;
   const renderCategoryOptions = (categories, level = 0) => {
     return categories.map((category, i) => {
       const categoryName = category.name;
@@ -95,10 +90,7 @@ export default function CategoryInput({ category, setCategory }) {
       );
     });
   };
-  const handleCategorySelect = (category) => {
-    setCategory({ id: category.id, name: category.name });
-    setIsOpen(false); // Close dropdown after selection
-  };
+
   return (
     <div className="basis-1/2">
       <label className="flex flex-col py-2 text-text label-text">
@@ -113,12 +105,12 @@ export default function CategoryInput({ category, setCategory }) {
         </div>
         {isOpen && (
           <ol
-            className="text-text options absolute top-full left-0	bg-secondary border border-bc rounded-lg px-4 py-2 h-[400px] overflow-hidden overflow-y-scroll z-50"
+            className="text-text options absolute top-full left-0	bg-secondary border border-bc rounded-lg px-4 py-2  overflow-hidden overflow-y-scroll z-50"
             style={{
               scrollbarWidth: "thin",
             }}
           >
-            {renderCategoryOptions(categories)}
+            {renderCategoryOptions(groupedCategories)}
           </ol>
         )}
       </div>
