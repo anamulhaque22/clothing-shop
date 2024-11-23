@@ -95,6 +95,18 @@ export class ProductsController {
     return this.productsService.findOne(id);
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(RoleEnum.admin)
+  @Get(':id/details/admin')
+  @HttpCode(HttpStatus.OK)
+  async findOneByIdForAdmin(
+    @Param('id') id: Product['id'],
+  ): Promise<NullableType<Product>> {
+    return this.productsService.findOne(id);
+  }
   /*
     All product list api
     1. Product will get based on category and the category will be parent cateogry. If category is not provided then it will return all products
@@ -105,7 +117,6 @@ export class ProductsController {
     6. we can add sub category filter
     7. we can add size filter
   */
-
   @SerializeOptions({
     groups: ['user'],
   })

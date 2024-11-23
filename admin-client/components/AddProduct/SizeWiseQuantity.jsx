@@ -18,12 +18,12 @@ export default function SizeWiseQuantity({
               </label>
               <div className="flex gap-2 items-center">
                 <input
-                  value={info.colorSizeWiseQuantity[s?.name]}
+                  name="colorSizeWiseQuantity"
                   type="number"
                   id="size-wise-quantity"
                   className="w-16 text-sm bg-secondary input input-bordered h-7 focus:outline-1 focus:outline-offset-1"
                   onChange={(e) => onHandleSizeWiseQuantity(e, s)}
-                  value={info.colorSizeWiseQuantity[s?.name]}
+                  value={info.colorSizeWiseQuantity[s?.name.toLowerCase()] || 0}
                 />
               </div>
             </div>

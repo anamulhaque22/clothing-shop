@@ -2,7 +2,6 @@ import { Category } from 'src/categories/domain/category';
 import { CategoryEntity } from 'src/categories/infrastructure/entities/category.entity';
 import { ProductSizeEntity } from 'src/product-sizes/infrastructure/entities/product-size.entity';
 import { Image, Product, ProductInfo, Size } from 'src/products/domain/product';
-import { ProductVisibility } from 'src/products/product-visibility.enum';
 import { ProductColorEntity } from '../entities/product-color.entity';
 import { ProductImageEntity } from '../entities/product-image.entity';
 import { ProductEntity } from '../entities/product.entity';
@@ -61,7 +60,7 @@ export class ProductMapper {
     product.sizes = domainSizes;
     product.images = domainImages;
     product.productInfo = domainProductInfo;
-    product.visibility = ProductVisibility[raw.visibility];
+    product.visibility = raw.visibility;
 
     return product;
   }

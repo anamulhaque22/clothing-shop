@@ -15,3 +15,17 @@ export function useGetCategoriesService() {
     [fetchBase]
   );
 }
+
+export function useGetCategoryService() {
+  const fetchBase = useFetchBase();
+
+  return useCallback(
+    (id, requestConfig) => {
+      return fetchBase(`${API_URL}/v1/categories/${id}/`, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetchBase]
+  );
+}

@@ -32,6 +32,7 @@ export class ProductsService {
     images?: Express.Multer.File[];
   }): Promise<ProductImage[]> {
     let imageUploadedRes: CloudinaryResponse[];
+    console.log({ files });
     if (files.images && files?.images?.length > 0) {
       imageUploadedRes = await Promise.all(
         files.images.map((image) =>
@@ -39,6 +40,8 @@ export class ProductsService {
         ),
       );
     }
+
+    console.log({ imageUploadedRes });
 
     return Promise.all(
       imageUploadedRes.map((image) => {

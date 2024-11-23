@@ -1,27 +1,72 @@
 "use client";
-import moment from "moment";
+import { useProductListQuery } from "@/app/(with-dashboard-layout)/products/queries/products-queries";
+import { useGetCategoryService } from "@/services/api/services/categories";
+import withPageRequiredAuth from "@/services/auth/page-with-required-auth";
+import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import CategoryFilter from "./components/CategoryFilter";
 
-export default function AllProductList() {
+function AllProductList() {
+  const searchParams = useSearchParams();
+  const fetchCategory = useGetCategoryService();
+  const router = useRouter();
+  const [clothFor, setClothFor] = useState(null);
+  const [categories, setCategories] = useState(null);
+
+  const filter = useMemo(() => {
+    const category = searchParams.get("category");
+
+    const filterPamams = {
+      category: category,
+    };
+
+    return filterPamams;
+  }, [searchParams]);
+
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useProductListQuery(filter);
+
+  const handleScroll = useCallback(() => {
+    if (!hasNextPage || isFetchingNextPage) return;
+
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = typeof window === undefined ? 0 : window.innerHeight;
+
+    if (scrollHeight - scrollTop <= clientHeight + 300) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      typeof window !== "undefined" &&
+        window.removeEventListener("scroll", handleScroll); // Clean up the event listener
+    };
+  }, [handleScroll]);
+
+  const result = useMemo(() => {
+    const result = data?.pages.flatMap((page) => page?.data) ?? null;
+    if (result) {
+      return removeDuplicatesFromArrayObjects(result, "id");
+    }
+    return null;
+  }, [data]);
+
+  console.log(result);
   return (
     <>
       <div className="flex justify-between">
-        <select className="select select-bordered w-full max-w-xs focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
-          <option disabled selected>
-            All Category
-          </option>
-          <option>Small Apple</option>
-          <option>Small Orange</option>
-          <option>Small Tomato</option>
-        </select>
+        <CategoryFilter />
 
-        <select className="select select-bordered w-full max-w-xs focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
-          <option disabled selected>
-            Status
-          </option>
-          <option>Active</option>
-          <option>Hidden</option>
-        </select>
+        {/* <VisibilityFilter /> */}
       </div>
       <div className="overflow-x-auto w-full text-text">
         <table className="table w-full ">
@@ -37,98 +82,55 @@ export default function AllProductList() {
             </tr>
           </thead>
           <tbody>
-            <tr key="" className="hover:bg-[#8b33fd21] !border-bc">
-              <td>
-                <div className="flex items-center space-x-3">
+            {result?.map((product) => (
+              <tr key={product?.id} className="hover:bg-[#8b33fd21] !border-bc">
+                <td>
                   <div className="avatar">
                     <div className="w-12 h-12">
                       <Image
-                        src={"/images/2.jpg"}
+                        src={
+                          product?.images?.[0]?.imageUrl ||
+                          "/images/product-placeholder.jpg"
+                        }
                         width={250}
                         height={250}
                         alt="product image"
                       />
                     </div>
                   </div>
-                  <div>
-                    <div className="font-bold">first name</div>
+                </td>
+                <td>{product?.title}</td>
+                <td>$ {product?.buyPrice}</td>
+                <td>$ {product?.sellPrice}</td>
+                <td>{product?.quantity}</td>
+                <td>
+                  <button className="btn btn-primary !text-text btn-xs cursor-default">
+                    {product?.visibility}
+                  </button>
+                </td>
+                <td>
+                  <div className="flex flex-row gap-x-1">
+                    <Link
+                      href={`/products/edit/${product?.id}`}
+                      className="btn btn-primary !text-text btn-xs"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      className="btn btn-primary !text-text btn-xs"
+                      type="submit"
+                    >
+                      Delete
+                    </button>
                   </div>
-                </div>
-              </td>
-              <td>email</td>
-              <td>{moment(new Date()).format("DD MMM YY")}</td>
-              <td>status</td>
-              <td>last name</td>
-              <td>
-                <button className="btn btn-primary !text-text btn-xs">
-                  Edit
-                </button>
-              </td>
-              <td>
-                <div className="flex flex-row gap-x-1">
-                  <button
-                    className="btn btn-primary !text-text btn-xs"
-                    type="submit"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-primary !text-text btn-xs"
-                    type="submit"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            <tr key="" className="hover:bg-[#8b33fd21] !border-bc">
-              <td>
-                <div className="flex items-center space-x-3">
-                  <div className="avatar">
-                    <div className="w-12 h-12">
-                      <Image
-                        src={"/images/2.jpg"}
-                        width={250}
-                        height={250}
-                        alt="product image"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-bold">first name</div>
-                  </div>
-                </div>
-              </td>
-              <td>email</td>
-              <td>{moment(new Date()).format("DD MMM YY")}</td>
-              <td>status</td>
-              <td>last name</td>
-              <td>
-                <button className="btn btn-primary !text-text btn-xs">
-                  Edit
-                </button>
-              </td>
-              <td>
-                <div className="flex flex-row gap-x-1">
-                  <button
-                    className="btn btn-primary !text-text btn-xs"
-                    type="submit"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-primary !text-text btn-xs"
-                    type="submit"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
     </>
   );
 }
+
+export default withPageRequiredAuth(AllProductList);

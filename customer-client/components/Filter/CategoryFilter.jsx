@@ -4,45 +4,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import FilterSection from "./FilterSection";
 
-// const categoryList = [
-//   {
-//     id: 1,
-//     name: "Tops",
-//   },
-//   {
-//     id: 2,
-//     name: "Printed T-shirts",
-//   },
-//   {
-//     id: 3,
-//     name: "Plain T-shirts",
-//   },
-//   {
-//     id: 4,
-//     name: "Kurti",
-//   },
-//   {
-//     id: 5,
-//     name: "Boxers",
-//   },
-//   {
-//     id: 6,
-//     name: "Full sleeve T-shirts",
-//   },
-//   {
-//     id: 7,
-//     name: "Joggers",
-//   },
-//   {
-//     id: 8,
-//     name: "Payjamas",
-//   },
-//   {
-//     id: 9,
-//     name: "Jeans",
-//   },
-// ];
-
 const CategoryFilter = ({ productFor }) => {
   const router = useRouter();
   const [categoryList, setCategoryList] = useState([]);

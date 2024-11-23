@@ -7,6 +7,7 @@ import {
 } from "@/services/api/services/product";
 import HTTP_CODES from "@/services/api/types/http-codes";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/navigation";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import InputError from "../Input/InputError";
@@ -56,6 +57,7 @@ const schema = yup.object().shape({
 });
 
 const AddProductForm = () => {
+  const router = useRouter();
   const fetchUploadImages = useUploadProductImagesService();
   const fetchCreateProduct = useCreateProductService();
   const showToast = useToast();
@@ -88,17 +90,7 @@ const AddProductForm = () => {
 
   const sizes = methods.watch("sizes");
 
-  console.log({ errors });
-
   const onSubmit = handleSubmit(async (formData) => {
-    console.log({ formData });
-    // cnsole the errors if any
-    // const errors = await methods.trigger();
-    // if (errors?.error?.length > 0) {
-    // if(errors.)showToast(errors.error.color.message, "error");
-    // return;
-    // }
-
     // validate quantity and size wise quantity
     const invalidProductInfo = formData.productInfo.find((info) => {
       const sizeWiseQuantity = Object.values(info.colorSizeWiseQuantity);
@@ -162,6 +154,7 @@ const AddProductForm = () => {
 
     showToast("Product created successfully", "success");
     reset();
+    router.push("/products");
   });
 
   return (
