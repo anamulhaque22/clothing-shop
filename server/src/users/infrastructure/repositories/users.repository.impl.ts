@@ -96,6 +96,8 @@ export class UsersRepositoryImpl implements IUserRepository {
       }));
     }
 
+    console.log({ filterOptions });
+
     const entities = await this.usersRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,

@@ -13,8 +13,10 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { Status } from 'src/statuses/domain/status';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { NullableType } from 'src/utils/types/nullable.type';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { User, UserImage } from './domain/user';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
   IUserRepository,
@@ -130,6 +132,22 @@ export class UsersService {
 
   findById(id: User['id']): Promise<NullableType<User>> {
     return this.usersRepository.findById(id);
+  }
+
+  findManyWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterUserDto | null;
+    sortOptions?: SortUserDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }) {
+    return this.usersRepository.findManyWithPagination({
+      filterOptions,
+      sortOptions,
+      paginationOptions,
+    });
   }
 
   findByEmail(email: User['email']): Promise<NullableType<User>> {

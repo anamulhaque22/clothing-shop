@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   SerializeOptions,
   UploadedFiles,
   UseGuards,
@@ -19,10 +20,13 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Roles } from 'src/roles/roles.decorators';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { RolesGuard } from 'src/roles/roles.guard';
+import { InfinityPaginationResponseDto } from 'src/utils/dto/infinity-pagination-response.dto';
 import { imageFileFilter } from 'src/utils/image-file-filter';
+import { infinityPagination } from 'src/utils/infinity-pagination';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { User, UserImage } from './domain/user';
 import { CreateUserDto } from './dto/create-user.dto';
+import { QueryUserDto } from './dto/query-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
@@ -53,6 +57,33 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async findAll(
+    @Query() query: QueryUserDto,
+  ): Promise<InfinityPaginationResponseDto<User>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    return infinityPagination(
+      await this.usersService.findManyWithPagination({
+        filterOptions: query?.filters,
+        sortOptions: query?.sort,
+        paginationOptions: {
+          page,
+          limit,
+        },
+      }),
+      { page, limit },
+    );
+  }
+
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(
@@ -68,8 +99,6 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.user)
-  @UseGuards(AuthGuard, RolesGuard)
   @Post('image')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(

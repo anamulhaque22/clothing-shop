@@ -1,9 +1,11 @@
 "use client";
 import { ROLES } from "@/constants";
+import { useGetUserService } from "@/services/api/services/user";
+import HTTP_CODES from "@/services/api/types/http-codes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import InputText from "../../components/Input/InputText";
@@ -32,7 +34,11 @@ const validationSchema = yup.object().shape({
 });
 
 export default function EditUser() {
+  const params = useParams();
   const [imagePreview, setImagePreview] = useState(null);
+  const [product, setProduct] = useState(null);
+  const userId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const fetchUser = useGetUserService();
 
   const methods = useForm({
     resolver: yupResolver(validationSchema),
@@ -48,7 +54,7 @@ export default function EditUser() {
     },
   });
 
-  const { handleSubmit, setError } = methods;
+  const { handleSubmit, setError, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
     // const { data, status } = await fetchAuthLogin(formData);
@@ -71,6 +77,24 @@ export default function EditUser() {
     // }
   });
 
+  useEffect(() => {
+    const getInitialDataForEdit = async () => {
+      const { data, status } = await fetchUser(userId);
+
+      if (status === HTTP_CODES.OK) {
+        reset({
+          ...data,
+          role: {
+            id: data.role.id,
+            name: data.role.name,
+          },
+        });
+        // setProduct(data);
+      }
+    };
+    getInitialDataForEdit();
+  }, [userId, fetchUser]);
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -85,99 +109,93 @@ export default function EditUser() {
     }
   };
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={onSubmit}>
-        <div className="flex justify-center mb-4">
-          <label htmlFor="avatar" className="cursor-pointer">
-            <Image
-              src={imagePreview ?? "/images/avatar-placeholder.png"}
-              height={130}
-              width={130}
-              className="rounded-full"
-              alt="avatar"
-            />
-          </label>
-          <Controller
-            name="avatar"
-            render={({ field }) => (
-              <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                accept="image/png, image/jpeg"
-                className="hidden"
-                onChange={handleImageUpload}
+    <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
+      <FormProvider {...methods}>
+        <form onSubmit={onSubmit}>
+          <div className="flex justify-center mb-4">
+            <label htmlFor="avatar" className="cursor-pointer">
+              <Image
+                src={imagePreview ?? "/images/avatar-placeholder.png"}
+                height={130}
+                width={130}
+                className="rounded-full"
+                alt="avatar"
               />
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:gap-x-3 gap-y-4">
-          <InputText
-            name="firstName"
-            type="text"
-            containerStyle="mt-0"
-            labelTitle="First name"
-          />
-
-          <InputText
-            name="lastName"
-            type="text"
-            containerStyle="mt-0 "
-            labelTitle="Last name"
-          />
-
-          <InputText
-            name="email"
-            type="email"
-            containerStyle="mt-0 "
-            labelTitle="Email"
-          />
-
-          <div className="form-control w-full">
-            <label
-              htmlFor="role"
-              className={`label font-causten-semi-bold text-base text-text`}
-            >
-              Select User Role
             </label>
-            <select className="select select-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
-              <option value={ROLES.USER}>User</option>
-              <option value={ROLES.ADMIN}>Admin</option>
-            </select>
+            <Controller
+              name="avatar"
+              render={({ field }) => (
+                <input
+                  type="file"
+                  id="avatar"
+                  name="avatar"
+                  accept="image/png, image/jpeg"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:gap-x-3 gap-y-4">
+            <InputText
+              name="firstName"
+              type="text"
+              containerStyle="mt-0"
+              labelTitle="First name"
+            />
+
+            <InputText
+              name="lastName"
+              type="text"
+              containerStyle="mt-0 "
+              labelTitle="Last name"
+            />
+
+            <InputText
+              name="email"
+              type="email"
+              containerStyle="mt-0 "
+              labelTitle="Email"
+            />
+
+            <div className="form-control w-full">
+              <label
+                htmlFor="role"
+                className={`label font-causten-semi-bold text-base text-text`}
+              >
+                Select User Role
+              </label>
+              <select className="select select-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
+                <option value={ROLES.USER}>User</option>
+                <option value={ROLES.ADMIN}>Admin</option>
+              </select>
+            </div>
+
+            <InputText
+              name="password"
+              type="password"
+              containerStyle="mt-0 "
+              labelTitle="Password"
+            />
+
+            <InputText
+              name="confirmPassword"
+              type="password"
+              containerStyle="mt-0 "
+              labelTitle="Confirm Password"
+            />
           </div>
 
-          <InputText
-            name="password"
-            type="password"
-            containerStyle="mt-0 "
-            labelTitle="Password"
-          />
-
-          <InputText
-            name="confirmPassword"
-            type="password"
-            containerStyle="mt-0 "
-            labelTitle="Confirm Password"
-          />
-        </div>
-
-        <div className="text-right text-primary">
-          <Link href="/forgot-password">
-            <span className="text-sm  inline-block  hover:text-primary hover:underline hover:cursor-pointer transition duration-200">
-              Forgot Password?
-            </span>
-          </Link>
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className={"btn mt-2  btn-primary" + (false ? " loading" : "")}
-          >
-            Login
-          </button>
-        </div>
-      </form>
-    </FormProvider>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className={"btn mt-2  btn-primary" + (false ? " loading" : "")}
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </FormProvider>
+    </div>
   );
 }

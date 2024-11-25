@@ -1,6 +1,8 @@
 import { User, UserImage } from 'src/users/domain/user';
 import { NullableType } from 'src/utils/types/nullable.type';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { DeepPartial } from 'typeorm';
+import { FilterUserDto, SortUserDto } from '../dto/query-user.dto';
 import { UserImageEntity } from './entities/user-image.entity';
 
 export interface IUserRepository {
@@ -8,15 +10,15 @@ export interface IUserRepository {
     data: Omit<User, 'id' | 'createdAt' | 'deletedAt' | 'updatedAt'>,
   ): Promise<User>;
 
-  // findManyWithPagination({
-  //   filterOptions,
-  //   sortOptions,
-  //   paginationOptions,
-  // }: {
-  //   filterOptions: FilterUserDto | null;
-  //   sortOptions: SortUserDto;
-  //   paginationOptions: IPaginationOptions;
-  // }): Promise<User[]>;
+  findManyWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterUserDto | null;
+    sortOptions?: SortUserDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<User[]>;
 
   findById(id: User['id']): Promise<NullableType<User>>;
 
