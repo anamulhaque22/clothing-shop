@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { HiBars3 } from "react-icons/hi2";
 import ThemeSwitch from "../ThemeSwitch";
@@ -38,7 +39,14 @@ function Header() {
           <div className="dropdown dropdown-end ml-4">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
-                <img src="https://placeimg.com/80/80/people" alt="profile" />
+                <Image
+                  src={"/images/avatar-placeholder.png"}
+                  height={130}
+                  width={130}
+                  className="rounded-full  object-fill"
+                  alt="avatar"
+                />
+                {/* <img src="https://placeimg.com/80/80/people" alt="profile" /> */}
               </div>
             </label>
             <ul

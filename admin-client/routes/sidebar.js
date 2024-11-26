@@ -65,12 +65,12 @@ const routes = [
     name: "Users",
     submenu: [
       {
-        path: "/user",
+        path: "/users",
         icon: <FaUsersLine className={submenuIconClasses} />,
         name: "User List",
       },
       {
-        path: "/user/create",
+        path: "/users/create",
         icon: <FaUserPlus className={submenuIconClasses} />,
         name: "Add User",
       },

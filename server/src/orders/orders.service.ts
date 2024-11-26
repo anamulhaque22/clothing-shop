@@ -156,7 +156,6 @@ export class OrdersService {
           );
           break;
         case PAYMENT_PROVIDER.COD:
-          console.log('COD');
           await this.paymentService.createPayment(
             {
               amount: totalAmount,

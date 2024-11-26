@@ -1,5 +1,5 @@
 "use client";
-import { useUserListQuery } from "@/app/(with-dashboard-layout)/user/queries/user-query";
+import { useUserListQuery } from "@/app/(with-dashboard-layout)/users/queries/user-query";
 import { SORT_TYPE } from "@/constants/sort-type";
 import withPageRequiredAuth from "@/services/auth/page-with-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
@@ -46,7 +46,6 @@ function UserListView() {
     return undefined;
   }, [searchParams]);
 
-  console.log(filter);
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useUserListQuery({ filter, sort: { order, orderBy } });
 
@@ -66,7 +65,7 @@ function UserListView() {
         <FilterUser />
 
         <Link
-          href={"/user/create"}
+          href={"/users/create"}
           className="btn btn-sm btn-primary !text-text"
           type="submit"
         >
@@ -163,21 +162,21 @@ function UserListView() {
               <td className="text-left pl-2 pr-3 text-text ">
                 <div className="flex gap-x-1">
                   <Link
-                    href={`/user/details/${user.id}`}
+                    href={`/users/details/${user.id}`}
                     className="btn btn-primary btn-sm text-text"
                   >
                     <FiUser />
                   </Link>
 
                   <Link
-                    href={`/user/edit/${user.id}`}
+                    href={`/users/edit/${user.id}`}
                     className="btn btn-primary btn-sm text-text"
                   >
                     <FaUserPen />
                   </Link>
 
                   <Link
-                    href={`/user/delete/${user.id}`}
+                    href={`/users/delete/${user.id}`}
                     className="btn btn-primary btn-sm text-text"
                   >
                     <FaTrash />

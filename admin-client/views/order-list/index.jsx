@@ -63,9 +63,6 @@ export default function OrderList() {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useOrderListQuery({ filter, sort: { order, orderBy }, search: search });
 
-  // const test = useOrderListQuery({ filter, sort: { order, orderBy } });
-  // console.log(test);
-
   const handleScroll = useCallback(() => {
     if (!hasNextPage || isFetchingNextPage) return;
     fetchNextPage();

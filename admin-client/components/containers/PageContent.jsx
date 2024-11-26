@@ -1,8 +1,6 @@
 import Header from "./Header";
 
 function PageContent({ children }) {
-  // console.log("PageContent: ", children);
-
   return (
     <div className="drawer-content flex flex-col ">
       <Header />

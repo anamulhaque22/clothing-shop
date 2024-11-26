@@ -30,8 +30,6 @@ export class ProductRepositoryImpl implements ProductRepository {
   async create(data: Product): Promise<Product> {
     const persistenceModel = ProductMapper.toPersistence(data);
 
-    console.log({ fromPer: persistenceModel.visibility });
-
     const entities = await this.productRepository.save(
       this.productRepository.create(persistenceModel),
     );

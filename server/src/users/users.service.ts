@@ -43,6 +43,7 @@ export class UsersService {
 
     return this.usersRepository.uploadUserImage({
       url: imageUploadedRes.secure_url,
+      publicId: imageUploadedRes.public_id,
     });
   }
 

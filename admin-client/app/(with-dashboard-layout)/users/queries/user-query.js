@@ -8,7 +8,6 @@ export const useUserListQuery = ({ sort, filter }) => {
     queryKey: ["users", sort, filter],
     initialPageParam: 1,
     queryFn: async ({ pageParam, signal }) => {
-      console.log({ pageParam, sort, filter });
       const { status, data } = await fetch(
         {
           page: pageParam,
@@ -21,7 +20,6 @@ export const useUserListQuery = ({ sort, filter }) => {
         }
       );
 
-      console.log({ data, status });
       if (status === HTTP_CODES.OK) {
         return {
           data: data.data,

@@ -19,9 +19,14 @@ export class UsersRepositoryImpl implements IUserRepository {
     private readonly userImagesRepository: Repository<UserImageEntity>,
   ) {}
 
-  async uploadUserImage(data: Omit<UserImage, 'id'>): Promise<UserImage> {
+  async uploadUserImage(
+    data: Omit<UserImage, 'id'> & {
+      publicId: string;
+    },
+  ): Promise<UserImage> {
     const newImage = new UserImageEntity();
     newImage.url = data.url;
+    newImage.publicId = data.publicId;
     return this.userImagesRepository.save(
       this.userImagesRepository.create(newImage),
     );
@@ -95,8 +100,6 @@ export class UsersRepositoryImpl implements IUserRepository {
         id: role.id,
       }));
     }
-
-    console.log({ filterOptions });
 
     const entities = await this.usersRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,

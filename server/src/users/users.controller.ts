@@ -11,6 +11,7 @@ import {
   Post,
   Query,
   SerializeOptions,
+  UnprocessableEntityException,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -90,6 +91,7 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: User['id'],
     @Body() updateProfileDto: UpdateUserDto,
   ): Promise<User | null> {
+    console.log({ updateProfileDto });
     return this.usersService.update(id, updateProfileDto);
   }
 
@@ -114,6 +116,10 @@ export class UsersController {
     ),
   )
   async uploadImage(@UploadedFiles() files: { image?: Express.Multer.File }) {
+    if (!files || !files.image) {
+      throw new UnprocessableEntityException('You need to upload an image.');
+    }
+    console.log(files.image);
     return this.usersService.uploadUserImage(files['image'][0]);
   }
 

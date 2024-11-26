@@ -60,7 +60,6 @@ function AllProductList() {
     return null;
   }, [data]);
 
-  console.log(result);
   return (
     <>
       <div className="flex justify-between">

@@ -13,7 +13,6 @@ export default function FilterUser() {
     const searchParamsFilter = searchParams.get("filter");
     if (searchParamsFilter) {
       const parsedFilters = JSON.parse(searchParamsFilter);
-      console.log(parsedFilters);
       return parsedFilters.roles || [];
     }
     return [];

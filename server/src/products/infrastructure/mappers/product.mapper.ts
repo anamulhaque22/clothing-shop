@@ -118,7 +118,7 @@ export class ProductMapper {
     productEntity.sizes = sizes;
     productEntity.images = images;
     productEntity.productColors = productColors;
-    console.log({ visi: product.visibility });
+
     productEntity.visibility = product.visibility;
 
     return productEntity;

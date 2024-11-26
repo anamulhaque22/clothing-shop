@@ -53,7 +53,6 @@ function AuthProvider({ children }) {
   );
 
   const logOut = useCallback(async () => {
-    console.log("logOut");
     if (tokensInfoRef.current.token) {
       await fetchBase(
         AUTH_LOGOUT_URL,

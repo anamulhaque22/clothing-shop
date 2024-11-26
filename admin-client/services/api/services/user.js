@@ -48,3 +48,53 @@ export function useGetUserService() {
     [fetch]
   );
 }
+
+// udpate user
+export function usePatchUserService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (data, reqConfig) => {
+      return fetch(`${API_URL}/v1/users/${data.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data.data),
+        ...reqConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetch]
+  );
+}
+
+// upload user image
+export function useUploadUserImageService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (fileData, reqConfig) => {
+      const data = new FormData();
+      data.append("image", fileData);
+      return fetch(`${API_URL}/v1/users/image`, {
+        method: "POST",
+        body: data,
+        ...reqConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetch]
+  );
+}
+
+// create user
+export function usePostUserService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (data, reqConfig) => {
+      return fetch(`${API_URL}/v1/users`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        ...reqConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetch]
+  );
+}

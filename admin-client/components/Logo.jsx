@@ -10,8 +10,6 @@ export default function Logo() {
 
   if (!mounted) return null;
 
-  console.log("resolvedTheme", resolvedTheme);
-
   const logoSrc =
     resolvedTheme === "dark"
       ? "/images/euphoria-white.png"

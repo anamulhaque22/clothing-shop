@@ -98,7 +98,6 @@ const AddProductForm = () => {
         (acc, qty) => acc + qty,
         0
       );
-      console.log({ totalSizeWiseQuantity, sizeWiseQuantity });
       return info.colorWiseQuantity < totalSizeWiseQuantity;
     });
 
@@ -147,7 +146,6 @@ const AddProductForm = () => {
       productData
     );
     if (createStatus !== HTTP_CODES.CREATED) {
-      console.log({ createData, createStatus });
       showToast("Failed to create product", "error");
       return;
     }

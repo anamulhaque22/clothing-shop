@@ -1,10 +1,10 @@
-import { Exclude, Expose } from 'class-transformer';
-import { AddressEntity } from 'src/addresses/infrastructure/entities/address.entity';
-import { AuthProvidersEnum } from 'src/auth/auth-provider.enum';
-import { OrderEntity } from 'src/orders/infrastructure/entities/order.entity';
-import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
-import { StatusEntity } from 'src/statuses/infrastructure/entities/status.entity';
-import { EntityHelper } from 'src/utils/entity-helper';
+import { Exclude, Expose } from "class-transformer";
+import { AddressEntity } from "src/addresses/infrastructure/entities/address.entity";
+import { AuthProvidersEnum } from "src/auth/auth-provider.enum";
+import { OrderEntity } from "src/orders/infrastructure/entities/order.entity";
+import { RoleEntity } from "src/roles/infrastructure/entities/role.entity";
+import { StatusEntity } from "src/statuses/infrastructure/entities/status.entity";
+import { EntityHelper } from "src/utils/entity-helper";
 import {
   AfterLoad,
   Column,
@@ -18,18 +18,18 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { UserImageEntity } from './user-image.entity';
+} from "typeorm";
+import { UserImageEntity } from "./user-image.entity";
 
 @Entity({
-  name: 'user',
+  name: "user",
 })
 export class UserEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: String, unique: true, nullable: true })
-  @Expose({ groups: ['me', 'admin'] })
+  @Expose({ groups: ["me", "admin"] })
   email: string | null;
 
   @Column({ nullable: true })
@@ -45,12 +45,12 @@ export class UserEntity extends EntityHelper {
   }
 
   @Column({ default: AuthProvidersEnum.email })
-  @Expose({ groups: ['me', 'admin'] })
+  @Expose({ groups: ["me", "admin"] })
   provider: string;
 
   @Index()
   @Column({ type: String, nullable: true })
-  @Expose({ groups: ['me', 'admin'] })
+  @Expose({ groups: ["me", "admin"] })
   socialId?: string | null;
 
   @Index()
@@ -61,7 +61,7 @@ export class UserEntity extends EntityHelper {
   @Column({ type: String, nullable: true })
   lastName: string | null;
 
-  @OneToOne(() => UserImageEntity, { cascade: true })
+  @OneToOne(() => UserImageEntity, { cascade: true, eager: true })
   @JoinColumn()
   photo?: UserImageEntity | null;
 

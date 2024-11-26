@@ -35,7 +35,11 @@ export interface IUserRepository {
   update(id: User['id'], payload: DeepPartial<User>): Promise<User | null>;
   remove(id: User['id']): Promise<void>;
 
-  uploadUserImage(data: Omit<UserImage, 'id'>): Promise<UserImage>;
+  uploadUserImage(
+    data: Omit<UserImage, 'id'> & {
+      publicId: string;
+    },
+  ): Promise<UserImage>;
   removeUserImage(id: UserImage['id']): Promise<UserImageEntity['publicId']>;
 }
 export const USERS_REPOSITORY_TOKEN = 'users-repository-token';

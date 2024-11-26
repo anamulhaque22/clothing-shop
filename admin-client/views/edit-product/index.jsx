@@ -104,12 +104,9 @@ const EditProduct = () => {
     formState: { errors },
   } = methods;
 
-  console.log({ errors });
-
   const sizes = methods.watch("sizes");
 
   const onSubmit = handleSubmit(async (formData) => {
-    console.log({ formData });
     // validate quantity and size wise quantity
     const invalidProductInfo = formData.productInfo.find((info) => {
       const sizeWiseQuantity = Object.values(info.colorSizeWiseQuantity);
@@ -117,7 +114,7 @@ const EditProduct = () => {
         (acc, qty) => acc + qty,
         0
       );
-      console.log({ totalSizeWiseQuantity, sizeWiseQuantity });
+
       return info.colorWiseQuantity < totalSizeWiseQuantity;
     });
 
@@ -132,8 +129,6 @@ const EditProduct = () => {
     const productImages = formData.productInfo.filter(
       (info) => info.image && info.image instanceof File
     );
-
-    console.log({ productImages });
 
     // upload images
     let imgResData = null;
@@ -174,7 +169,6 @@ const EditProduct = () => {
       productData
     );
 
-    console.log({ createData, createStatus });
     if (createStatus !== HTTP_CODES.OK) {
       showToast("Failed to udpate product", "error");
       return;
@@ -189,7 +183,6 @@ const EditProduct = () => {
     const product = async () => {
       try {
         const { data, status } = await fetchProduct(productId);
-        console.log({ product: data });
         if (status === HTTP_CODES.OK) {
           reset({
             title: data.title,
