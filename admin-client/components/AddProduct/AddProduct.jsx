@@ -156,201 +156,203 @@ const AddProductForm = () => {
   });
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={onSubmit}>
-        <div className="form-control w-full">
-          <InputText
-            name="title"
-            type="text"
-            containerStyle="mt-0"
-            labelTitle="Product Title"
-            placeholder="Product Title"
-            inputStyle="h-10"
-          />
-        </div>
-
-        <div className="mt-4">
-          <label htmlFor="description" className="label label-text text-text">
-            Product Description
-          </label>
-          <Controller
-            name="description"
-            control={control}
-            render={({ field, fieldState }) => (
-              <>
-                <textarea
-                  {...field}
-                  placeholder="Product Description"
-                  rows={5}
-                  cols={20}
-                  className="py-2 input !h-auto text-text input-bordered w-full  focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
-                ></textarea>
-                <InputError>
-                  {fieldState.error ? fieldState.error.message : ""}
-                </InputError>
-              </>
-            )}
-          />
-        </div>
-
-        <div className="mt-4 flex items-center gap-x-7">
-          <div className="form-control basis-1/2">
+    <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
+      <FormProvider {...methods}>
+        <form onSubmit={onSubmit}>
+          <div className="form-control w-full">
             <InputText
-              name="buyPrice"
-              type="number"
+              name="title"
+              type="text"
               containerStyle="mt-0"
-              labelTitle="Buy Price"
-              placeholder="$ 0.00"
+              labelTitle="Product Title"
+              placeholder="Product Title"
               inputStyle="h-10"
             />
           </div>
-          <div className="form-control basis-1/2">
-            <InputText
-              name="sellPrice"
-              type="number"
-              containerStyle="mt-0"
-              labelTitle="Sell Price"
-              placeholder="$ 0.00"
-              inputStyle="h-10"
-            />
-          </div>
-        </div>
 
-        <div className="mt-4 flex items-center gap-x-7">
-          <div className="basis-1/2">
-            <InputText
-              name="discount"
-              type="number"
-              containerStyle="mt-0"
-              labelTitle="Discounts"
-              placeholder="0 %"
-              inputStyle="h-10"
-            />
-          </div>
-          {/* quantity  */}
-          <div className="form-control basis-1/2">
-            <InputText
-              name="quantity"
-              type="number"
-              containerStyle="mt-0"
-              labelTitle="Quantity"
-              placeholder="Quantity"
-              inputStyle="h-10"
-            />
-          </div>
-        </div>
-
-        {/* size and category */}
-        <div className="mt-4 grid grid-cols-2 it gap-x-7">
-          <Controller
-            name="sizes"
-            control={methods.control}
-            render={({ field, fieldState }) => (
-              <div className="flex flex-col">
-                <SizesInput
-                  {...field}
-                  setValue={setValue}
-                  getValues={getValues}
-                />
-                <InputError>
-                  {fieldState.error ? fieldState.error.message : ""}
-                </InputError>
-              </div>
-            )}
-          />
-          {/* <SizesInput sizes={sizes} handleSelectSize={handleSelectSize} /> */}
-          <Controller
-            name="category"
-            control={methods.control}
-            render={({ field, fieldState }) => (
-              <div className="flex flex-col w-full">
-                <CategoryInput
-                  {...field}
-                  setValue={setValue}
-                  getValues={getValues}
-                />
-
-                <InputError>
-                  {fieldState.error ? fieldState.error.message : ""}
-                </InputError>
-              </div>
-            )}
-          />
-        </div>
-
-        {/* Visivility and tags inputs */}
-        <div className="mt-4 grid grid-cols-2 gap-x-7">
-          <div className="basis-1/2 flex flex-col">
-            <label htmlFor="price" className="label label-text text-text">
-              Visivility:
+          <div className="mt-4">
+            <label htmlFor="description" className="label label-text text-text">
+              Product Description
             </label>
             <Controller
-              name="visibility"
-              control={methods.control}
-              defaultValue={ProductVisibility.HIDDEN}
-              render={({ field }) => (
-                <select
-                  className="text-text input-bordered border bg-secondary h-10 px-4 pr-8 rounded leading-tight focus:outline-1 focus:outline-offset-1 focus:bg-white dark:focus:bg-secondary"
-                  {...field}
-                  id="visibility"
-                >
-                  {Object.entries(ProductVisibility).map(([key, value]) => (
-                    <option key={key} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
+              name="description"
+              control={control}
+              render={({ field, fieldState }) => (
+                <>
+                  <textarea
+                    {...field}
+                    placeholder="Product Description"
+                    rows={5}
+                    cols={20}
+                    className="py-2 input !h-auto text-text input-bordered w-full  focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
+                  ></textarea>
+                  <InputError>
+                    {fieldState.error ? fieldState.error.message : ""}
+                  </InputError>
+                </>
               )}
             />
           </div>
-          <Controller
-            name="tags"
-            control={control}
-            render={({ field, fieldState }) => (
-              <div className="flex flex-col w-full">
-                <TagsInput
-                  tags={field.value}
-                  onSetTags={(updatedTags) => field.onChange(updatedTags)}
-                />
 
-                <InputError>
-                  {fieldState.error ? fieldState.error.message : ""}
-                </InputError>
-              </div>
-            )}
-          />
-          {/* <TagsInput tags={tags} onSetTags={setTags} /> */}
-        </div>
+          <div className="mt-4 flex items-center gap-x-7">
+            <div className="form-control basis-1/2">
+              <InputText
+                name="buyPrice"
+                type="number"
+                containerStyle="mt-0"
+                labelTitle="Buy Price"
+                placeholder="$ 0.00"
+                inputStyle="h-10"
+              />
+            </div>
+            <div className="form-control basis-1/2">
+              <InputText
+                name="sellPrice"
+                type="number"
+                containerStyle="mt-0"
+                labelTitle="Sell Price"
+                placeholder="$ 0.00"
+                inputStyle="h-10"
+              />
+            </div>
+          </div>
 
-        <div className="mt-4">
-          <Controller
-            control={control}
-            name="productInfo"
-            render={({ field, fieldState }) => {
-              return (
-                <>
-                  <ColorPickerFromImage
+          <div className="mt-4 flex items-center gap-x-7">
+            <div className="basis-1/2">
+              <InputText
+                name="discount"
+                type="number"
+                containerStyle="mt-0"
+                labelTitle="Discounts"
+                placeholder="0 %"
+                inputStyle="h-10"
+              />
+            </div>
+            {/* quantity  */}
+            <div className="form-control basis-1/2">
+              <InputText
+                name="quantity"
+                type="number"
+                containerStyle="mt-0"
+                labelTitle="Quantity"
+                placeholder="Quantity"
+                inputStyle="h-10"
+              />
+            </div>
+          </div>
+
+          {/* size and category */}
+          <div className="mt-4 grid grid-cols-2 it gap-x-7">
+            <Controller
+              name="sizes"
+              control={methods.control}
+              render={({ field, fieldState }) => (
+                <div className="flex flex-col">
+                  <SizesInput
                     {...field}
-                    productInfo={getValues("productInfo")}
-                    setProductInfo={setValue}
-                    sizes={getValues("sizes")}
-                    errors={fieldState.error}
+                    setValue={setValue}
+                    getValues={getValues}
                   />
-                  {fieldState.error && (
-                    <InputError>{fieldState.error.message}</InputError>
-                  )}
-                </>
-              );
-            }}
-          />
-        </div>
-        <div className="flex justify-end">
-          <button className="btn btn-primary mt-4 !text-text" type="submit">
-            Add Product
-          </button>
-        </div>
-      </form>
-    </FormProvider>
+                  <InputError>
+                    {fieldState.error ? fieldState.error.message : ""}
+                  </InputError>
+                </div>
+              )}
+            />
+            {/* <SizesInput sizes={sizes} handleSelectSize={handleSelectSize} /> */}
+            <Controller
+              name="category"
+              control={methods.control}
+              render={({ field, fieldState }) => (
+                <div className="flex flex-col w-full">
+                  <CategoryInput
+                    {...field}
+                    setValue={setValue}
+                    getValues={getValues}
+                  />
+
+                  <InputError>
+                    {fieldState.error ? fieldState.error.message : ""}
+                  </InputError>
+                </div>
+              )}
+            />
+          </div>
+
+          {/* Visivility and tags inputs */}
+          <div className="mt-4 grid grid-cols-2 gap-x-7">
+            <div className="basis-1/2 flex flex-col">
+              <label htmlFor="price" className="label label-text text-text">
+                Visivility:
+              </label>
+              <Controller
+                name="visibility"
+                control={methods.control}
+                defaultValue={ProductVisibility.HIDDEN}
+                render={({ field }) => (
+                  <select
+                    className="text-text input-bordered border bg-secondary h-10 px-4 pr-8 rounded leading-tight focus:outline-1 focus:outline-offset-1 focus:bg-white dark:focus:bg-secondary"
+                    {...field}
+                    id="visibility"
+                  >
+                    {Object.entries(ProductVisibility).map(([key, value]) => (
+                      <option key={key} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+            </div>
+            <Controller
+              name="tags"
+              control={control}
+              render={({ field, fieldState }) => (
+                <div className="flex flex-col w-full">
+                  <TagsInput
+                    tags={field.value}
+                    onSetTags={(updatedTags) => field.onChange(updatedTags)}
+                  />
+
+                  <InputError>
+                    {fieldState.error ? fieldState.error.message : ""}
+                  </InputError>
+                </div>
+              )}
+            />
+            {/* <TagsInput tags={tags} onSetTags={setTags} /> */}
+          </div>
+
+          <div className="mt-4">
+            <Controller
+              control={control}
+              name="productInfo"
+              render={({ field, fieldState }) => {
+                return (
+                  <>
+                    <ColorPickerFromImage
+                      {...field}
+                      productInfo={getValues("productInfo")}
+                      setProductInfo={setValue}
+                      sizes={getValues("sizes")}
+                      errors={fieldState.error}
+                    />
+                    {fieldState.error && (
+                      <InputError>{fieldState.error.message}</InputError>
+                    )}
+                  </>
+                );
+              }}
+            />
+          </div>
+          <div className="flex justify-end">
+            <button className="btn btn-primary mt-4 !text-text" type="submit">
+              Add Product
+            </button>
+          </div>
+        </form>
+      </FormProvider>
+    </div>
   );
 };
 

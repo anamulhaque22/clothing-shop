@@ -1,3 +1,4 @@
+"use client";
 import { useGetCategoriesService } from "@/services/api/services/categories";
 import HTTP_CODES from "@/services/api/types/http-codes";
 import { useEffect, useMemo, useState } from "react";
@@ -54,6 +55,7 @@ export default function CategoryInput({ setValue, getValues, name }) {
   );
 
   const category = getValues(name) || null;
+
   const renderCategoryOptions = (categories, level = 0) => {
     return categories.map((category, i) => {
       const categoryName = category.name;
@@ -101,7 +103,9 @@ export default function CategoryInput({ setValue, getValues, name }) {
           className="text-text border border-[#a6adbb33] bg-secondary h-10 px-4 flex items-center justify-between rounded-md cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {category?.name ? category.name : "Select Category"}
+          {/* {category?.name ? category.name : "Select Category"} */}
+          {categories?.find((c) => c.id === category?.id)?.name ||
+            "Select Category"}
         </div>
         {isOpen && (
           <ol
