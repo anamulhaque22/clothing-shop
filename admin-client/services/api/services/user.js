@@ -98,3 +98,18 @@ export function usePostUserService() {
     [fetch]
   );
 }
+
+//delete user
+export function useDeleteUserService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (data, reqConfig) => {
+      return fetch(`${API_URL}/v1/users/${data.id}`, {
+        method: "DELETE",
+        ...reqConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetch]
+  );
+}

@@ -53,7 +53,7 @@ export class UsersService {
     return;
   }
 
-  async create(createProfileDto: CreateUserDto) {
+  async create(createProfileDto: CreateUserDto): Promise<User> {
     // return type Promise<User>
     const clonedPayload = {
       provider: AuthProvidersEnum.email,

@@ -1,5 +1,7 @@
 "use client";
+import { useGetBestSellingProducts } from "@/services/api/services/analytics";
 import withPageRequiredAuth from "@/services/auth/page-with-required-auth";
+import { useQuery } from "@tanstack/react-query";
 import BestSellingProduct from "./components/BestSellingProduct";
 import RevenueChart from "./components/RevenueChart";
 import StatisticsOverview from "./components/StatisticsOverview";
@@ -16,12 +18,20 @@ import StatisticsOverview from "./components/StatisticsOverview";
     - Transaction (Total mount by card, cash, etc)
 */
 function Deshboard() {
+  const fetchBestSellingProducts = useGetBestSellingProducts();
+  const { data: bestSellingProducts, isLoading } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: fetchBestSellingProducts,
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <>
       <StatisticsOverview />
       <div className="grid grid-cols-2 gap-x-5 mt-6">
         <RevenueChart />
-        <BestSellingProduct />
+        <BestSellingProduct products={bestSellingProducts?.["data"]} />
       </div>
     </>
   );

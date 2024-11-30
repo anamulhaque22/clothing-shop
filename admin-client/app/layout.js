@@ -1,6 +1,7 @@
 import { ThemeProviders } from "@/contexts/ThemeContext";
 import AuthProvider from "@/services/auth/auth-provider";
 // import { Head } from "next/document";
+import ConfirmDialogProvider from "@/components/confirm-dialog/confirm-dialog-provider";
 import SnackbarProvider from "@/components/snackbar-provider";
 import queryClient from "@/services/react-query/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -19,11 +20,13 @@ export default function RootLayout({ children }) {
       </Head> */}
       <body className={`${inter.className} ${public_sans.className}`}>
         <SnackbarProvider maxSnack={3}>
-          <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <ThemeProviders>{children}</ThemeProviders>
-            </AuthProvider>
-          </QueryClientProvider>
+          <ConfirmDialogProvider>
+            <QueryClientProvider client={queryClient}>
+              <AuthProvider>
+                <ThemeProviders>{children}</ThemeProviders>
+              </AuthProvider>
+            </QueryClientProvider>
+          </ConfirmDialogProvider>
         </SnackbarProvider>
       </body>
     </html>

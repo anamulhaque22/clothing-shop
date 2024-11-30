@@ -7,10 +7,9 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
-import { FaTrash, FaUserPen } from "react-icons/fa6";
-import { FiUser } from "react-icons/fi";
 import { IoCaretDownSharp, IoCaretUpSharp } from "react-icons/io5";
 import { TableVirtuoso } from "react-virtuoso";
+import Actions from "./components/Actions";
 import FilterUser from "./components/FilterUser";
 
 function UserListView() {
@@ -160,28 +159,7 @@ function UserListView() {
               </td>
 
               <td className="text-left pl-2 pr-3 text-text ">
-                <div className="flex gap-x-1">
-                  <Link
-                    href={`/users/details/${user.id}`}
-                    className="btn btn-primary btn-sm text-text"
-                  >
-                    <FiUser />
-                  </Link>
-
-                  <Link
-                    href={`/users/edit/${user.id}`}
-                    className="btn btn-primary btn-sm text-text"
-                  >
-                    <FaUserPen />
-                  </Link>
-
-                  <Link
-                    href={`/users/delete/${user.id}`}
-                    className="btn btn-primary btn-sm text-text"
-                  >
-                    <FaTrash />
-                  </Link>
-                </div>
+                {!!user && <Actions user={user} />}
               </td>
             </>
           )}

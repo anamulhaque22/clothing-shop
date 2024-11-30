@@ -1,20 +1,19 @@
 "use client";
+import useAuth from "@/services/auth/use-auth";
+import useAuthActions from "@/services/auth/use-auth-actions";
 import Image from "next/image";
 import Link from "next/link";
 import { HiBars3 } from "react-icons/hi2";
 import ThemeSwitch from "../ThemeSwitch";
 
 function Header() {
+  const { logOut } = useAuthActions();
+  const { user } = useAuth();
   function logoutUser() {
-    logout();
-    // localStorage.clear();
-    // window.location.href = "/";
+    logOut();
   }
-  //   useEffect(() => {
-  //     if (!checkUser()) {
-  //       router.push("/login");
-  //     }
-  //   }, []);
+
+  console.log({ user });
 
   return (
     <>
@@ -27,7 +26,7 @@ function Header() {
           >
             <HiBars3 className="h-5 inline-block w-5" />
           </label>
-          <h1 className="text-2xl font-semibold ml-2">{"pageTitle"}</h1>
+          {/* <h1 className="text-2xl font-semibold ml-2">{"pageTitle"}</h1> */}
         </div>
 
         <div className="flex-none">
@@ -37,16 +36,17 @@ function Header() {
 
           {/* Profile icon, opening menu on click */}
           <div className="dropdown dropdown-end ml-4">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+            <label tabIndex={0} className="btn btn-primary btn-circle avatar">
               <div className="w-10 rounded-full">
                 <Image
-                  src={"/images/avatar-placeholder.png"}
+                  src={
+                    !!user ? user.photo.url : "/images/avatar-placeholder.png"
+                  }
                   height={130}
                   width={130}
                   className="rounded-full  object-fill"
                   alt="avatar"
                 />
-                {/* <img src="https://placeimg.com/80/80/people" alt="profile" /> */}
               </div>
             </label>
             <ul
@@ -54,13 +54,7 @@ function Header() {
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li className="justify-between">
-                <Link href={"/app/settings-profile"}>
-                  Profile Settings
-                  <span className="badge">New</span>
-                </Link>
-              </li>
-              <li className="">
-                <Link href={"/app/settings-billing"}>Bill History</Link>
+                <Link href={`/users/edit/${user?.id}`}>Profile Settings</Link>
               </li>
               <div className="divider mt-0 mb-0"></div>
               <li>

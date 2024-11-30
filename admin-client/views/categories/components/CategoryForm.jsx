@@ -1,90 +1,138 @@
-"use client";
+import CategoryInput from "@/components/AddProduct/CategoryInput";
+import InputError from "@/components/Input/InputError";
 import InputText from "@/components/Input/InputText";
+import useToast from "@/hooks/useToast";
+import {
+  usePatchCategoryService,
+  usePostCategoryService,
+} from "@/services/api/services/categories";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
-  name: yup.string().email().required("Email is required"),
+  name: yup.string().required("Category name is required"),
+  parentCategory: yup.object().optional().nullable().shape({
+    id: yup.number().optional(),
+  }),
+  isVisibleInMenu: yup
+    .boolean()
+    .required("Category visibility in menu is required"),
 });
 
-export default function CategoryForm() {
+export default function CategoryForm({
+  handleSetCategory,
+  editCategory,
+  isEditMode,
+}) {
+  const fetchPostCategory = usePostCategoryService();
+  const fetchPatchCategory = usePatchCategoryService(); // Assume you have this service for updating
+  const showToast = useToast();
+
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      name: "",
+      name: editCategory?.name || "",
+      parentCategory: editCategory?.parentCategory || null,
+      isVisibleInMenu: editCategory?.isVisibleInMenu || false,
     },
   });
 
-  const { handleSubmit, setError } = methods;
+  console.log(editCategory);
+
+  const { handleSubmit, setError, setValue, reset } = methods;
+
+  useEffect(() => {
+    if (editCategory) {
+      setValue("name", editCategory.name);
+      setValue("parentCategory", editCategory.parentCategory || null);
+      setValue("isVisibleInMenu", editCategory.isVisibleInMenu);
+    }
+  }, [editCategory, setValue]);
 
   const onSubmit = handleSubmit(async (formData) => {
-    // const { data, status } = await fetchAuthLogin(formData);
-    // if (status === HTTP_CODES.UNPROCESSABLE_ENTITY) {
-    //   Object.keys(data.errors).forEach((key) => {
-    //     setError(key, {
-    //       type: "manual",
-    //       message: data.errors[key],
-    //     });
-    //   });
-    //   return;
-    // }
-    // if (status === HTTP_CODES.OK) {
-    //   setTokensInfo({
-    //     token: data.token,
-    //     refreshToken: data.refreshToken,
-    //     tokenExpires: data.tokenExpires,
-    //   });
-    //   setUser(data.user);
-    // }
+    const { status, data } = isEditMode
+      ? await fetchPatchCategory({
+          id: editCategory.id,
+          data: formData,
+        })
+      : await fetchPostCategory(formData);
+
+    if (status === HTTP_CODES.UNPROCESSABLE_ENTITY) {
+      Object.keys(data.errors).forEach((key) => {
+        setError(key, {
+          type: "manual",
+          message: data.errors[key],
+        });
+      });
+      return;
+    }
+
+    if (status === HTTP_CODES.CREATED || status === HTTP_CODES.OK) {
+      handleSetCategory(data);
+      reset();
+      showToast(
+        `Category ${isEditMode ? "updated" : "created"} successfully`,
+        "success"
+      );
+    }
   });
+
   return (
     <FormProvider {...methods}>
-      <form action="" className="w-full">
+      <form onSubmit={onSubmit} className="w-full">
         <InputText
           type="text"
           name="name"
           placeholder={"Type here"}
           labelTitle="Name"
           containerStyle="mt-0 "
-          labelStyle=""
+          inputStyle={"h-10"}
         />
-        <div className="form-control w-full">
-          <label
-            htmlFor="userName"
-            className={`label font-causten-semi-bold text-base text-text`}
-          >
-            Parent Category
-          </label>
-          <select className="select select-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
-            <option disabled selected>
-              All Category
-            </option>
-            <option>Small Apple</option>
-            <option>Small Orange</option>
-            <option>Small Tomato</option>
-          </select>
-        </div>
+        <Controller
+          name="parentCategory"
+          control={methods.control}
+          render={({ field, fieldState }) => (
+            <div className="flex flex-col w-full">
+              <CategoryInput
+                {...field}
+                setValue={setValue}
+                getValues={methods.getValues}
+              />
+              <InputError>
+                {fieldState.error ? fieldState.error.message : ""}
+              </InputError>
+            </div>
+          )}
+        />
 
         <div className="form-control w-full">
           <label
-            htmlFor="userName"
-            className={`label font-causten-semi-bold text-base text-text`}
+            htmlFor="isVisibleInMenu"
+            className="label font-causten-semi-bold text-base text-text"
           >
             Show in Menu
           </label>
-          <select className="select select-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
-            <option disabled selected>
-              Show in Menu
-            </option>
-            <option>YES</option>
-            <option>NO</option>
-          </select>
+          <Controller
+            name="isVisibleInMenu"
+            control={methods.control}
+            defaultValue={false}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="select select-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary min-h-10 h-10"
+              >
+                <option value={true}>YES</option>
+                <option value={false}>NO</option>
+              </select>
+            )}
+          />
         </div>
 
         <div className="flex justify-start">
           <button className="btn btn-primary mt-4 !text-text" type="submit">
-            Add Product
+            {isEditMode ? "Update Category" : "Create Category"}
           </button>
         </div>
       </form>

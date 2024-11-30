@@ -34,7 +34,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
     const categories = await this.categoryRepository
       .createQueryBuilder('category')
-      .innerJoinAndSelect('category.products', 'product')
+      // .innerJoinAndSelect('category.products', 'product')
       .leftJoinAndSelect('category.parentCategory', 'parentCategory')
       .getMany();
     return categories.map((category) => CategoryMapper.toDomain(category));
