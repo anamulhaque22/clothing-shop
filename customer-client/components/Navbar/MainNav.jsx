@@ -131,7 +131,7 @@ const MainNav = () => {
                     </>
                   )}
 
-                  <li className="p-3 bg-off-white-light rounded-lg indicator">
+                  <li className="p-3  rounded-lg indicator">
                     {cart?.length > 0 && (
                       <span className="indicator-item badge bg-primary text-white w-5 h-5">
                         {cart?.length}
@@ -142,6 +142,16 @@ const MainNav = () => {
                       <FiShoppingCart size={20} />
                     </Link>
                   </li>
+                  {!!user ? null : (
+                    <li className="  rounded-lg indicator">
+                      <Link
+                        href={"/login"}
+                        className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-7 py-2 text-white"
+                      >
+                        Login
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>

@@ -3,10 +3,13 @@ import { useCart } from "@/context/cart-context";
 import Image from "next/image";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
+import { FaCarSide } from "react-icons/fa";
+import { FaRegCreditCard, FaRepeat, FaShirt } from "react-icons/fa6";
 import SectionHeading from "../Typography/SectionHeading";
 import Colors from "./Colors";
 import Ratting from "./Ratting";
 import Sizes from "./Sizes";
+
 const ProductsDetails = ({ product }) => {
   const { addToCart } = useCart();
   const [size, setSize] = useState(null);
@@ -198,17 +201,7 @@ const ProductsDetails = ({ product }) => {
           <div className=" grid grid-cols-2 gap-y-5">
             <div className="flex items-center gap-[15px]">
               <div className="flex items-center justify-center w-[44px] h-[44px] bg-[#F6F6F6] rounded-full">
-                <Image
-                  src={"/images/icon/credit-card.png"}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{
-                    width: "auto",
-                    height: "auto",
-                  }}
-                  alt="credit card"
-                />
+                <FaRegCreditCard size={18} />
               </div>
               <h4 className="font-causten-medium text-[1.125rem] text-[#3C4242] font-medium">
                 Secure payment
@@ -216,17 +209,7 @@ const ProductsDetails = ({ product }) => {
             </div>
             <div className="flex items-center gap-[15px]">
               <div className="flex items-center justify-center w-[44px] h-[44px] bg-[#F6F6F6] rounded-full">
-                <Image
-                  src={"/images/icon/size-and-fit.png"}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{
-                    width: "auto",
-                    height: "auto",
-                  }}
-                  alt="credit card"
-                />
+                <FaShirt size={18} />
               </div>
               <h4 className="font-causten-medium text-[1.125rem] text-[#3C4242] font-medium">
                 Size & Fit
@@ -234,17 +217,7 @@ const ProductsDetails = ({ product }) => {
             </div>
             <div className="flex items-center gap-[15px]">
               <div className="flex items-center justify-center w-[44px] h-[44px] bg-[#F6F6F6] rounded-full">
-                <Image
-                  src={"/images/icon/truck.png"}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{
-                    width: "auto",
-                    height: "auto",
-                  }}
-                  alt="credit card"
-                />
+                <FaCarSide size={18} />
               </div>
               <h4 className="font-causten-medium text-[1.125rem] text-[#3C4242] font-medium">
                 Free shipping
@@ -252,17 +225,7 @@ const ProductsDetails = ({ product }) => {
             </div>
             <div className="flex items-center gap-[15px]">
               <div className="flex items-center justify-center w-[44px] h-[44px] bg-[#F6F6F6] rounded-full">
-                <Image
-                  src={"/images/icon/free-shipping-returns.png"}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  style={{
-                    width: "auto",
-                    height: "auto",
-                  }}
-                  alt="credit card"
-                />
+                <FaRepeat size={18} />
               </div>
               <h4 className="font-causten-medium text-[1.125rem] text-[#3C4242] font-medium">
                 Free Shipping & Returns

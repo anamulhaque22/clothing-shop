@@ -35,7 +35,13 @@ const EditProfile = () => {
     },
   });
 
-  const { handleSubmit, setError, reset, setValue } = methods;
+  const {
+    handleSubmit,
+    setError,
+    reset,
+    setValue,
+    formState: { isSubmitting },
+  } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
     const avatar = formData.avatar;
@@ -162,7 +168,11 @@ const EditProfile = () => {
           />
         </div>
         <div className="flex justify-end mt-5">
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            className="btn btn-primary disabled:bg-slate-600 disabled:border-slate-600"
+            disabled={isSubmitting}
+          >
             Update
           </button>
         </div>

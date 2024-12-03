@@ -92,3 +92,18 @@ export function useUploadUserImageService() {
     [fetch]
   );
 }
+
+export function useAuthConfirmEmailService() {
+  const fetchBase = useFetchBase();
+
+  return useCallback(
+    (data, requestConfig) => {
+      return fetchBase(`${API_URL}/v1/auth/email/confirm`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetchBase]
+  );
+}

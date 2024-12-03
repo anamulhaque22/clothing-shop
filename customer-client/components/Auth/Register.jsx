@@ -38,7 +38,11 @@ export default function Register() {
       policy: false,
     },
   });
-  const { handleSubmit, setError } = methods;
+  const {
+    handleSubmit,
+    setError,
+    formState: { isSubmitting },
+  } = methods;
 
   const onSubmit = async (formData) => {
     const { data, status } = await fetchAuthSignUp(formData);
@@ -151,7 +155,8 @@ export default function Register() {
                 <div>
                   <button
                     type="submit"
-                    className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white"
+                    className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white disabled:bg-slate-600 disabled:border-slate-600"
+                    disabled={isSubmitting}
                   >
                     Sign In
                   </button>

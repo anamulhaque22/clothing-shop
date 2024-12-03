@@ -26,30 +26,7 @@ const validationSchema = yup.object().shape({
     .required("Confirm password is required"),
 });
 
-function ExpiresAlert() {
-  const [currentTime, setCurrentTime] = useState(() => Date.now());
-
-  const expires = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
-
-    return Number(params.get("expires"));
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setCurrentTime(now);
-
-      if (expires < now) {
-        clearInterval(interval);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [expires]);
-
-  const isExpired = expires < currentTime;
-
+function ExpiresAlert({ isExpired }) {
   return (
     isExpired && (
       <div className="flex justify-start">
@@ -67,6 +44,13 @@ function ExpiresAlert() {
 function NewPassword() {
   const fetchAuthResetPassword = useAuthResetPasswordService();
   const router = useRouter();
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
+
+  const expires = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    return Number(params.get("expires"));
+  }, []);
 
   const methods = useForm({
     resolver: yupResolver(validationSchema),
@@ -76,7 +60,24 @@ function NewPassword() {
     },
   });
 
-  const { handleSubmit, setError } = methods;
+  const {
+    handleSubmit,
+    setError,
+    formState: { isSubmitting },
+  } = methods;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setCurrentTime(now);
+
+      if (expires < now) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [expires]);
 
   const onSubmit = handleSubmit(async (formData) => {
     const params = new URLSearchParams(window.location.search);
@@ -106,6 +107,8 @@ function NewPassword() {
       router.replace("/login");
     }
   });
+
+  const isExpired = expires < currentTime;
   return (
     <div className="relative">
       <div className="absolute w-2/5 left-0 top-0 hidden md:block">
@@ -130,7 +133,7 @@ function NewPassword() {
             </p>
           </div>
 
-          <ExpiresAlert />
+          <ExpiresAlert isExpired={isExpired} />
 
           <FormProvider {...methods}>
             <form
@@ -146,7 +149,8 @@ function NewPassword() {
               <div>
                 <button
                   type="submit"
-                  className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white"
+                  className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white disabled:bg-slate-600 disabled:border-slate-600"
+                  disabled={isSubmitting || isExpired}
                 >
                   Reset Password
                 </button>

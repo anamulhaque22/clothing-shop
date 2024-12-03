@@ -1,13 +1,11 @@
 "use client";
-import AccountSummery from "./AccountSummery";
-import PersonalDetails from "./PersonalDetails";
 import MyAddress from "./MyAddress";
-import UpdateDetails from "../EditProfile/EditProfile";
+import PersonalDetails from "./PersonalDetails";
 
 const MyInfo = () => {
   return (
     <>
-      <AccountSummery />
+      {/* <AccountSummery /> */}
       <PersonalDetails />
       <MyAddress />
     </>

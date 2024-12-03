@@ -31,7 +31,12 @@ const UpdatePassword = () => {
     },
   });
 
-  const { handleSubmit, setError, reset } = methods;
+  const {
+    handleSubmit,
+    setError,
+    reset,
+    formState: { isSubmitting },
+  } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
     const { data, status } = await fetchAuthPatchMe(formData);
@@ -84,7 +89,11 @@ const UpdatePassword = () => {
             /> */}
           </div>
           <div className="flex justify-end mt-5">
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="submit"
+              className="btn btn-primary disabled:bg-slate-600 disabled:border-slate-600"
+              disabled={isSubmitting}
+            >
               Change
             </button>
           </div>
