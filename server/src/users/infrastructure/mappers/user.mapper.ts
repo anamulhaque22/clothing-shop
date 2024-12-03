@@ -9,6 +9,7 @@ export class UserMapper {
     const user = new User();
     user.id = raw.id;
     user.email = raw.email;
+    user.phone = raw.phone;
     user.password = raw.password;
     user.previousPassword = raw.previousPassword;
     user.provider = raw.provider;
@@ -57,6 +58,7 @@ export class UserMapper {
       userEntity.id = user.id;
     }
     userEntity.email = user.email;
+    userEntity.phone = user.phone;
     userEntity.password = user.password;
     userEntity.previousPassword = user.previousPassword;
     userEntity.provider = user.provider;

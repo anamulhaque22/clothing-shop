@@ -17,6 +17,9 @@ export class User {
   @Expose({ groups: ['me', 'admin'] })
   email: string;
 
+  @Expose({ groups: ['me', 'admin'] })
+  phone: string;
+
   @Exclude({ toPlainOnly: true })
   password?: string;
 

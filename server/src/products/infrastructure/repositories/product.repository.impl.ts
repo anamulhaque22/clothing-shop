@@ -4,6 +4,7 @@ import { ProductSizeDto } from 'src/product-sizes/dto/product-size.dto';
 import { Product, ProductInfo } from 'src/products/domain/product';
 import { ProductImage } from 'src/products/domain/product-image';
 import { QueryCategoryDto } from 'src/products/dto/query-product.dto';
+import { ProductVisibility } from 'src/products/product-visibility.enum';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import {
@@ -73,6 +74,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     size,
     minPrice,
     maxPrice,
+    visibility,
   }: {
     size: ProductSizeDto[];
     minPrice: number | null;
@@ -81,6 +83,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     // category: QueryCategoryDto | null;
     subCategory: QueryCategoryDto[] | null;
     paginationOptions: IPaginationOptions;
+    visibility: ProductVisibility | null;
   }): Promise<Product[]> {
     let where: FindOptionsWhere<ProductEntity> = {};
 
@@ -106,6 +109,10 @@ export class ProductRepositoryImpl implements ProductRepository {
       where.sellPrice = LessThanOrEqual(maxPrice);
     }
 
+    if (visibility) {
+      where.visibility = visibility;
+    }
+
     const entities = await this.productRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -119,6 +126,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     const entity = await this.productRepository.findOne({
       where: { id: Number(id) },
     });
+
     return entity ? ProductMapper.toDomain(entity) : null;
   }
 

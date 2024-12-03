@@ -5,6 +5,7 @@ import { DeepPartial } from 'typeorm';
 import { Product } from '../domain/product';
 import { ProductImage } from '../domain/product-image';
 import { QueryCategoryDto } from '../dto/query-product.dto';
+import { ProductVisibility } from '../product-visibility.enum';
 
 export abstract class ProductRepository {
   abstract create(
@@ -33,6 +34,7 @@ export abstract class ProductRepository {
     size,
     minPrice,
     maxPrice,
+    visibility,
   }: {
     // filterOptions: FilterUserDto | null;
     // sortOptions: SortUserDto[] | null;
@@ -43,6 +45,7 @@ export abstract class ProductRepository {
     // category: QueryCategoryDto | null;
     subCategory: QueryCategoryDto[] | null;
     paginationOptions: IPaginationOptions;
+    visibility: ProductVisibility | null;
   }): Promise<Product[]>;
 
   abstract update(

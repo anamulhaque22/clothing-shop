@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { Transform, Type } from 'class-transformer';
-import { IsEmail, IsOptional, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 import { RoleDto } from 'src/roles/dto/role.dto';
 import { StatusDto } from 'src/statuses/dto/status.dto';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
@@ -11,6 +11,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @IsEmail()
   email?: string | null;
+
+  @IsOptional()
+  @IsString()
+  phone?: string | null;
 
   @IsOptional()
   @MinLength(6)

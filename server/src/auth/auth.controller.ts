@@ -1,16 +1,26 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Patch,
   Post,
   Request,
   SerializeOptions,
+  UnprocessableEntityException,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { User } from 'src/users/domain/user';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Roles } from 'src/roles/roles.decorators';
+import { RoleEnum } from 'src/roles/roles.enum';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { User, UserImage } from 'src/users/domain/user';
+import { imageFileFilter } from 'src/utils/image-file-filter';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { AuthService } from './auth.service';
 import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
@@ -115,5 +125,35 @@ export class AuthController {
     return this.authService.logout({
       sessionId: request.user.sessionId,
     });
+  }
+
+  @Post('image')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        {
+          name: 'image',
+        },
+      ],
+      {
+        fileFilter: imageFileFilter,
+      },
+    ),
+  )
+  async uploadImage(@UploadedFiles() files: { image?: Express.Multer.File }) {
+    if (!files || !files.image) {
+      throw new UnprocessableEntityException('You need to upload an image.');
+    }
+    console.log(files.image);
+    return this.authService.uploadUserImage(files['image'][0]);
+  }
+
+  @Roles(RoleEnum.user)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('image/:id')
+  @HttpCode(HttpStatus.OK)
+  async removeImage(@Param('id') id: UserImage['id']) {
+    return this.authService.removeImage(id);
   }
 }

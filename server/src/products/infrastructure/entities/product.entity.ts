@@ -15,6 +15,7 @@ import { CategoryEntity } from "src/categories/infrastructure/entities/category.
 import { ProductSizeEntity } from "src/product-sizes/infrastructure/entities/product-size.entity";
 import { ProductVisibility } from "src/products/product-visibility.enum";
 import { EntityHelper } from "src/utils/entity-helper";
+import { WishListEntity } from "src/wish-list/infrastructure/entities/wish-list.entity";
 import { ProductColorEntity } from "./product-color.entity";
 import { ProductImageEntity } from "./product-image.entity";
 
@@ -68,6 +69,9 @@ export class ProductEntity extends EntityHelper {
 
   // @Column({ type: 'boolean', default: false })
   // recommended: boolean;
+
+  @OneToMany(() => WishListEntity, (wishlist) => wishlist.product)
+  wishlist: WishListEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

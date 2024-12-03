@@ -23,6 +23,7 @@ import { SessionModule } from './session/session.module';
 import stripeConfig from './stripe/config/stripe.config';
 import { StripeModule } from './stripe/stripe.module';
 import { UsersModule } from './users/users.module';
+import { WishListModule } from './wish-list/wish-list.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { UsersModule } from './users/users.module';
     OrdersModule,
     StripeModule,
     AnalyticsModule,
+    WishListModule,
   ],
   controllers: [AppController],
   providers: [AppService],

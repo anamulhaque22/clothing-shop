@@ -17,7 +17,7 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { Session } from 'src/session/domain/session';
 import { SessionService } from 'src/session/session.service';
 import { StatusEnum } from 'src/statuses/statuses.enum';
-import { User } from 'src/users/domain/user';
+import { User, UserImage } from 'src/users/domain/user';
 import { UsersService } from 'src/users/users.service';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { AuthProvidersEnum } from './auth-provider.enum';
@@ -463,6 +463,29 @@ export class AuthService {
 
   async logout(data: Pick<JwtRefreshPayloadType, 'sessionId'>): Promise<void> {
     return this.sessionService.deleteById(data.sessionId);
+  }
+
+  async uploadUserImage(files: Express.Multer.File): Promise<UserImage> {
+    return this.usersService.uploadUserImage(files);
+    // let imageUploadedRes: CloudinaryResponse;
+    // if (files) {
+    //   imageUploadedRes = await this.cloudinaryService.uploadFile(
+    //     files,
+    //     'users',
+    //   );
+    // }
+
+    // return this.usersRepository.uploadUserImage({
+    //   url: imageUploadedRes.secure_url,
+    //   publicId: imageUploadedRes.public_id,
+    // });
+  }
+
+  async removeImage(id: UserImage['id']): Promise<void> {
+    // return this.usersService.removeImage(id);
+    // const result = await this.usersRepository.removeUserImage(id);
+    // await this.cloudinaryService.removeFile(result);
+    return;
   }
 
   private async getTokensData(data: {

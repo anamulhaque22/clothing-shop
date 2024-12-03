@@ -19,6 +19,7 @@ import { ImageRemoveDto } from './dto/image-remove.dto';
 import { QueryCategoryDto } from './dto/query-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductRepository } from './infrastructure/product.repository';
+import { ProductVisibility } from './product-visibility.enum';
 
 @Injectable()
 export class ProductsService {
@@ -244,8 +245,6 @@ export class ProductsService {
   }
 
   async findManyWithPagination({
-    // filterOptions,
-    // sortOptions,
     category,
     subCategory,
     search,
@@ -253,6 +252,7 @@ export class ProductsService {
     size,
     minPrice,
     maxPrice,
+    visibility,
   }: {
     // filterOptions: FilterUserDto | null;
     // sortOptions: SortUserDto[] | null;
@@ -263,6 +263,7 @@ export class ProductsService {
     category: QueryCategoryDto | null;
     subCategory: QueryCategoryDto[] | null;
     paginationOptions: IPaginationOptions;
+    visibility: ProductVisibility | null;
   }) {
     if (category && category.id && !subCategory && !subCategory?.length) {
       const childCategories =
@@ -276,6 +277,7 @@ export class ProductsService {
       size,
       minPrice,
       maxPrice,
+      visibility,
     });
   }
 

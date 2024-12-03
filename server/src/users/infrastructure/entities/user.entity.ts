@@ -5,6 +5,7 @@ import { OrderEntity } from "src/orders/infrastructure/entities/order.entity";
 import { RoleEntity } from "src/roles/infrastructure/entities/role.entity";
 import { StatusEntity } from "src/statuses/infrastructure/entities/status.entity";
 import { EntityHelper } from "src/utils/entity-helper";
+import { WishListEntity } from "src/wish-list/infrastructure/entities/wish-list.entity";
 import {
   AfterLoad,
   Column,
@@ -31,6 +32,10 @@ export class UserEntity extends EntityHelper {
   @Column({ type: String, unique: true, nullable: true })
   @Expose({ groups: ["me", "admin"] })
   email: string | null;
+
+  @Column({ type: String, nullable: true })
+  @Expose({ groups: ["me", "admin"] })
+  phone: string | null;
 
   @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
@@ -80,6 +85,9 @@ export class UserEntity extends EntityHelper {
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[];
+
+  @OneToMany(() => WishListEntity, (wishlist) => wishlist.user)
+  wishlist: WishListEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

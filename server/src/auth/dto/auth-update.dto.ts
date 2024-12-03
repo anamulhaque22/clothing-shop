@@ -22,6 +22,9 @@ export class AuthUpdateDto {
   email?: string;
 
   @IsOptional()
+  phone?: string;
+
+  @IsOptional()
   @IsNotEmpty()
   @MinLength(6)
   password?: string;

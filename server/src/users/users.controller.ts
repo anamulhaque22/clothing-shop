@@ -91,7 +91,6 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: User['id'],
     @Body() updateProfileDto: UpdateUserDto,
   ): Promise<User | null> {
-    console.log({ updateProfileDto });
     return this.usersService.update(id, updateProfileDto);
   }
 

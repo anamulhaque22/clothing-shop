@@ -28,6 +28,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { ImageRemoveDto } from './dto/image-remove.dto';
 import { QueryProductDto } from './dto/query-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductVisibility } from './product-visibility.enum';
 import { ProductsService } from './products.service';
 
 @Controller({
@@ -142,6 +143,7 @@ export class ProductsController {
           page,
           limit,
         },
+        visibility: ProductVisibility.VISIBLE,
       }),
       { page, limit },
     );
@@ -176,6 +178,7 @@ export class ProductsController {
           page,
           limit,
         },
+        visibility: null,
       }),
       { page, limit },
     );

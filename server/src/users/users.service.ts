@@ -172,8 +172,6 @@ export class UsersService {
     id: User['id'],
     updateUserDto: UpdateUserDto,
   ): Promise<User | null> {
-    // const updateUserDto = { ...payload };
-
     let password: string | undefined = undefined;
 
     if (updateUserDto.password) {
@@ -278,6 +276,7 @@ export class UsersService {
       status,
       provider: updateUserDto.provider,
       socialId: updateUserDto.socialId,
+      phone: updateUserDto.phone,
     });
   }
 
