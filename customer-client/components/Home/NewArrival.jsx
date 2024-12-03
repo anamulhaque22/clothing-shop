@@ -1,9 +1,16 @@
 "use client";
+import HTTP_CODES from "@/services/api/constants/http-codes";
+import { useGetProductsService } from "@/services/api/services/product";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import SectionHeading from "../Typography/SectionHeading";
 
 const NewArrival = () => {
+  const [products, setProducts] = useState([]);
+
+  const fetchProducts = useGetProductsService();
   const settings = {
     infinite: true,
     speed: 500,
@@ -36,74 +43,47 @@ const NewArrival = () => {
       },
     ],
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, status } = await fetchProducts({
+        page: 1,
+        limit: 10,
+      });
+      console.log(data);
+      if (status === HTTP_CODES.OK) {
+        setProducts(data["data"]);
+      }
+    };
+    fetchData();
+  }, [fetchProducts]);
   return (
     <div className="container section-space">
       <SectionHeading text={"New Arrival"} />
       <div className="new-arrival mt-8 sm:mt-12">
         <Slider {...settings}>
-          <div className="mx-0 sm:mx-10">
-            <Image
-              src="/images/new-arival.png"
-              width={260}
-              height={260}
-              alt="New Arrival"
-            />
-            <h4 className="font-causten-bold text-xl mt-6">Knitted Joggers</h4>
-          </div>
-          <div className="mx-0 sm:mx-10">
-            <Image
-              src="/images/new-arival.png"
-              width={260}
-              height={260}
-              alt="New Arrival"
-            />
-            <h4 className="font-causten-bold text-xl mt-6">Knitted Joggers</h4>
-          </div>
-          <div className="mx-0 sm:mx-10">
-            <Image
-              src="/images/new-arival.png"
-              width={260}
-              height={260}
-              alt="New Arrival"
-            />
-            <h4 className="font-causten-bold text-xl mt-6">Knitted Joggers</h4>
-          </div>
-          <div className="mx-0 sm:mx-10">
-            <Image
-              src="/images/new-arival.png"
-              width={260}
-              height={260}
-              alt="New Arrival"
-            />
-            <h4 className="font-causten-bold text-xl mt-6">Knitted Joggers</h4>
-          </div>
-          <div className="mx-0 sm:mx-10">
-            <Image
-              src="/images/new-arival.png"
-              width={260}
-              height={260}
-              alt="New Arrival"
-            />
-            <h4 className="font-causten-bold text-xl mt-6">Knitted Joggers</h4>
-          </div>
-          <div className="mx-0 sm:mx-10">
-            <Image
-              src="/images/new-arival.png"
-              width={260}
-              height={260}
-              alt="New Arrival"
-            />
-            <h4 className="font-causten-bold text-xl mt-6">Knitted Joggers</h4>
-          </div>
-          <div className="mx-0 sm:mx-10">
-            <Image
-              src="/images/new-arival.png"
-              width={260}
-              height={260}
-              alt="New Arrival"
-            />
-            <h4 className="font-causten-bold text-xl mt-6">Knitted Joggers</h4>
-          </div>
+          {products.map((product) => (
+            <div className="mx-0 sm:mx-10" key={product.id}>
+              <Image
+                src={
+                  product?.images?.[0]?.imageUrl ??
+                  "/images/product-placeholder.jpg"
+                }
+                width={260}
+                height={260}
+                alt="New Arrival"
+                className="object-cover w-64 h-64"
+              />
+              <div className="w-56">
+                <Link
+                  href={`products/details/${product.id}`}
+                  className="font-causten-bold text-xl mt-6 truncate "
+                >
+                  {product.title}
+                </Link>
+              </div>
+            </div>
+          ))}
         </Slider>
       </div>
     </div>

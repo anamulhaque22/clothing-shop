@@ -2,14 +2,18 @@
 import ProductsDetails from "@/components/ProductDetails/ProductsDetails";
 import HTTP_CODES from "@/services/api/constants/http-codes";
 import { useGetProductService } from "@/services/api/services/product";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-function ProductDetailsContent({ productId }) {
+function ProductDetailsContent() {
   const fetchProduct = useGetProductService();
+  const params = useParams();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(false);
+  const productId = Array.isArray(params.id) ? params.id[0] : params.id;
+
   useEffect(() => {
-    const product = async () => {
+    const loadProduct = async () => {
       try {
         const { data, status } = await fetchProduct(productId);
         if (status === HTTP_CODES.OK) {
@@ -25,7 +29,7 @@ function ProductDetailsContent({ productId }) {
         setError(true);
       }
     };
-    product();
+    loadProduct();
   }, [productId, fetchProduct]);
 
   return product ? (

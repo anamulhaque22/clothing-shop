@@ -220,3 +220,31 @@
 .order-search.input input:focus {
   outline: none !important;
 }
+
+/* .mobile-icon
+  .menu
+  :where(li:not(.menu-title) > *:not(ul, details, .menu-title, .btn)),
+.menu :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
+  padding: 0;
+}
+
+.mobile-icon
+  .menu
+  :where(li:not(.menu-title) > *:not(ul, details, .menu-title, .btn)),
+.menu :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
+  padding: 0 !important;
+} */
+
+.mobile-icon li {
+  padding: 0 !important;
+}
+.mobile-icon li {
+  padding: 0 !important;
+}
+ul.menu.menu-horizontal.rounded-box.mobile-icon {
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+}
+ul.menu.menu-horizontal.rounded-box.mobile-icon::before {
+  display: none;
+}

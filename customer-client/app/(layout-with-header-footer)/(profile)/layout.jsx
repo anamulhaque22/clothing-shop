@@ -38,7 +38,11 @@ const UserProfileLayout = ({ children }) => {
               <div className="avatar">
                 <div className="w-20 rounded-full bg-slate-200">
                   <Image
-                    src={user?.photo || "/images/icon/user-icon.png"}
+                    src={`${
+                      user?.photo
+                        ? user?.photo?.url
+                        : "/images/icon/user-icon.png"
+                    }`}
                     width={80}
                     height={80}
                     className="w-80"

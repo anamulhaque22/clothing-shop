@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
@@ -77,9 +78,14 @@ const Hero = () => {
                   </li>
                   <li className="">comfy</li>
                 </ol>
-                <button className="bg-white text-secondary font-causten-bold text-xl md:text-2xl px-10 md:px-14 py-3 md:py-4 rounded-lg mt-8">
-                  Shop Now
-                </button>
+                <div>
+                  <Link
+                    href={"/products"}
+                    className="bg-white text-secondary font-causten-bold text-xl md:text-2xl px-8 md:px-12 py-2 md:py-3 rounded-lg !mt-8"
+                  >
+                    Shop Now
+                  </Link>
+                </div>
               </div>
             </div>
             <div className="w-full md:w-2/5 h-full absolute top-0 right-0 bg-[url(/images/hero.png)] -z-10 bg-right md:bg-center bg-no-repeat	bg-[length:100%_100%]">

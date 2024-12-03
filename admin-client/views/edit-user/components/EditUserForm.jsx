@@ -31,7 +31,7 @@ const validationSchema = yup.object().shape({
 export default function EditUserForm() {
   const params = useParams();
   const [imagePreview, setImagePreview] = useState(null);
-  const [product, setProduct] = useState(null);
+  // const [product, setProduct] = useState(null);
   const userId = Array.isArray(params.id) ? params.id[0] : params.id;
   const fetchUser = useGetUserService();
   const fetchPetchUser = usePatchUserService();

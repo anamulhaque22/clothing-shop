@@ -3,7 +3,6 @@ import { useCart } from "@/context/cart-context";
 import Image from "next/image";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
-import Product from "../Product/Product";
 import SectionHeading from "../Typography/SectionHeading";
 import Colors from "./Colors";
 import Ratting from "./Ratting";
@@ -27,6 +26,7 @@ const ProductsDetails = ({ product }) => {
     setSize(s);
     setColor(null);
   };
+
   const handleSelectColor = (color) => {
     if (isColorExistOfSize(color?.colorSizeWiseQuantity)) setColor(color);
     else
@@ -46,6 +46,8 @@ const ProductsDetails = ({ product }) => {
           product?.images?.[0]?.imageUrl || "/images/product-placeholder.jpg",
         price: product?.sellPrice,
       });
+      setSize(null);
+      setColor(null);
     } else {
       enqueueSnackbar("Select color and size to add to cart!", {
         variant: "error",
@@ -276,7 +278,7 @@ const ProductsDetails = ({ product }) => {
         </p>
       </div>
 
-      <div className="mt-10 lg:mt-20">
+      {/* <div className="mt-10 lg:mt-20">
         <SectionHeading text={"Similar Products"} />
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-8 gap-5  sm:gap-9 mt-7">
@@ -286,7 +288,7 @@ const ProductsDetails = ({ product }) => {
           <Product />
           <Product />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

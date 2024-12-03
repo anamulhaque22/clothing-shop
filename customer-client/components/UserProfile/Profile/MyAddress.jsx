@@ -9,10 +9,10 @@ import {
   usePatchAddressService,
 } from "@/services/api/services/address";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaMapMarkerAlt } from "react-icons/fa";
 import * as yup from "yup";
 import EditAddress from "./EditAddress";
 
@@ -156,18 +156,12 @@ const MyAddress = () => {
         <h3 className="font-causten-bold text-2xl text-[#3C4242] mb-3">
           My Addresses
         </h3>
-        <Link href={"/add-address"} className="btn">
+        <Link href={"/add-address"} className="hidden md:flex btn">
           Add Address
-          <Image
-            src={"/images/icon/location.png"}
-            width={18}
-            height={18}
-            alt="edit icon"
-            className="text-white"
-          />
+          <FaMapMarkerAlt className="text-white" />
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {addresses?.length > 0 ? (
           addresses?.map((address) => (
             <div className="rounded-md shadow-md" key={address.id}>
@@ -237,6 +231,13 @@ const MyAddress = () => {
         ) : (
           <p>No address found</p>
         )}
+      </div>
+
+      <div className="block md:hidden mt-3">
+        <Link href={"/add-address"} className="btn">
+          Add Address
+          <FaMapMarkerAlt className="text-white" />
+        </Link>
       </div>
 
       {showModal && (

@@ -1,5 +1,6 @@
 import SnackbarProvider from "@/components/snackbar-provider";
 import { CartProvider } from "@/context/cart-context";
+import { WishlistProvider } from "@/context/wish-list-context";
 import AuthProvider from "@/services/auth/auth-provider";
 import queryClient from "@/services/react-query/query-client";
 import QueryClientProvider from "@/services/react-query/query-client-provider";
@@ -29,7 +30,9 @@ export default function RootLayout({ children }) {
           {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           <SnackbarProvider maxSnack={3}>
             <AuthProvider>
-              <CartProvider>{children}</CartProvider>
+              <CartProvider>
+                <WishlistProvider>{children}</WishlistProvider>
+              </CartProvider>
             </AuthProvider>
           </SnackbarProvider>
         </QueryClientProvider>

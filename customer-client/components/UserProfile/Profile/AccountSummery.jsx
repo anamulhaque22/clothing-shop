@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const AccountSummery = () => {
   return (
-    <div className="grid grid-cols-4 gap-5">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
       <div className="flex justify-between custom-shadow py-6 px-5 rounded-lg">
         <div>
           <p className="font-causten-bold text-2xl text-[#3C4242]">0</p>

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const EmptyWithList = () => {
   return (
@@ -21,7 +20,7 @@ const EmptyWithList = () => {
           You don{"'"}t have any products in the wishlist yet. You will find a
           lot of interesting products on our Shop page.
         </p>
-        <Link href="/shop" className="btn mt-5">
+        <Link href="/products" className="btn mt-5">
           Continue Shopping
         </Link>
       </div>

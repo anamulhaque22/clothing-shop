@@ -1,12 +1,3 @@
-import WishList from "@/components/UserProfile/WishList/WishList";
-import { notFound } from "next/navigation";
+import WishListContent from "./page-content";
 
-const WishListPage = () => {
-  if (false) {
-    // if wish list is empty
-    notFound();
-  }
-  return <WishList />;
-};
-
-export default WishListPage;
+export default WishListContent;

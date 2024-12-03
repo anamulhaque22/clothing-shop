@@ -8,8 +8,6 @@ function withPageRequiredGuest(Component) {
     const { user, isLoaded } = useAuth();
     const router = useRouter();
 
-    console.log({ user, isLoaded });
-
     useEffect(() => {
       const check = () => {
         if (!user || !isLoaded) return;

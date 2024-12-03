@@ -5,12 +5,12 @@ import Link from "next/link";
 const PersonalDetails = () => {
   const { user } = useAuth();
   return (
-    <div className="flex justify-between custom-shadow mt-6 py-6 px-5 rounded-lg">
-      <div className="w-3/5">
+    <div className="flex flex-col gap-y-4 md:gap-y-0 md:flex-row justify-between custom-shadow mt-6 py-6 px-5 rounded-lg">
+      <div className="md:w-3/5">
         <h3 className="font-causten-bold text-2xl text-[#3C4242] mb-3">
           Personal Details
         </h3>
-        <div className="flex justify-between gap-5">
+        <div className="flex flex-col md:flex-row justify-between md:gap-5">
           <div>
             <p className="text-base font-causten-bold">
               First Name{" "}

@@ -1,14 +1,22 @@
 "use client";
 import { useCart } from "@/context/cart-context";
+import { useWishlist } from "@/context/wish-list-context";
 import { useGetHeaderCategoriesService } from "@/services/api/services/categories";
+import useAuth from "@/services/auth/use-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { FaRegHeart } from "react-icons/fa";
+import { FiShoppingCart } from "react-icons/fi";
+import { LuUser2 } from "react-icons/lu";
+
 const MainNav = () => {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const fetchCategories = useGetHeaderCategoriesService();
   const { cart } = useCart();
+  const { wishlist } = useWishlist();
+  const { user } = useAuth();
 
   useEffect(() => {
     async function getCategories() {
@@ -84,7 +92,7 @@ const MainNav = () => {
                 </ul>
               </div>
               {/* header search bar  */}
-              <div className="relative hidden lg:flex items-center">
+              {/* <div className="relative hidden lg:flex items-center">
                 <label className="absolute my-auto  left-5">
                   <Image
                     src={"/images/icon/search.svg"}
@@ -98,31 +106,31 @@ const MainNav = () => {
                   type="text"
                   placeholder="Search"
                 />
-              </div>
+              </div> */}
               {/* header icon */}
+
               <div className="hidden lg:block">
                 <ul className="flex space-x-3">
-                  <li className="p-3 bg-off-white-light rounded-lg">
-                    <Link href={"/wish-list"}>
-                      <Image
-                        src={"/images/icon/heart.svg"}
-                        alt="user icon"
-                        width={20}
-                        height={20}
-                        className="w-auto"
-                      />
-                    </Link>
-                  </li>
-                  <li className="p-3 bg-off-white-light rounded-lg">
-                    <Link href={"/my-profile"}>
-                      <Image
-                        src={"/images/icon/user.svg"}
-                        alt="user icon"
-                        width={20}
-                        height={20}
-                      />
-                    </Link>
-                  </li>
+                  {!!user && (
+                    <>
+                      <li className="p-3 bg-off-white-light rounded-lg indicator">
+                        {wishlist?.length > 0 && (
+                          <span className="indicator-item badge bg-primary text-white w-5 h-5">
+                            {wishlist?.length}
+                          </span>
+                        )}
+                        <Link href={"/wish-list"}>
+                          <FaRegHeart size={20} />
+                        </Link>
+                      </li>
+                      <li className="p-3 bg-off-white-light rounded-lg">
+                        <Link href={"/my-profile"}>
+                          <LuUser2 size={20} />
+                        </Link>
+                      </li>
+                    </>
+                  )}
+
                   <li className="p-3 bg-off-white-light rounded-lg indicator">
                     {cart?.length > 0 && (
                       <span className="indicator-item badge bg-primary text-white w-5 h-5">
@@ -131,12 +139,7 @@ const MainNav = () => {
                     )}
 
                     <Link href={"/cart"}>
-                      <Image
-                        src={"/images/icon/shopping-cart.svg"}
-                        alt="user icon"
-                        width={20}
-                        height={20}
-                      />
+                      <FiShoppingCart size={20} />
                     </Link>
                   </li>
                 </ul>
@@ -168,22 +171,56 @@ const MainNav = () => {
               </li>
               {/* Sidebar content here */}
               <li className="text-secondary font-bold">
-                <Link href={"/"}>Shop</Link>
+                <Link href={"/"}>Shops</Link>
               </li>
+              {categories
+                .filter((c) => c.isVisibleInMenu)
+                .map((c) => (
+                  <li key={c.id}>
+                    <Link
+                      className="active:!bg-transparent active:!text-secondary-light"
+                      href={`/products/${c.id}`}
+                    >
+                      {c.name}
+                    </Link>
+                  </li>
+                ))}
 
-              <li>
-                <Link href={"/products/Men"}>Men</Link>
-              </li>
+              <li className="text-secondary font-bold">
+                {!!user && (
+                  <ul className="menu menu-horizontal rounded-box mobile-icon">
+                    <li className=" rounded-lg indicator">
+                      <div>
+                        {wishlist?.length > 0 && (
+                          <span className="indicator-item badge bg-primary text-white w-5 h-5">
+                            {cart?.length}
+                          </span>
+                        )}
+                        <Link href={"/wish-list"}>
+                          <FaRegHeart size={20} />
+                        </Link>
+                      </div>
+                    </li>
+                    <li className=" rounded-lg">
+                      <Link href={"/my-profile"}>
+                        <LuUser2 size={20} />
+                      </Link>
+                    </li>
+                    <li className=" rounded-lg indicator">
+                      <div>
+                        {cart?.length > 0 && (
+                          <span className="indicator-item badge bg-primary text-white w-5 h-5">
+                            {cart?.length}
+                          </span>
+                        )}
 
-              <li>
-                <Link href={"/products/Women"}>Women</Link>
-              </li>
-
-              <li>
-                <Link href={"/products/combo"}>Combos</Link>
-              </li>
-              <li>
-                <Link href={"/products/joggers"}>Joggers</Link>
+                        <Link href={"/cart"}>
+                          <FiShoppingCart size={20} />
+                        </Link>
+                      </div>
+                    </li>
+                  </ul>
+                )}
               </li>
             </ul>
           </div>

@@ -74,3 +74,21 @@ export function useAuthPatchMeService() {
     [fetch]
   );
 }
+
+// upload user image
+export function useUploadUserImageService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (fileData, reqConfig) => {
+      const data = new FormData();
+      data.append("image", fileData);
+      return fetch(`${API_URL}/v1/auth/image`, {
+        method: "POST",
+        body: data,
+        ...reqConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetch]
+  );
+}

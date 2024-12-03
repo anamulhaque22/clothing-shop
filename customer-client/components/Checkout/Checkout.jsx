@@ -143,7 +143,7 @@ const Checkout = () => {
     }
     clearCart();
     showToast("Order placed successfully!", "success");
-    router.push(`/orders/order-details/${orderData.data.id}`);
+    router.push(`/orders/details/${orderData.data.id}`);
   };
 
   const handleSubmit = async (e) => {

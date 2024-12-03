@@ -22,6 +22,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (product) => {
+    console.log(product);
     setCart((prev) => {
       const pIndex = prev.findIndex(
         (p) =>
@@ -31,15 +32,7 @@ export const CartProvider = ({ children }) => {
       );
 
       if (pIndex !== -1) {
-        // const newCart = [...prev];
-        // newCart[pIndex] = {
-        //   ...newCart[pIndex],
-        //   quantity: newCart[pIndex].quantity + quantity,
-        // };
-
-        // setCartToLocalStorage(newCart);
-        // return newCart;
-
+        console.log("Product already in cart");
         enqueueSnackbar("Product already in cart", {
           variant: "error",
           anchorOrigin: {
@@ -49,7 +42,15 @@ export const CartProvider = ({ children }) => {
         });
         return prev;
       } else {
+        console.log("Product is added to cart");
         setCartToLocalStorage([...prev, { ...product, quantity: 1 }]);
+        enqueueSnackbar("Product is added to cart", {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+        });
         return [...prev, { ...product, quantity: 1 }];
       }
     });
@@ -66,7 +67,6 @@ export const CartProvider = ({ children }) => {
             p.size.id === size.id
           )
       );
-      console.log(filteredCart);
       setCartToLocalStorage(filteredCart);
       return filteredCart;
     });

@@ -1,7 +1,27 @@
+"use client";
+import { useWishlist } from "@/context/wish-list-context";
+import useToast from "@/hooks/useToast";
+import useAuth from "@/services/auth/use-auth";
 import Image from "next/image";
 import Link from "next/link";
+import { CiHeart } from "react-icons/ci";
+import { IoIosHeart } from "react-icons/io";
 
 const Product = ({ productCategory, product }) => {
+  const { user } = useAuth();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const showToast = useToast();
+
+  const handleToggeWishlist = (id) => {
+    if (!user) {
+      showToast("Please login to add to wishlist", "error");
+      return;
+    }
+    toggleWishlist(id);
+  };
+
+  console.log("isINlist", isInWishlist(product?.id));
+
   return (
     <div>
       <div className="relative">
@@ -12,18 +32,18 @@ const Product = ({ productCategory, product }) => {
           width={0}
           height={0}
           sizes="100vw"
-          style={{ width: "100%", height: "auto" }}
+          style={{ width: "100%", height: "320px" }}
           alt="product"
           priority={true}
         />
         <div className="w-[32px] h-[32px] flex justify-center bg-white absolute top-5 right-4 rounded-full">
-          <Image
-            src={"/images/icon/heart.svg"}
-            width={15}
-            height={15}
-            alt="Heart Icon"
-            className="w-auto"
-          />
+          <button onClick={() => handleToggeWishlist(product.id)}>
+            {isInWishlist(product?.id) ? (
+              <IoIosHeart size={20} color="#FF0000" />
+            ) : (
+              <CiHeart size={20} color="#000" />
+            )}
+          </button>
         </div>
       </div>
       <div className="flex justify-between items-center mt-7">
@@ -40,7 +60,7 @@ const Product = ({ productCategory, product }) => {
         </div>
         <div>
           <p className="font-causten-bold text-sm inline-block bg-off-white-light py-2 px-4 rounded-md">
-            {product?.sellPrice}
+            ${product?.sellPrice}
           </p>
         </div>
       </div>

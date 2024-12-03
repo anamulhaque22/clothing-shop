@@ -86,7 +86,7 @@ export default function LayoutContent({ productCategory }) {
             {clothFor?.name ? clothFor?.name : "All "} Clothing
           </h3>
           <div className="flex items-center gap-x-5 md:gap-x-6">
-            <ul className="flex gap-4 md:gap-6 font-causten-semi-bold text-base sm:text-[1.375rem] text-[#3F4646]">
+            {/* <ul className="flex gap-4 md:gap-6 font-causten-semi-bold text-base sm:text-[1.375rem] text-[#3F4646]">
               <li
                 className={`${
                   renderProduct === "New" ? "text-primary" : " "
@@ -103,7 +103,7 @@ export default function LayoutContent({ productCategory }) {
               >
                 Recommended
               </li>
-            </ul>
+            </ul> */}
             <label
               htmlFor="product-filter-drawer"
               className="lg:hidden flex gap-2 items-center border px-4 py-2 rounded-lg"

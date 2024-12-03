@@ -33,7 +33,11 @@ export default function Login() {
     },
   });
 
-  const { handleSubmit, setError } = methods;
+  const {
+    handleSubmit,
+    setError,
+    formState: { isSubmitting },
+  } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
     const { data, status } = await fetchAuthLogin(formData);
@@ -109,6 +113,7 @@ export default function Login() {
                 <button
                   type="submit"
                   className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white"
+                  disabled={isSubmitting}
                 >
                   Sign In
                 </button>
