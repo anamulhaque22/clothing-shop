@@ -6,6 +6,8 @@ import { AddressesModule } from './addresses/addresses.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthGoogleModule } from './auth-google/auth-google.module';
+import googleConfig from './auth-google/config/google.config';
 import { AuthModule } from './auth/auth.module';
 import authConfig from './auth/config/auth.config';
 import { CategoriesModule } from './categories/categories.module';
@@ -34,6 +36,7 @@ import { WishListModule } from './wish-list/wish-list.module';
         appConfig,
         authConfig,
         mailConfig,
+        googleConfig,
         cloudinaryConfig,
         stripeConfig,
       ],
@@ -58,6 +61,7 @@ import { WishListModule } from './wish-list/wish-list.module';
     StripeModule,
     AnalyticsModule,
     WishListModule,
+    AuthGoogleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

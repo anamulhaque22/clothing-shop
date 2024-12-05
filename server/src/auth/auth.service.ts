@@ -16,6 +16,7 @@ import { MailService } from 'src/mail/mail.service';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { Session } from 'src/session/domain/session';
 import { SessionService } from 'src/session/session.service';
+import { SocialInterface } from 'src/social/interfaces/social.interface';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { User, UserImage } from 'src/users/domain/user';
 import { UsersService } from 'src/users/users.service';
@@ -486,6 +487,93 @@ export class AuthService {
     // const result = await this.usersRepository.removeUserImage(id);
     // await this.cloudinaryService.removeFile(result);
     return;
+  }
+
+  async validateSocialLogin(
+    authProvider: string,
+    socialData: SocialInterface,
+  ): Promise<LoginResponseDto> {
+    let user: NullableType<User> = null;
+    const socialEmail = socialData.email?.toLowerCase();
+    let userByEmail: NullableType<User> = null;
+
+    if (socialEmail) {
+      userByEmail = await this.usersService.findByEmail(socialEmail);
+    }
+
+    if (socialData.id) {
+      user = await this.usersService.findBySocialIdAndProvider({
+        socialId: socialData.id,
+        provider: authProvider,
+      });
+    }
+
+    if (user) {
+      if (socialEmail && !userByEmail) {
+        user.email = socialEmail;
+      }
+      await this.usersService.update(user.id, user);
+    } else if (userByEmail) {
+      user = userByEmail;
+    } else if (socialData.id) {
+      const role = {
+        id: RoleEnum.user,
+      };
+
+      const status = {
+        id: StatusEnum.active,
+      };
+
+      user = await this.usersService.create({
+        email: socialEmail ?? null,
+        firstName: socialData.firstName ?? null,
+        lastName: socialData.lastName ?? null,
+        socialId: socialData.id,
+        provider: authProvider,
+        phone: null,
+        role,
+        status,
+      });
+    }
+
+    if (!user) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          user: 'userNotFound',
+        },
+      });
+    }
+
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
+    const session = await this.sessionService.create({
+      user,
+      hash,
+    });
+
+    const {
+      token: jwtToken,
+      refreshToken,
+      tokenExpires,
+    } = await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash,
+    });
+
+    console.log({ user, userByEmail });
+
+    return {
+      refreshToken,
+      token: jwtToken,
+      tokenExpires,
+      user,
+    };
   }
 
   private async getTokensData(data: {
