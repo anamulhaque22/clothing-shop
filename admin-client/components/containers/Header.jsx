@@ -40,7 +40,9 @@ function Header() {
               <div className="w-10 rounded-full">
                 <Image
                   src={
-                    !!user ? user.photo.url : "/images/avatar-placeholder.png"
+                    !!user?.photo
+                      ? user.photo.url
+                      : "/images/avatar-placeholder.png"
                   }
                   height={130}
                   width={130}
