@@ -46,6 +46,21 @@ export function useAuthGoogleLoginService() {
   );
 }
 
+export function useAuthFacebookLoginService() {
+  const fetchBase = useFetchBase();
+
+  return useCallback(
+    (data, requestConfig) => {
+      return fetchBase(`${API_URL}/v1/auth/facebook/login`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse);
+    },
+    [fetchBase]
+  );
+}
+
 export function useAuthForgotPasswordService() {
   const fetchBase = useFetchBase();
 

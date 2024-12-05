@@ -6,6 +6,7 @@ import { AddressesModule } from './addresses/addresses.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import facebookConfig from './auth-facebook/config/facebook.config';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import googleConfig from './auth-google/config/google.config';
 import { AuthModule } from './auth/auth.module';
@@ -39,6 +40,7 @@ import { WishListModule } from './wish-list/wish-list.module';
         googleConfig,
         cloudinaryConfig,
         stripeConfig,
+        facebookConfig,
       ],
       envFilePath: ['.env'],
     }),

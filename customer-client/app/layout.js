@@ -4,6 +4,7 @@ import { WishlistProvider } from "@/context/wish-list-context";
 import AuthProvider from "@/services/auth/auth-provider";
 import queryClient from "@/services/react-query/query-client";
 import QueryClientProvider from "@/services/react-query/query-client-provider";
+import FacebookAuthProvider from "@/services/social-auth/facebook/facebook-auth-provider";
 import GoogleAuthProvider from "@/services/social-auth/google/google-auth-provider";
 import font from "./font";
 import "./globals.css";
@@ -32,9 +33,11 @@ export default function RootLayout({ children }) {
           <SnackbarProvider maxSnack={3}>
             <AuthProvider>
               <GoogleAuthProvider>
-                <CartProvider>
-                  <WishlistProvider>{children}</WishlistProvider>
-                </CartProvider>
+                <FacebookAuthProvider>
+                  <CartProvider>
+                    <WishlistProvider>{children}</WishlistProvider>
+                  </CartProvider>
+                </FacebookAuthProvider>
               </GoogleAuthProvider>
             </AuthProvider>
           </SnackbarProvider>

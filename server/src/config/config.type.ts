@@ -1,3 +1,4 @@
+import { FacebookConfig } from 'src/auth-facebook/config/facebook-config.type';
 import { GoogleConfig } from 'src/auth-google/config/google-config.type';
 import { AuthConfig } from 'src/auth/config/auth-config.type';
 import { CloudinaryConfig } from 'src/cloudinary/config/cloudinay-config.type';
@@ -14,4 +15,5 @@ export type AllConfigType = {
   cloudinary: CloudinaryConfig;
   stripe: StripeConfig;
   google: GoogleConfig;
+  facebook: FacebookConfig;
 };
