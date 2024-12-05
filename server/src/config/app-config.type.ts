@@ -1,7 +1,7 @@
 export type AppConfig = {
   nodeEnv: string;
   name: string;
-  frontendDomain?: string;
+  frontendCustomerDomain?: string;
   backendDomain: string;
   port: number;
   apiPrefix: string;

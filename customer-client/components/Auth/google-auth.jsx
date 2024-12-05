@@ -36,7 +36,12 @@ export default function GoogleAuth() {
 
   return (
     <>
-      <GoogleLogin onSuccess={onSuccess} />
+      <GoogleLogin
+        theme="outline"
+        size="large"
+        width={"100%"}
+        onSuccess={onSuccess}
+      />
       <Loading isLoading={isLoading} />
     </>
   );

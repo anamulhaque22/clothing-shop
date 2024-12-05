@@ -20,8 +20,9 @@ export class MailService {
       'Simply click the big green button below to verify your email address.';
 
     const url = new URL(
-      this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
-        '/confirm-email',
+      this.configService.getOrThrow('app.frontendCustomerDomain', {
+        infer: true,
+      }) + '/confirm-email',
     );
 
     url.searchParams.set('hash', mailData.data.hash);
@@ -61,8 +62,9 @@ export class MailService {
       'If you did not make this request then please ignore this email.';
 
     const url = new URL(
-      this.configService.getOrThrow('app.frontendDomain', { infer: true }) +
-        '/password-change',
+      this.configService.getOrThrow('app.frontendCustomerDomain', {
+        infer: true,
+      }) + '/password-change',
     );
     url.searchParams.set('hash', mailData.data.hash);
     url.searchParams.set('expires', mailData.data.tokenExpires.toString());
@@ -101,7 +103,7 @@ export class MailService {
       'Simply click the big green button below to verify your email address.';
 
     const url = new URL(
-      this.configService.getOrThrow('app.frontendDomain', {
+      this.configService.getOrThrow('app.frontendCustomerDomain', {
         infer: true,
       }) + '/confirm-new-email',
     );

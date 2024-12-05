@@ -30,7 +30,7 @@ class EnvironmentVariablesValidator {
 
   @IsUrl({ require_tld: false })
   @IsOptional()
-  FRONTEND_DOMAIN: string;
+  FRONTEND_CUSTOMER_DOMAIN: string;
 
   @IsUrl({ require_tld: false })
   @IsOptional()
@@ -56,7 +56,7 @@ export default registerAs<AppConfig>('app', () => {
     nodeEnv: process.env.NODE_ENV || 'development',
     name: process.env.APP_NAME || 'app',
     workingDirectory: process.env.PWD || process.cwd(),
-    frontendDomain: process.env.FRONTEND_DOMAIN,
+    frontendCustomerDomain: process.env.FRONTEND_CUSTOMER_DOMAIN,
     backendDomain: process.env.BACKEND_DOMAIN ?? 'http://localhost',
     port: process.env.APP_PORT
       ? parseInt(process.env.APP_PORT, 10)

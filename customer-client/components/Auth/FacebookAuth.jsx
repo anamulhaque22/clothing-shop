@@ -44,9 +44,10 @@ export default function FacebookAuth() {
     <>
       <button
         onClick={onLogin}
-        className="flex gap-x-3 text-primary text-lg md:text-[1.2rem] font-medium justify-center py-2 rounded-md items-center border-2 border-secondary w-full"
+        className="flex gap-x-3 text-primary text-lg font-normal justify-center py-1 rounded-md items-center border border-[#1f293733] w-full"
       >
-        <FaSquareFacebook color="#087DEB" /> Continue with facebook
+        Continue with facebook
+        <FaSquareFacebook color="#087DEB" />
       </button>
       <Loading isLoading={isLoading} />
     </>
