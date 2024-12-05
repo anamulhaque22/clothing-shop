@@ -6,6 +6,7 @@ import {
   usePatchCategoryService,
   usePostCategoryService,
 } from "@/services/api/services/categories";
+import HTTP_CODES from "@/services/api/types/http-codes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
