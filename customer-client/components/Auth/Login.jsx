@@ -75,14 +75,10 @@ export default function Login() {
 
       <div className="container flex justify-center md:justify-start md:flex-row-reverse">
         <div className="basis-full sm:basis-4/5 md:basis-3/5 md:pl-16 mt-11">
-          <h3 className="font-core-sans-bold font-bold text-2xl md:text-3xl mb-6 md:mb-8">
+          <h3 className="font-core-sans-bold font-bold text-2xl md:text-3xl mb-3">
             Sign In Page
           </h3>
-          <LoginWithSocial />
 
-          <div className="divider font-core-sans-medium text-lg text-[#666666] mt-7 mb-6 md:my-10">
-            OR
-          </div>
           <FormProvider {...methods}>
             <form
               className="flex flex-col gap-y-5 md:gap-y-7"
@@ -127,6 +123,11 @@ export default function Login() {
               </div>
             </form>
           </FormProvider>
+
+          <div className="divider font-core-sans-medium text-lg text-[#666666] mt-7 mb-6 md:my-10">
+            OR
+          </div>
+          <LoginWithSocial />
         </div>
       </div>
     </div>

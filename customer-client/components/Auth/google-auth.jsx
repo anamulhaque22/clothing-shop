@@ -37,9 +37,10 @@ export default function GoogleAuth() {
   return (
     <>
       <GoogleLogin
+        type="standard"
         theme="outline"
         size="large"
-        width={"100%"}
+        ux_mode="popup"
         onSuccess={onSuccess}
       />
       <Loading isLoading={isLoading} />
