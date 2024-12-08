@@ -57,8 +57,6 @@ export class WishListReposityImpl implements WishListRepository {
       relations: ['product', 'product.images', 'user'],
     });
 
-    console.log(entities[0]);
-
     return entities.map((entity) => WishListMapper.toDomain(entity));
   }
 
@@ -66,7 +64,6 @@ export class WishListReposityImpl implements WishListRepository {
     id: WishList['id'];
     userId: User['id'];
   }): Promise<void> {
-    console.log(data);
     await this.wishListRepo.delete({
       id: Number(data.id),
       user: {

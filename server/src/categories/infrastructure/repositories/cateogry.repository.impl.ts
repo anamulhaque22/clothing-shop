@@ -21,8 +21,6 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     );
   }
   async getCategoryWithSubCategories(id: Category['id']): Promise<Category[]> {
-    console.log(typeof id);
-    console.log(id);
     if (!id) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,

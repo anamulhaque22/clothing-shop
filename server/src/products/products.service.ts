@@ -265,11 +265,6 @@ export class ProductsService {
     paginationOptions: IPaginationOptions;
     visibility: ProductVisibility | null;
   }) {
-    console.log(typeof category);
-    console.log({
-      category,
-      subCategory,
-    });
     if (category && category.id && !subCategory && !subCategory?.length) {
       const childCategories =
         await this.categoriesService.getCategoryWithSubCategories(category.id);
