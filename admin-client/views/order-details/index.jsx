@@ -23,6 +23,7 @@ function OrderDetails() {
   const fetchUpdateOrderStatus = useUpdateOrderStatusService();
   const [order, setOrder] = useState(null);
   const showToast = useToast();
+  const [orderStatus, setOrderStatus] = useState(order?.status);
 
   const orderId = Array.isArray(params.id) ? params.id[0] : params.id;
 
@@ -71,7 +72,7 @@ function OrderDetails() {
               <div className="flex gap-x-1 items-stretch">
                 <select
                   className="select select-bordered w-full max-w-xs focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary text-text"
-                  onChange={(e) => handleUpdateOrderStatus(e.target.value)}
+                  onChange={(e) => setOrderStatus(e.target.value)}
                   value={order?.status}
                 >
                   <option value={""}>Order Status</option>
@@ -82,6 +83,7 @@ function OrderDetails() {
                   ))}
                 </select>
                 <button
+                  onClick={() => handleUpdateOrderStatus(orderStatus)}
                   type="submit"
                   className="btn btn-primary !text-text !h-auto"
                 >
