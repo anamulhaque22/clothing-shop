@@ -17,7 +17,16 @@ export class WishListReposityImpl implements WishListRepository {
       this.wishListRepo.create(WishListMapper.toPersistence(data)),
     );
 
-    return WishListMapper.toDomain(newEntity);
+    return newEntity
+      ? WishListMapper.toDomain(
+          await this.wishListRepo.findOne({
+            where: {
+              id: newEntity.id,
+            },
+            relations: ['product', 'product.images', 'user'],
+          }),
+        )
+      : null;
   }
 
   async findOneByUserAndProduct(data: {
@@ -57,8 +66,9 @@ export class WishListReposityImpl implements WishListRepository {
     id: WishList['id'];
     userId: User['id'];
   }): Promise<void> {
+    console.log(data);
     await this.wishListRepo.delete({
-      id: data.id,
+      id: Number(data.id),
       user: {
         id: data.userId,
       },

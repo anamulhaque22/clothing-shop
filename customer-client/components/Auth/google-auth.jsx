@@ -6,7 +6,7 @@ import useAuthActions from "@/services/auth/use-auth-actions";
 import useAuthTokens from "@/services/auth/use-auth-tokens";
 import { GoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
-import Loading from "../Shared/Loading";
+import Loading from "../Loading/Loading";
 
 export default function GoogleAuth() {
   const { setUser } = useAuthActions();
@@ -36,13 +36,7 @@ export default function GoogleAuth() {
 
   return (
     <>
-      <GoogleLogin
-        type="standard"
-        theme="outline"
-        size="large"
-        ux_mode="popup"
-        onSuccess={onSuccess}
-      />
+      <GoogleLogin theme="outline" size="large" onSuccess={onSuccess} />
       <Loading isLoading={isLoading} />
     </>
   );

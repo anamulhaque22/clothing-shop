@@ -55,7 +55,12 @@ const MyAddress = () => {
     },
   });
 
-  const { handleSubmit, setError, reset } = methods;
+  const {
+    handleSubmit,
+    setError,
+    reset,
+    formState: { isSubmitting },
+  } = methods;
 
   useEffect(() => {
     const getAddresses = async () => {
@@ -244,6 +249,7 @@ const MyAddress = () => {
         <EditAddress
           methods={methods}
           onSubmit={onSubmit}
+          isSubmitting={isSubmitting}
           onClose={() => setShowModal(false)}
         />
       )}

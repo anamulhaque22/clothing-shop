@@ -249,6 +249,7 @@ const Checkout = () => {
     } else if (paymentType === PAYMENT_PROVIDER.COD) {
       handlePlaceOrder({ ...reqBody, paymentType: PAYMENT_PROVIDER.COD });
     }
+    setLoading(false);
   };
   return (
     <div className="container mb-11 md:mb-24">
@@ -312,8 +313,9 @@ const Checkout = () => {
 
       <button
         type="submit"
-        className="btn mt-8 lg:mt-10"
+        className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-12 py-3 text-white disabled:bg-slate-600 disabled:border-slate-600 mt-8 lg:mt-10"
         onClick={handleSubmit}
+        disabled={loading}
       >
         Pay Now
       </button>

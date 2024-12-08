@@ -2,7 +2,12 @@ import InputText from "@/components/Input/InputText";
 import { AddressType } from "@/constants/address-type";
 import { Controller, FormProvider } from "react-hook-form";
 
-export default function EditAddress({ methods, onSubmit, onClose }) {
+export default function EditAddress({
+  methods,
+  onSubmit,
+  onClose,
+  isSubmitting,
+}) {
   return (
     <dialog id="edit-address-modal" open className="modal">
       <div className="modal-box">
@@ -198,7 +203,11 @@ export default function EditAddress({ methods, onSubmit, onClose }) {
             </div>
 
             <div className="flex gap-x-4">
-              <button type="submit" className="btn">
+              <button
+                type="submit"
+                className="btn text-white disabled:bg-slate-600 disabled:border-slate-600"
+                disabled={isSubmitting}
+              >
                 Submit
               </button>
               <button

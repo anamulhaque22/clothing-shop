@@ -29,7 +29,7 @@ const PersonalDetails = () => {
             <p className="text-base font-causten-bold">
               Phone{" "}
               <span className="font-causten-regular ml-2">
-                {user?.phone && user?.pnone}
+                {user?.phone && user?.phone}
               </span>
             </p>
             <p className="text-base font-causten-bold">

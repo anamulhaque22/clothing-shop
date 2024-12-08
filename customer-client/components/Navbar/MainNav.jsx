@@ -9,13 +9,14 @@ import { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { LuUser2 } from "react-icons/lu";
+import Loading from "../Loading/Loading";
 
 const MainNav = () => {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const fetchCategories = useGetHeaderCategoriesService();
   const { cart } = useCart();
-  const { wishlist } = useWishlist();
+  const { wishlist, loading } = useWishlist();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -28,6 +29,8 @@ const MainNav = () => {
     }
     getCategories();
   }, [fetchCategories]);
+
+  if (loading) <Loading isLoading={loading} />;
   return (
     <>
       <div className="border-b border-b-[#BEBCBD]">

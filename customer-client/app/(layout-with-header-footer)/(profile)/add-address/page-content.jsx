@@ -40,9 +40,12 @@ export default function AddAddressForm() {
       addreddType: AddressType.HOME,
     },
   });
-  const { handleSubmit, setError } = methods;
+  const {
+    handleSubmit,
+    setError,
+    formState: { isSubmitting },
+  } = methods;
   const onSubmit = handleSubmit(async (formData) => {
-    console.log("formData", formData);
     const { data, status } = await fetchPostAddress(formData);
 
     if (status === HTTP_CODES.UNPROCESSABLE_ENTITY) {
@@ -54,8 +57,6 @@ export default function AddAddressForm() {
       );
       return;
     }
-
-    console.log("data", data);
 
     if (status === HTTP_CODES.CREATED) {
       showToast("Address added successfully", "success");
@@ -255,7 +256,11 @@ export default function AddAddressForm() {
           </div>
 
           <div className="flex gap-x-4">
-            <button type="submit" className="btn">
+            <button
+              type="submit"
+              className="btn disabled:bg-slate-600 disabled:border-slate-600 disabled:text-white"
+              disabled={isSubmitting}
+            >
               Submit
             </button>
             <Link

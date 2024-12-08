@@ -16,15 +16,17 @@ export const WishlistProvider = ({ children }) => {
   const fetchPostWishlist = useAddToWishListService();
   const fetchDeleteWishlist = useRemoveFromWishListService();
   const showToast = useToast();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const { data, status } = await fetchWishlist();
       if (status === HTTP_CODES.OK) {
         setWishlist(data);
+        setLoading(false);
       }
     };
-
     fetchData();
   }, [fetchWishlist]);
 
@@ -32,19 +34,23 @@ export const WishlistProvider = ({ children }) => {
   const isInWishlist = (productId) =>
     wishlist.find((w) => w?.product?.id === productId);
 
-  const toggleWishlist = async (productId) => {
-    const exitsWishItem = isInWishlist(productId);
+  const toggleWishlist = async (product) => {
+    const exitsWishItem = isInWishlist(product?.id);
     if (exitsWishItem) {
+      setLoading(true);
       const { data, status } = await fetchDeleteWishlist(exitsWishItem.id);
       if (status === HTTP_CODES.NO_CONTENT) {
         showToast("Product removed from wishlist", "success");
         setWishlist((prev) =>
-          prev.filter((item) => item?.product?.id !== productId)
+          prev.filter((item) => item?.product?.id !== product?.id)
         );
+        setLoading(false);
       }
     } else {
-      const { data, status } = await fetchPostWishlist(productId);
+      setLoading(true);
+      const { data, status } = await fetchPostWishlist(product?.id);
       if (status === HTTP_CODES.CREATED) {
+        setLoading(false);
         showToast("Product added to wishlist", "success");
         setWishlist((prev) => [...prev, data]);
       }
@@ -53,7 +59,7 @@ export const WishlistProvider = ({ children }) => {
 
   return (
     <WishlistContext.Provider
-      value={{ wishlist, isInWishlist, toggleWishlist }}
+      value={{ wishlist, isInWishlist, toggleWishlist, loading }}
     >
       {children}
     </WishlistContext.Provider>

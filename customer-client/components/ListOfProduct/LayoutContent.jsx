@@ -5,6 +5,7 @@ import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicat
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Loading from "../Loading/Loading";
 import ListOfProduct from "./ListOfProduct";
 
 export default function LayoutContent({ productCategory }) {
@@ -13,6 +14,7 @@ export default function LayoutContent({ productCategory }) {
   const fetchCategory = useGetCategoryService();
   const router = useRouter();
   const [clothFor, setClothFor] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const filter = useMemo(() => {
     const category = searchParams.get("category");
@@ -31,9 +33,7 @@ export default function LayoutContent({ productCategory }) {
     return filterPamams;
   }, [searchParams, productCategory]);
 
-  console.log({ filter });
-
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetching } =
     useProductListQuery(filter);
 
   const handleScroll = useCallback(() => {
@@ -58,23 +58,28 @@ export default function LayoutContent({ productCategory }) {
 
   useEffect(() => {
     async function fetch() {
+      setIsLoading(true);
       const { data, status } = await fetchCategory(productCategory);
       if (status === 200) {
         setClothFor(data);
       }
+      setIsLoading(false);
     }
     fetch();
   }, [fetchCategory, productCategory]);
 
   const result = useMemo(() => {
-    console.log({ data });
     const result = data?.pages.flatMap((page) => page?.data) ?? null;
-    console.log({ result });
+
     if (result) {
       return removeDuplicatesFromArrayObjects(result, "id");
     }
     return null;
   }, [data]);
+
+  if (isFetching || isLoading) {
+    return <Loading isLoading={true} />;
+  }
 
   return (
     <div className="drawer-content">

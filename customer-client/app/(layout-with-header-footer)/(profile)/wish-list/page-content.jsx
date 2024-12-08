@@ -1,11 +1,14 @@
 "use client";
+import Loading from "@/components/Loading/Loading";
 import EmptyWithList from "@/components/UserProfile/WishList/EmptyWithList";
 import WishListItem from "@/components/UserProfile/WishList/WishListItem";
 import { useWishlist } from "@/context/wish-list-context";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 
 function WishListContent() {
-  const { wishlist, toggleWishlist } = useWishlist();
+  const { wishlist, toggleWishlist, loading } = useWishlist();
+
+  if (loading) return <Loading isLoading={loading} />;
 
   return (
     <>
@@ -15,7 +18,7 @@ function WishListContent() {
             <WishListItem
               key={wishList.id}
               wishList={wishList}
-              toggleWishlist={toggleWishlist}
+              toggleWishlist={(product) => toggleWishlist(product)}
             />
           ))}
         </div>

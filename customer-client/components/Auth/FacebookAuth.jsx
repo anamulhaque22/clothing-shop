@@ -7,7 +7,7 @@ import useAuthTokens from "@/services/auth/use-auth-tokens";
 import useFacebookAuth from "@/services/social-auth/facebook/use-facebook-auth";
 import { useState } from "react";
 import { FaSquareFacebook } from "react-icons/fa6";
-import Loading from "../Shared/Loading";
+import Loading from "../Loading/Loading";
 
 export default function FacebookAuth() {
   const { setUser } = useAuthActions();

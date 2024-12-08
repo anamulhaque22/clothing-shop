@@ -12,15 +12,13 @@ const Product = ({ productCategory, product }) => {
   const { isInWishlist, toggleWishlist } = useWishlist();
   const showToast = useToast();
 
-  const handleToggeWishlist = (id) => {
+  const handleToggeWishlist = (product) => {
     if (!user) {
       showToast("Please login to add to wishlist", "error");
       return;
     }
-    toggleWishlist(id);
+    toggleWishlist(product);
   };
-
-  console.log("isINlist", isInWishlist(product?.id));
 
   return (
     <div>
@@ -37,7 +35,7 @@ const Product = ({ productCategory, product }) => {
           priority={true}
         />
         <div className="w-[32px] h-[32px] flex justify-center bg-white absolute top-5 right-4 rounded-full">
-          <button onClick={() => handleToggeWishlist(product.id)}>
+          <button onClick={() => handleToggeWishlist(product)}>
             {isInWishlist(product?.id) ? (
               <IoIosHeart size={20} color="#FF0000" />
             ) : (

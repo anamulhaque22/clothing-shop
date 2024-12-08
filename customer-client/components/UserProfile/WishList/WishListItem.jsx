@@ -20,9 +20,12 @@ const WishListItem = ({ wishList, toggleWishlist }) => {
           alt="image"
         />
         <div>
-          <h4 className="font-causten-bold text-lg text-[#3C4242]">
+          <Link
+            href={`/products/details/${wishList?.product?.id}`}
+            className="font-causten-bold text-lg text-[#3C4242]"
+          >
             {wishList?.product?.title}
-          </h4>
+          </Link>
           <h4 className="font-causten-bold text-lg text-[#3C4242]">
             Price:{" "}
             <span className="text-[#807D7E]">
@@ -34,7 +37,7 @@ const WishListItem = ({ wishList, toggleWishlist }) => {
       <div className="flex flex-col h-full justify-between">
         <button
           className="text-[#807D7E]"
-          onClick={() => toggleWishlist(wishList?.product?.id)}
+          onClick={() => toggleWishlist(wishList?.product)}
         >
           <MdDelete size={20} color="#000" />
         </button>
