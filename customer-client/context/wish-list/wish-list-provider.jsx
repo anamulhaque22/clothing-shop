@@ -1,4 +1,5 @@
 "use client";
+
 import useToast from "@/hooks/useToast";
 import HTTP_CODES from "@/services/api/constants/http-codes";
 import {
@@ -6,9 +7,9 @@ import {
   useGetWishListService,
   useRemoveFromWishListService,
 } from "@/services/api/services/wish-list";
-import { createContext, useContext, useEffect, useState } from "react";
-
-const WishlistContext = createContext(null);
+import useAuth from "@/services/auth/use-auth";
+import { useEffect, useState } from "react";
+import { WishlistContext } from "./wish-list-context";
 
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
@@ -17,6 +18,7 @@ export const WishlistProvider = ({ children }) => {
   const fetchDeleteWishlist = useRemoveFromWishListService();
   const showToast = useToast();
   const [loading, setLoading] = useState(false);
+  const { isLoaded } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,8 +29,10 @@ export const WishlistProvider = ({ children }) => {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [fetchWishlist]);
+    if (typeof window !== "undefined" && isLoaded) {
+      fetchData();
+    }
+  }, [fetchWishlist, isLoaded]);
 
   // Helper function to check if a product is in the wishlist
   const isInWishlist = (productId) =>
@@ -65,5 +69,3 @@ export const WishlistProvider = ({ children }) => {
     </WishlistContext.Provider>
   );
 };
-
-export const useWishlist = () => useContext(WishlistContext);

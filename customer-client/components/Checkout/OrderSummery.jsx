@@ -1,4 +1,5 @@
-import { useCart } from "@/context/cart-context";
+"use client";
+import { useCart } from "@/context/cart/useCart";
 import Image from "next/image";
 
 export default function OrderSummery() {

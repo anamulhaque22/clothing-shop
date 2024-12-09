@@ -1,7 +1,7 @@
 "use client";
 import EmptyCart from "@/components/Cart/EmptyCart";
 import Checkout from "@/components/Checkout/Checkout";
-import { useCart } from "@/context/cart-context";
+import { useCart } from "@/context/cart/useCart";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";

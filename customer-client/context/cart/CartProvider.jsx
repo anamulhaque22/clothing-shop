@@ -1,17 +1,10 @@
 "use client";
 import { enqueueSnackbar } from "notistack";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { CartContext } from "./cart-context";
 
-const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
-
-  // () => {
-  //   if (typeof window === "undefined") return [];
-  //   const storedCart = JSON.parse(localStorage.getItem("cart"));
-  //   return storedCart ? storedCart : [];
-  // };
-
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart"));
     if (storedCart) setCart(storedCart);
@@ -22,7 +15,6 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (product) => {
-    console.log(product);
     setCart((prev) => {
       const pIndex = prev.findIndex(
         (p) =>
@@ -32,7 +24,6 @@ export const CartProvider = ({ children }) => {
       );
 
       if (pIndex !== -1) {
-        console.log("Product already in cart");
         enqueueSnackbar("Product already in cart", {
           variant: "error",
           anchorOrigin: {
@@ -42,7 +33,6 @@ export const CartProvider = ({ children }) => {
         });
         return prev;
       } else {
-        console.log("Product is added to cart");
         setCartToLocalStorage([...prev, { ...product, quantity: 1 }]);
         enqueueSnackbar("Product is added to cart", {
           variant: "success",
@@ -57,7 +47,6 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (productId, color, size) => {
-    console.log({ productId, color, size });
     setCart((prev) => {
       const filteredCart = prev.filter(
         (p) =>
@@ -124,8 +113,4 @@ export const CartProvider = ({ children }) => {
       {children}
     </CartContext.Provider>
   );
-};
-
-export const useCart = () => {
-  return useContext(CartContext);
 };

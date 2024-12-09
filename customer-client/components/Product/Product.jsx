@@ -1,5 +1,5 @@
 "use client";
-import { useWishlist } from "@/context/wish-list-context";
+import { useWishlist } from "@/context/wish-list/use-wish-list";
 import useToast from "@/hooks/useToast";
 import useAuth from "@/services/auth/use-auth";
 import Image from "next/image";

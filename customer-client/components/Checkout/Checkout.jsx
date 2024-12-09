@@ -1,6 +1,6 @@
 "use client";
 import { PAYMENT_PROVIDER } from "@/constants/payment-provider";
-import { useCart } from "@/context/cart-context";
+import { useCart } from "@/context/cart/useCart";
 import useToast from "@/hooks/useToast";
 import HTTP_CODES from "@/services/api/constants/http-codes";
 import { usePlaceOrderService } from "@/services/api/services/order";

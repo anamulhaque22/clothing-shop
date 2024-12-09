@@ -2,7 +2,8 @@
 import Loading from "@/components/Loading/Loading";
 import EmptyWithList from "@/components/UserProfile/WishList/EmptyWithList";
 import WishListItem from "@/components/UserProfile/WishList/WishListItem";
-import { useWishlist } from "@/context/wish-list-context";
+import { useWishlist } from "@/context/wish-list/use-wish-list";
+
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 
 function WishListContent() {

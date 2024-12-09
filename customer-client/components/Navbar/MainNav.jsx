@@ -1,6 +1,7 @@
 "use client";
-import { useCart } from "@/context/cart-context";
-import { useWishlist } from "@/context/wish-list-context";
+
+import { useCart } from "@/context/cart/useCart";
+import { useWishlist } from "@/context/wish-list/use-wish-list";
 import { useGetHeaderCategoriesService } from "@/services/api/services/categories";
 import useAuth from "@/services/auth/use-auth";
 import Image from "next/image";
@@ -9,7 +10,6 @@ import { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { LuUser2 } from "react-icons/lu";
-import Loading from "../Loading/Loading";
 
 const MainNav = () => {
   const [open, setOpen] = useState(false);
@@ -30,7 +30,6 @@ const MainNav = () => {
     getCategories();
   }, [fetchCategories]);
 
-  if (loading) <Loading isLoading={loading} />;
   return (
     <>
       <div className="border-b border-b-[#BEBCBD]">

@@ -4,7 +4,7 @@ import useFetch from "../use-fetch";
 import wrapperFetchJsonResponse from "../wrapper-fetch-json-response";
 
 export function usePostAddressService() {
-  const fetch = useFetch();
+  const fetch = useFetch({ test: "usePostAddressService" });
   return useCallback(
     (data, requestConfig) => {
       return fetch(`${API_URL}/v1/addresses`, {

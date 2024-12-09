@@ -22,8 +22,8 @@ const validationSchema = yup.object().shape({
 const EditProfile = () => {
   const { setUser } = useAuthActions();
   const { user } = useAuth();
-  const fetchAuthPatchMe = useAuthPatchMeService();
-  const uploadUserImage = useUploadUserImageService();
+  const fetchAuthPatchMe = useAuthPatchMeService("patchMe");
+  const uploadUserImage = useUploadUserImageService("uploadUserImage");
   const [imagePreview, setImagePreview] = useState(null);
 
   const methods = useForm({

@@ -18,7 +18,7 @@ export default function SelectAddress({ handleSetBillingAddressId }) {
     };
 
     getAddresses();
-  }, [fetchGetAddresses]);
+  }, [fetchGetAddresses, handleSetBillingAddressId]);
   return addresses?.length > 0 ? (
     <div>
       <h3>Select Address</h3>
