@@ -156,7 +156,7 @@ const AddProductForm = () => {
   });
 
   return (
-    <div className="relative">
+    <div className="relative pt-8 px-6">
       <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
         <FormProvider {...methods}>
           <form onSubmit={onSubmit}>

@@ -123,102 +123,104 @@ function AddUser() {
     }
   };
   return (
-    <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
-      <FormProvider {...methods}>
-        <form onSubmit={onSubmit}>
-          <div className="flex justify-center mb-4">
-            <label htmlFor="photo" className="cursor-pointer">
-              <Image
-                src={imagePreview ?? "/images/avatar-placeholder.png"}
-                height={130}
-                width={130}
-                className="rounded-full h-[130px] w-[130px] object-fill"
-                alt="avatar"
-              />
-            </label>
-            <Controller
-              name="photo"
-              render={({ field }) => (
-                <input
-                  type="file"
-                  id="photo"
-                  name="photo"
-                  accept="image/png, image/jpeg"
-                  className="hidden"
-                  onChange={handleImageUpload}
+    <div className="pt-8 px-6">
+      <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
+        <FormProvider {...methods}>
+          <form onSubmit={onSubmit}>
+            <div className="flex justify-center mb-4">
+              <label htmlFor="photo" className="cursor-pointer">
+                <Image
+                  src={imagePreview ?? "/images/avatar-placeholder.png"}
+                  height={130}
+                  width={130}
+                  className="rounded-full h-[130px] w-[130px] object-fill"
+                  alt="avatar"
                 />
-              )}
-            />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:gap-x-3 gap-y-4">
-            <InputText
-              name="firstName"
-              type="text"
-              containerStyle="mt-0"
-              labelTitle="First name"
-            />
-
-            <InputText
-              name="lastName"
-              type="text"
-              containerStyle="mt-0 "
-              labelTitle="Last name"
-            />
-
-            <InputText
-              name="email"
-              type="email"
-              containerStyle="mt-0 "
-              labelTitle="Email"
-            />
-
-            <div className="form-control w-full">
-              <label
-                htmlFor="role"
-                className={`label font-causten-semi-bold text-base text-text`}
-              >
-                Select User Role
               </label>
-              <select className="select select-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
-                <option value={ROLES.USER}>User</option>
-                <option value={ROLES.ADMIN}>Admin</option>
-              </select>
+              <Controller
+                name="photo"
+                render={({ field }) => (
+                  <input
+                    type="file"
+                    id="photo"
+                    name="photo"
+                    accept="image/png, image/jpeg"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:gap-x-3 gap-y-4">
+              <InputText
+                name="firstName"
+                type="text"
+                containerStyle="mt-0"
+                labelTitle="First name"
+              />
+
+              <InputText
+                name="lastName"
+                type="text"
+                containerStyle="mt-0 "
+                labelTitle="Last name"
+              />
+
+              <InputText
+                name="email"
+                type="email"
+                containerStyle="mt-0 "
+                labelTitle="Email"
+              />
+
+              <div className="form-control w-full">
+                <label
+                  htmlFor="role"
+                  className={`label font-causten-semi-bold text-base text-text`}
+                >
+                  Select User Role
+                </label>
+                <select className="select select-bordered w-full focus:outline-none bg-secondary focus:bg-white dark:focus:bg-secondary">
+                  <option value={ROLES.USER}>User</option>
+                  <option value={ROLES.ADMIN}>Admin</option>
+                </select>
+              </div>
+
+              <InputText
+                name="password"
+                type="password"
+                containerStyle="mt-0 "
+                labelTitle="Password"
+              />
+
+              <InputText
+                name="confirmPassword"
+                type="password"
+                containerStyle="mt-0 "
+                labelTitle="Confirm Password"
+              />
             </div>
 
-            <InputText
-              name="password"
-              type="password"
-              containerStyle="mt-0 "
-              labelTitle="Password"
-            />
-
-            <InputText
-              name="confirmPassword"
-              type="password"
-              containerStyle="mt-0 "
-              labelTitle="Confirm Password"
-            />
-          </div>
-
-          <div className="flex justify-end mt-2 gap-x-2">
-            <button
-              type="submit"
-              className={
-                "btn" + (isSubmitting ? " btn-disabled" : " btn-primary")
-              }
-              disabled={isSubmitting}
-            >
-              Save
-            </button>
-            <Link
-              href={"/users"}
-              className="btn bg-secondary text-text border-none"
-            >
-              Cancle
-            </Link>
-          </div>
-        </form>
-      </FormProvider>
+            <div className="flex justify-end mt-2 gap-x-2">
+              <button
+                type="submit"
+                className={
+                  "btn" + (isSubmitting ? " btn-disabled" : " btn-primary")
+                }
+                disabled={isSubmitting}
+              >
+                Save
+              </button>
+              <Link
+                href={"/users"}
+                className="btn bg-secondary text-text border-none"
+              >
+                Cancle
+              </Link>
+            </div>
+          </form>
+        </FormProvider>
+      </div>
     </div>
   );
 }

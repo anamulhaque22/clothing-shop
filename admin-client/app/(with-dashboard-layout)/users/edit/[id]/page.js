@@ -6,6 +6,4 @@ export function generateMetadata() {
   };
 }
 
-export default function InternalPage() {
-  return <EditUser />;
-}
+export default EditUser;

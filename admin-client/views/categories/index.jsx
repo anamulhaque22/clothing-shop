@@ -55,7 +55,7 @@ export default function Categories() {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:flex-wrap">
+    <div className="flex flex-col sm:flex-row sm:flex-wrap pt-8 px-6">
       <div className="flex-[0_0_auto] sm:w-3/12 pr-4">
         <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
           <CategoryForm

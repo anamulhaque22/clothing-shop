@@ -6,6 +6,4 @@ export function generateMetadata() {
   };
 }
 
-export default function page() {
-  return <AddUser />;
-}
+export default AddUser;

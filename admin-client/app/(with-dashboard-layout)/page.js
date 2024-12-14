@@ -6,6 +6,4 @@ export function generateMetadata() {
   };
 }
 
-export default function DashboardPage() {
-  return <Dashboard />;
-}
+export default Dashboard;

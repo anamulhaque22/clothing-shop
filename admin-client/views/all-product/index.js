@@ -61,74 +61,79 @@ function AllProductList() {
   }, [data]);
 
   return (
-    <>
-      <div className="flex justify-between">
-        <CategoryFilter />
+    <div className="pt-8 px-6">
+      <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
+        <div className="flex justify-between">
+          <CategoryFilter />
 
-        {/* <VisibilityFilter /> */}
-      </div>
-      <div className="overflow-x-auto w-full text-text">
-        <table className="table w-full ">
-          <thead>
-            <tr className="text-text border-bc">
-              <th>Product Name</th>
-              <th>Price</th>
-              <th>Buy Price</th>
-              <th>Sell Price</th>
-              <th>Stock</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {result?.map((product) => (
-              <tr key={product?.id} className="hover:bg-[#8b33fd21] !border-bc">
-                <td>
-                  <div className="avatar">
-                    <div className="w-12 h-12">
-                      <Image
-                        src={
-                          product?.images?.[0]?.imageUrl ||
-                          "/images/product-placeholder.jpg"
-                        }
-                        width={250}
-                        height={250}
-                        alt="product image"
-                      />
-                    </div>
-                  </div>
-                </td>
-                <td>{product?.title}</td>
-                <td>$ {product?.buyPrice}</td>
-                <td>$ {product?.sellPrice}</td>
-                <td>{product?.quantity}</td>
-                <td>
-                  <button className="btn btn-primary !text-text btn-xs cursor-default">
-                    {product?.visibility}
-                  </button>
-                </td>
-                <td>
-                  <div className="flex flex-row gap-x-1">
-                    <Link
-                      href={`/products/edit/${product?.id}`}
-                      className="btn btn-primary !text-text btn-xs"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      className="btn btn-primary !text-text btn-xs"
-                      type="submit"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
+          {/* <VisibilityFilter /> */}
+        </div>
+        <div className="overflow-x-auto w-full text-text">
+          <table className="table w-full ">
+            <thead>
+              <tr className="text-text border-bc">
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Buy Price</th>
+                <th>Sell Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {result?.map((product) => (
+                <tr
+                  key={product?.id}
+                  className="hover:bg-[#8b33fd21] !border-bc"
+                >
+                  <td>
+                    <div className="avatar">
+                      <div className="w-12 h-12">
+                        <Image
+                          src={
+                            product?.images?.[0]?.imageUrl ||
+                            "/images/product-placeholder.jpg"
+                          }
+                          width={250}
+                          height={250}
+                          alt="product image"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <td>{product?.title}</td>
+                  <td>$ {product?.buyPrice}</td>
+                  <td>$ {product?.sellPrice}</td>
+                  <td>{product?.quantity}</td>
+                  <td>
+                    <button className="btn btn-primary !text-text btn-xs cursor-default">
+                      {product?.visibility}
+                    </button>
+                  </td>
+                  <td>
+                    <div className="flex flex-row gap-x-1">
+                      <Link
+                        href={`/products/edit/${product?.id}`}
+                        className="btn btn-primary !text-text btn-xs"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        className="btn btn-primary !text-text btn-xs"
+                        type="submit"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

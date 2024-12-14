@@ -5,7 +5,6 @@ import {
 } from 'src/analytics/domain/analytics';
 import { ORDER_STATUS } from 'src/orders/orders.enum';
 import { ProductEntity } from 'src/products/infrastructure/entities/product.entity';
-import { StatusEnum } from 'src/statuses/statuses.enum';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { DataSource, Repository } from 'typeorm';
 import { AnalyticsRepository } from '../analytics.repository';
@@ -101,9 +100,7 @@ export class AnalyticsRepositoryImpl implements AnalyticsRepository {
       WHERE
         s."updatedAt" > NOW() - INTERVAL '30 days'
         AND u."deletedAt" IS NULL
-        AND u."statusId" = $1;
       `,
-      [StatusEnum.active],
     );
   }
 

@@ -34,7 +34,7 @@ const routes = [
     name: "Products",
     submenu: [
       {
-        path: "/add-product",
+        path: "/products/add",
         icon: <HiSquaresPlus className={submenuIconClasses} />,
         name: "Add Product",
       },

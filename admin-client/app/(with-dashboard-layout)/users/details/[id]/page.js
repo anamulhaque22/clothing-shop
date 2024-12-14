@@ -6,6 +6,4 @@ export function generateMetadata() {
   };
 }
 
-export default function InternalUserDetailsPage() {
-  return <UserDetails />;
-}
+export default UserDetails;

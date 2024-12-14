@@ -6,6 +6,4 @@ export function generateMetadata() {
   };
 }
 
-export default function InternalPage() {
-  return <UserListView />;
-}
+export default UserListView;

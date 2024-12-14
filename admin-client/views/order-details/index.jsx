@@ -54,7 +54,7 @@ function OrderDetails() {
 
   return (
     order && (
-      <div className="">
+      <div className="pt-8 px-6">
         {/* order date */}
         <div className="bg-content-bg rounded-xl border border-bc">
           <div className="flex justify-between py-4 px-5">

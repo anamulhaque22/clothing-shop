@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/app/loading";
 import { useGetBestSellingProducts } from "@/services/api/services/analytics";
 import withPageRequiredAuth from "@/services/auth/page-with-required-auth";
 import { useQuery } from "@tanstack/react-query";
@@ -24,16 +25,16 @@ function Deshboard() {
     queryFn: fetchBestSellingProducts,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   return (
-    <>
+    <div className="pt-8 px-6">
       <StatisticsOverview />
       <div className="grid grid-cols-2 gap-x-5 mt-6">
         <RevenueChart />
         <BestSellingProduct products={bestSellingProducts?.["data"]} />
       </div>
-    </>
+    </div>
   );
 }
 
