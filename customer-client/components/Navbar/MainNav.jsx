@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { LuUser2 } from "react-icons/lu";
+import LoginRegisterDropdown from "./LoginRegisterDropdown";
 
 const MainNav = () => {
   const [open, setOpen] = useState(false);
@@ -38,19 +39,6 @@ const MainNav = () => {
           <div className="drawer-content flex flex-col">
             {/* Navbar */}
             <div className="w-full navbar justify-between">
-              <div className="">
-                {/* logo */}
-                <a href="/">
-                  <Image
-                    src={"/images/logo.png"}
-                    height={100}
-                    width={100}
-                    alt="logo"
-                    priority={true}
-                    className="w-auto h-auto"
-                  />
-                </a>
-              </div>
               {/* menu bar icon to open can cole mobile menu */}
               <div className="flex-none lg:hidden">
                 <label
@@ -65,6 +53,54 @@ const MainNav = () => {
                     alt="menu bar icon"
                   />
                 </label>
+              </div>
+              {/* logo */}
+              <div className="">
+                <Link href="/">
+                  <Image
+                    src={"/images/logo.png"}
+                    height={100}
+                    width={100}
+                    alt="logo"
+                    priority={true}
+                    className="md:w-auto md:h-auto"
+                  />
+                </Link>
+              </div>
+
+              <div className="flex gap-x-1 flex-row-reverse lg:hidden">
+                {!!user ? (
+                  <>
+                    <Link href={"/my-profile"}>
+                      <LuUser2 size={20} />
+                    </Link>
+                    <div className=" indicator">
+                      {wishlist?.length > 0 && (
+                        <span className="indicator-item badge bg-primary text-white w-5 h-5">
+                          {wishlist?.length}
+                        </span>
+                      )}
+                      <Link href={"/wish-list"}>
+                        <FaRegHeart size={20} />
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <LoginRegisterDropdown />
+                  </>
+                )}
+                <div>
+                  {cart?.length > 0 && (
+                    <span className="indicator-item badge bg-primary text-white w-5 h-5">
+                      {cart?.length}
+                    </span>
+                  )}
+
+                  <Link href={"/cart"}>
+                    <FiShoppingCart size={20} />
+                  </Link>
+                </div>
               </div>
               {/* desktop menu items */}
               <div className="flex-none hidden lg:block">
@@ -133,7 +169,7 @@ const MainNav = () => {
                     </>
                   )}
 
-                  <li className="p-3  rounded-lg indicator">
+                  <li className="p-3  rounded-lg indicator bg-off-white-light">
                     {cart?.length > 0 && (
                       <span className="indicator-item badge bg-primary text-white w-5 h-5">
                         {cart?.length}
@@ -145,13 +181,8 @@ const MainNav = () => {
                     </Link>
                   </li>
                   {!!user ? null : (
-                    <li className="  rounded-lg indicator">
-                      <Link
-                        href={"/login"}
-                        className="bg-primary border border-primary font-causten-medium text-lg rounded-lg px-7 py-2 text-white"
-                      >
-                        Login
-                      </Link>
+                    <li className="p-3 bg-off-white-light rounded-lg">
+                      <LoginRegisterDropdown />
                     </li>
                   )}
                 </ul>
@@ -217,19 +248,6 @@ const MainNav = () => {
                       <Link href={"/my-profile"}>
                         <LuUser2 size={20} />
                       </Link>
-                    </li>
-                    <li className=" rounded-lg indicator">
-                      <div>
-                        {cart?.length > 0 && (
-                          <span className="indicator-item badge bg-primary text-white w-5 h-5">
-                            {cart?.length}
-                          </span>
-                        )}
-
-                        <Link href={"/cart"}>
-                          <FiShoppingCart size={20} />
-                        </Link>
-                      </div>
                     </li>
                   </ul>
                 )}

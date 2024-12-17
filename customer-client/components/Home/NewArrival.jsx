@@ -16,6 +16,7 @@ const NewArrival = () => {
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 3,
+    centerMode: true,
     responsive: [
       {
         breakpoint: 1024,
@@ -23,7 +24,6 @@ const NewArrival = () => {
           slidesToShow: 3,
           slidesToScroll: 3,
           infinite: true,
-          dots: true,
         },
       },
       {
@@ -60,7 +60,7 @@ const NewArrival = () => {
   return (
     <div className="container section-space">
       <SectionHeading text={"New Arrival"} />
-      <div className="new-arrival mt-8 sm:mt-12">
+      <div className="new-arrival mt-8 sm:mt-12 slider-container">
         <Slider {...settings}>
           {products.map((product) => (
             <div className="mx-0 sm:mx-10" key={product.id}>
@@ -72,7 +72,7 @@ const NewArrival = () => {
                 width={260}
                 height={260}
                 alt="New Arrival"
-                className="object-cover w-64 h-64"
+                className="object-fill w-64 h-64"
               />
               <div className="w-56">
                 <Link

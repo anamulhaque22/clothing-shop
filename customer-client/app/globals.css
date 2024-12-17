@@ -109,7 +109,21 @@
 }
 
 /* new arrival css  */
+/* .new-arrival .slick-slide {
+  margin: 0 10px;
+}
+.new-arrival .slick-list {
+  margin: 0 -10px;
+} */
+.new-arrival .slick-slider {
+  margin-inline: -20px;
+}
 
+.new-arrival .slick-slide {
+  > div {
+    margin-inline: 10px;
+  }
+}
 .new-arrival .slick-slider .slick-prev {
   left: 0px;
   z-index: 1;
@@ -133,10 +147,6 @@
 .new-arrival .slick-slider .slick-next {
   right: 0px;
   z-index: 1;
-}
-.new-arrival .slick-list {
-  margin: 0px 30px;
-  gap: 20px;
 }
 
 /* price range slide css  */
