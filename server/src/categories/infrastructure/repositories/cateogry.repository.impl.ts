@@ -2,7 +2,7 @@ import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/categories/domain/category';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { Equal, Repository } from 'typeorm';
+import { DataSource, Equal, Repository } from 'typeorm';
 import { CategoryRepository } from '../category.repositoty';
 import { CategoryEntity } from '../entities/category.entity';
 import { CategoryMapper } from '../mappers/cateogry.mapper';
@@ -11,6 +11,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   constructor(
     @InjectRepository(CategoryEntity)
     private categoryRepository: Repository<CategoryEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(data) {
@@ -20,6 +21,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       this.categoryRepository.create(toPersistence),
     );
   }
+
   async getCategoryWithSubCategories(id: Category['id']): Promise<Category[]> {
     if (!id) {
       throw new NotFoundException({
@@ -29,9 +31,27 @@ export class CategoryRepositoryImpl implements CategoryRepository {
         },
       });
     }
-    const category = await this.categoryRepository.find({
-      where: { parentCategory: Equal(Number(id)) },
-    });
+    // const category = await this.categoryRepository.find({
+    //   where: { parentCategory: Equal(Number(id)) },
+    // });
+
+    const category = await this.dataSource.query(
+      `
+      WITH RECURSIVE all_categories AS (
+        SELECT id, name, "parentCategoryId"
+        FROM categories
+        WHERE id = $1
+
+        UNION ALL
+
+        SELECT t.id, t.name, t."parentCategoryId"
+        FROM categories t
+        INNER JOIN categories d ON t."parentCategoryId" = d.id
+    )
+    SELECT * FROM all_categories;`,
+      [id],
+    );
+
     return category.map((category) => CategoryMapper.toDomain(category));
   }
 

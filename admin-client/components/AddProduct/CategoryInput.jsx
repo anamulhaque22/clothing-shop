@@ -14,12 +14,12 @@ const groupCategoriesByParent = (categories) => {
 
   // Step 2: Populate the result with the top-level categories
   categories.forEach((category) => {
-    if (category.isVisibleInMenu) {
+    if (!category?.parentCategory) {
       result.push(categoriesMap.get(category.id));
     }
 
     // If it has a parentCategory, push it into the parent's subCategory
-    if (category.parentCategory) {
+    if (category?.parentCategory?.id) {
       const parent = categoriesMap.get(category.parentCategory.id);
       if (parent) {
         parent.subCategory.push(categoriesMap.get(category.id));
@@ -37,6 +37,7 @@ export default function CategoryInput({ setValue, getValues, name }) {
   useEffect(() => {
     const fetchData = async () => {
       const { status, data } = await fetchCategories();
+      console.log({ status, data });
       if (status === HTTP_CODES.OK) {
         setCategories(data);
       }
