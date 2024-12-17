@@ -68,11 +68,12 @@ const MainNav = () => {
                 </Link>
               </div>
 
-              <div className="flex gap-x-1 flex-row-reverse lg:hidden">
+              {/* mobile menu icon */}
+              <div className="flex gap-x-2 flex-row-reverse lg:hidden">
                 {!!user ? (
                   <>
                     <Link href={"/my-profile"}>
-                      <LuUser2 size={20} />
+                      <LuUser2 size={24} />
                     </Link>
                     <div className=" indicator">
                       {wishlist?.length > 0 && (
@@ -81,7 +82,7 @@ const MainNav = () => {
                         </span>
                       )}
                       <Link href={"/wish-list"}>
-                        <FaRegHeart size={20} />
+                        <FaRegHeart size={24} />
                       </Link>
                     </div>
                   </>
@@ -98,7 +99,7 @@ const MainNav = () => {
                   )}
 
                   <Link href={"/cart"}>
-                    <FiShoppingCart size={20} />
+                    <FiShoppingCart size={24} />
                   </Link>
                 </div>
               </div>
@@ -228,30 +229,6 @@ const MainNav = () => {
                     </Link>
                   </li>
                 ))}
-
-              <li className="text-secondary font-bold">
-                {!!user && (
-                  <ul className="menu menu-horizontal rounded-box mobile-icon">
-                    <li className=" rounded-lg indicator">
-                      <div>
-                        {wishlist?.length > 0 && (
-                          <span className="indicator-item badge bg-primary text-white w-5 h-5">
-                            {cart?.length}
-                          </span>
-                        )}
-                        <Link href={"/wish-list"}>
-                          <FaRegHeart size={20} />
-                        </Link>
-                      </div>
-                    </li>
-                    <li className=" rounded-lg">
-                      <Link href={"/my-profile"}>
-                        <LuUser2 size={20} />
-                      </Link>
-                    </li>
-                  </ul>
-                )}
-              </li>
             </ul>
           </div>
         </div>

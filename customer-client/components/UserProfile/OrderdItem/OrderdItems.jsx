@@ -67,13 +67,13 @@ const OrderdItems = () => {
   }, [data]);
 
   return (
-    <div className="overflow-x-auto rounded-md w-full font-causten-medium custom-shadow py-6 px-5">
+    <div className=" rounded-md w-full font-causten-medium custom-shadow py-6 px-5">
       <div className="flex justify-between">
         {/* <OrderSearch /> */}
 
         <OrderFilter />
       </div>
-      <div className=" text-base w-full ">
+      <div className=" text-base w-full overflow-x-auto">
         <TableVirtuoso
           style={{ height: 500 }}
           data={result}
@@ -99,12 +99,12 @@ const OrderdItems = () => {
           useWindowScroll
           increaseViewportBy={400}
           fixedHeaderContent={() => (
-            <tr className="text-secondary text-lg border-b">
+            <tr className="text-secondary text-sm sm:text-lg border-b">
               <th
                 className="cursor-pointer text-left py-4 pl-2 pr-3 hover:bg-slate-500"
                 onClick={() => handleRequestSort("id")}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex shrink-0 items-center justify-between">
                   <div>#ID</div>
                   <div className="flex flex-col justify-center -inset-1">
                     <IoCaretUpSharp

@@ -4,7 +4,7 @@ import Link from "next/link";
 const EmptyCart = () => {
   return (
     <div className="flex flex-col items-center custom-shadow py-14 px-5 rounded-lg gap-5">
-      <div className="w-[440px] h-[327px]">
+      <div className="sm:w-[440px] sm:h-[327px]">
         <Image
           src="/images/empty-cart.png"
           width={447}

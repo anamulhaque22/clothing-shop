@@ -30,7 +30,7 @@ const Product = ({ productCategory, product }) => {
           width={0}
           height={0}
           sizes="100vw"
-          style={{ width: "100%", height: "320px" }}
+          className="w-full sm:h-80"
           alt="product"
           priority={true}
         />
