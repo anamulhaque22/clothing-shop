@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Customer Client - E-commerce Platform
+
+## Overview
+
+This is the customer-facing frontend application for the e-commerce platform. It is built with **Next.js**, **React** and **TailwindCSS**, offering an intuitive and responsive UI for customers to browse, filter, and purchase products. The application integrates seamlessly with the backend API for managing authentication, cart functionality, payments, and order tracking.
+
+## Features
+
+### **Authentication and User Management**
+
+- **Login and Registration**:  
+  Secure email/password-based login and registration for users.
+- **Social Login**:  
+  Supports **Google** and **Facebook** for quick and secure authentication.
+- **Forgot Password**:  
+  Allows users to reset their password via a secure email link.
+- **User Profile Update**:  
+  Users can update their profile details, including name, password, and profile picture.
+
+### **Shopping Features**
+
+- **Advanced Product Filtering**:  
+  Filter products based on price range, size, and category to find what you're looking for efficiently.
+- **Infinite Scrolling**:  
+  Enjoy smooth infinite scrolling on the product list page with caching powered by **TanStack Query**.
+- **Wishlist and Cart Management**:
+  - Save products to a wishlist for later.
+  - Add products to the cart, update quantities, or remove them.
+- **Stripe-Integrated Checkout**:  
+  Secure and seamless payment handling through **Stripe**, ensuring quick and safe transactions.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+Ensure you have the following installed on your system:
+
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [Yarn](https://yarnpkg.com/) or [npm](https://www.npmjs.com/)
+- A compatible web browser (e.g., Chrome, Firefox)
+
+---
+
+### Setup Instructions
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/anamulhaque22/clothing-shop
+   ```
+
+1. **Install dependencies**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd clothing-shop/customer-client
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Copy example environment file**
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+   ```bash
+   cp .env.local .env.local
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```
 
-## Learn More
+1. Run development server
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Production build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. **Clone repository**
 
-## Deploy on Vercel
+   ```bash
+   git clone https://github.com/anamulhaque22/clothing-shop
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Install dependencies**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   ```bash
+   cd clothing-shop/customer-client
+   npm install
+   ```
+
+1. **Copy example environment file**
+
+   ```bash
+   cp example.env.local .env.local
+   ```
+
+1. **Build application**
+
+   ```bash
+   npm run build
+   ```
+
+1. **Run production server**
+
+   ```bash
+    npm run start
+   ```

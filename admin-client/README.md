@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Admin Client
+
+The **Admin Client** is a robust web application built with **Next.js**, designed for managing an e-commerce platform efficiently. It provides admins with the tools to manage products, users, and categories while offering detailed statistics and order management functionalities.
+
+---
+
+## Features
+
+### **Admin Management**
+
+- **Product Management**:
+  - Create, Read, Update, and Delete (CRUD) operations for managing products.
+- **User Management**:
+  - Admin can view and manage users in the system.
+- **Category Management**:
+  - Create, Read, Update, and Delete categories for better product organization.
+
+### **Admin Statistics**
+
+- **Overview Dashboard**:
+  - Total revenue.
+  - Total orders and products.
+  - Number of active customers.
+- **Charts and Insights**:
+  - Monthly revenue displayed using an area chart.
+  - Best-selling products for improved inventory planning.
+
+### **Order Management**
+
+- View all customer orders.
+- Update order status (e.g., Pending, Shipped, Delivered).
+- Track and manage customer orders for efficient fulfillment.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Ensure you have the following installed on your system:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [Yarn](https://yarnpkg.com/) or [npm](https://www.npmjs.com/)
+- A compatible web browser (e.g., Chrome, Firefox)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Setup Instructions
 
-## Learn More
+1. **Clone the Repository**
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/anamulhaque22/clothing-shop
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Install dependencies**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```bash
+   cd clothing-shop/admin-client
+   npm install
+   ```
 
-## Deploy on Vercel
+1. **Copy example environment file**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   cp .env.local .env.local
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   ```
+
+1. Run development server
+
+   ```bash
+   npm run dev
+   ```
+
+## Production build
+
+1. **Clone repository**
+
+   ```bash
+   git clone https://github.com/anamulhaque22/clothing-shop
+   ```
+
+1. **Install dependencies**
+
+   ```bash
+   cd clothing-shop/admin-client
+   npm install
+   ```
+
+1. **Copy example environment file**
+
+   ```bash
+   cp example.env.local .env.local
+   ```
+
+1. **Build application**
+
+   ```bash
+   npm run build
+   ```
+
+1. **Run production server**
+
+   ```bash
+    npm run start
+   ```

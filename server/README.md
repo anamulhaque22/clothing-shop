@@ -1,73 +1,197 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Server Project - E-commerce Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project serves as the backend for an e-commerce platform. It is built using **NestJS**, **PostgreSQL**, **TypeORM** and follows the **Hexagonal Architecture (Ports and Adapters)**, ensuring scalability, maintainability, and separation of concerns.
 
-## Description
+### **Authentication & Authorization**
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **User Authentication**:
+  - JWT-based login and registration system.
+  - Secure password hashing using bcrypt.
+- **Role-Based Access Control (RBAC)**:
+  - Admin and user roles with granular permissions.
 
-## Installation
+### **Product Management**
 
-```bash
-$ yarn install
+- **CRUD Operations**:
+  - Create, Read, Update, and Delete products.
+- **Product Variants**:
+  - Support for size and color variants.
+- **Category Management**:
+  - Manage product categories with nested structures.
+
+### **Order Management**
+
+- **Order Placement**:
+  - Validate product availability, price, and variants before order confirmation.
+  - Create orders with multiple products.
+- **Order Tracking**:
+  - Update and retrieve order status (e.g., Pending, Shipped, Delivered).
+- **Address Management**:
+  - Link billing and shipping addresses to orders.
+  - Support for one-time or reusable addresses.
+
+### **Payment Integration**
+
+- **Stripe Payment Gateway**:
+  - Generate and validate payment intents.
+  - Store payment details and status for each order.
+  <!-- - **Webhook Handling**:
+  - Automatically update order and payment statuses upon payment completion. -->
+
+### **User Management**
+
+- **Profile Management**:
+  - Update user profile details.
+- **Password Recovery**:
+  - Forgot password functionality with secure token generation.
+- **Social Logins**:
+
+  - Google and Facebook login integration.
+
+- **Filter and Sort Users**:
+  - Filter users by their roles (e.g., Admin, Customer).
+  - Sort users based on any column (e.g., `createdAt`, `name`, `email`) in ascending or descending order.
+  - Combine filtering and sorting for efficient data retrieval.
+
+### **Wishlist Management**
+
+- Save and manage user wishlists.
+
+### **Advanced Filtering & Pagination**
+
+- **Product Filtering**:
+  - Filter by price range, size, color, and category.
+- **Pagination**:
+  - Efficient pagination for products and orders using query parameters.
+
+### **Admin Features**
+
+- **Product Management**:
+  - Full control over product creation and updates.
+- **User Management**:
+  - View and manage users in the system.
+- **Order Management**:
+  - View all orders and update statuses.
+- **Statistics Dashboard**:
+  - Total revenue, orders, products, and active users.
+  - Monthly revenue chart and best-selling products data.
+
+### **Database Management**
+
+- **Relational Database**:
+  - PostgreSQL with optimized schema design.
+- **Data Validation**:
+  - Comprehensive validation for user input and database interactions.
+
+### **Error Handling & Logging**
+
+- **Global Error Handling**:
+  - Standardized error responses with meaningful messages.
+  <!-- - **Centralized Logging**:
+  - Detailed logs for errors and critical events. -->
+
+### **Security**
+
+<!--
+- **Caching**:
+  - Cache frequently accessed data using Redis (optional). -->
+
+- **Rate Limiting**:
+  - Protect endpoints from abuse with request rate limits.
+- **Data Encryption**:
+  - Encrypt sensitive information like passwords and tokens.
+
+### **Scalability & Maintainability**
+
+- **Hexagonal Architecture**:
+  - Separation of concerns with Domain, Infrastructure, and Application layers.
+- **Modular Design**:
+  - Decoupled modules for easier maintenance and scalability.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed on your system:
+
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [Yarn](https://yarnpkg.com/) or [npm](https://www.npmjs.com/)
+
+---
+
+## Setup Instructions
+
+1. Clone repository
+
+   ```bash
+   git clone github.com/anamulhaque22/clothing-shop
+   ```
+
+1. Go to server folder, and copy `env-example-relational` as `.env`.
+
+   ```bash
+   cd clothing-shop/server
+   cp env-example-relational .env
+   ```
+
+1. Install dependency
+
+   ```bash
+   npm install
+   ```
+
+1. Run migrations
+
+   ```bash
+   npm run migration:run
+   ```
+
+1. Run seeds
+
+   ```bash
+   npm run seed:run:relational
+   ```
+
+1. Run app in dev mode
+
+   ```bash
+   npm run start:dev
+   ```
+
+1. Open <http://localhost:8080>
+
+## Description of the module structure
+
+```text
+.
+├── domain
+│   └── [DOMAIN_ENTITY].ts
+├── dto
+│   ├── create.dto.ts
+│   ├── find-all.dto.ts
+│   └── update.dto.ts
+├── infrastructure
+│   ├── entities
+│   │   └── [ENTITY].ts
+│   ├── mappers
+│   │   └── [MAPPER].ts
+│   ├── persistence.module.ts
+│   ├── repositories
+│   │   └──[ADAPTER].repository.ts
+│   └── [PORT].repository.ts
+├── controller.ts
+├── module.ts
+└── service.ts
 ```
 
-## Running the app
+## Links
 
-```bash
-# development
-$ yarn run start
+- Postman (API docs): <https://documenter.getpostman.com/view/25131959/2sAYHzG3Ww>
 
-# watch mode
-$ yarn run start:dev
+## Database UML Diagram
 
-# production mode
-$ yarn run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+![UML Diagram](../assets/images/uml.png)
