@@ -63,7 +63,7 @@ const MainNav = () => {
                     width={100}
                     alt="logo"
                     priority={true}
-                    className="md:w-auto md:h-auto"
+                    className="lg:w-auto lg:h-auto"
                   />
                 </Link>
               </div>
@@ -73,16 +73,16 @@ const MainNav = () => {
                 {!!user ? (
                   <>
                     <Link href={"/my-profile"}>
-                      <LuUser2 size={24} />
+                      <LuUser2 size={22} />
                     </Link>
-                    <div className=" indicator">
+                    <div className="indicator">
                       {wishlist?.length > 0 && (
                         <span className="indicator-item badge bg-primary text-white w-5 h-5">
                           {wishlist?.length}
                         </span>
                       )}
                       <Link href={"/wish-list"}>
-                        <FaRegHeart size={24} />
+                        <FaRegHeart size={22} />
                       </Link>
                     </div>
                   </>
@@ -91,7 +91,7 @@ const MainNav = () => {
                     <LoginRegisterDropdown />
                   </>
                 )}
-                <div>
+                <div className="indicator">
                   {cart?.length > 0 && (
                     <span className="indicator-item badge bg-primary text-white w-5 h-5">
                       {cart?.length}
@@ -150,6 +150,17 @@ const MainNav = () => {
 
               <div className="hidden lg:block">
                 <ul className="flex space-x-3">
+                  <li className="p-3  rounded-lg indicator bg-off-white-light">
+                    {cart?.length > 0 && (
+                      <span className="indicator-item badge bg-primary text-white w-5 h-5">
+                        {cart?.length}
+                      </span>
+                    )}
+
+                    <Link href={"/cart"}>
+                      <FiShoppingCart size={20} />
+                    </Link>
+                  </li>
                   {!!user && (
                     <>
                       <li className="p-3 bg-off-white-light rounded-lg indicator">
@@ -170,17 +181,6 @@ const MainNav = () => {
                     </>
                   )}
 
-                  <li className="p-3  rounded-lg indicator bg-off-white-light">
-                    {cart?.length > 0 && (
-                      <span className="indicator-item badge bg-primary text-white w-5 h-5">
-                        {cart?.length}
-                      </span>
-                    )}
-
-                    <Link href={"/cart"}>
-                      <FiShoppingCart size={20} />
-                    </Link>
-                  </li>
                   {!!user ? null : (
                     <li className="p-3 bg-off-white-light rounded-lg">
                       <LoginRegisterDropdown />
@@ -190,8 +190,9 @@ const MainNav = () => {
               </div>
             </div>
           </div>
+
           {/* mobile menu */}
-          <div className="drawer-side">
+          <div className="drawer-side z-50">
             <label
               htmlFor="my-drawer-3"
               aria-label="close sidebar"

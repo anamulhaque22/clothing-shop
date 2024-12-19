@@ -34,7 +34,7 @@ const WishListItem = ({ wishList, toggleWishlist }) => {
           </h4>
         </div>
       </div>
-      <div className="flex flex-col h-full justify-between">
+      <div className="flex flex-col h-full justify-between py-1">
         <button
           className="text-[#807D7E]"
           onClick={() => toggleWishlist(wishList?.product)}

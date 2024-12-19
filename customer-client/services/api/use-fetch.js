@@ -7,8 +7,6 @@ function useFetch(data) {
   const { tokensInfoRef, setTokensInfo } = useAuthTokens();
   const fetchBase = useFetchBase();
 
-  console.log({ token: tokensInfoRef.current?.token });
-
   const fetchWrapper = useCallback(
     async (input, init) => {
       return fetchBase(input, init, {

@@ -15,7 +15,6 @@ export default function GoogleAuth() {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSuccess = async (tokenResponse) => {
-    console.log(tokenResponse);
     if (!tokenResponse.credential) return;
 
     setIsLoading(true);

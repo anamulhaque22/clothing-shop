@@ -48,8 +48,8 @@ export default function OrderTimeLime({ status, updatedAt }) {
     STATUS_MESSAGES[activeStatus] || "Order status unknown.";
   return (
     <>
-      <div>
-        <ul className="timeline timeline-vertical lg:timeline-horizontal justify-center">
+      <div className="px-5 sm:px-0">
+        <ul className="timeline timeline-vertical sm:timeline-horizontal timeline-compact sm:justify-center">
           {Object.entries(CLIENT_ORDER_STATUSES)
             // .splice(0, 3)
             .map(([key, value], index) => {
@@ -67,15 +67,16 @@ export default function OrderTimeLime({ status, updatedAt }) {
                     <div
                       className={`${
                         isDone
-                          ? `w-[20px] h-[20px] bg-secondary rounded-full ${
+                          ? `w-[17px] h-[17px] bg-secondary rounded-full ${
                               isCurrent && " border-[3px] border-[#CFCFCF]"
                             }`
-                          : "w-[16px] h-[16px] bg-[#CFCFCF] rounded-full"
+                          : "w-[17px] h-[17px] bg-[#CFCFCF] rounded-full"
                       }`}
                     ></div>
                   </div>
                   <div className="font-causten-semi-bold text-sm timeline-end">
-                    {value}
+                    {value[0].toUpperCase() +
+                      value.slice(1).toLocaleLowerCase()}
                   </div>
                   <hr className={`${lastStatus ? "hidden" : "block"}`} />
                 </li>
@@ -121,7 +122,7 @@ export default function OrderTimeLime({ status, updatedAt }) {
         </li> */}
         </ul>
       </div>
-      <div className="sm:w-4/5 mx-auto rounded-lg px-7 py-6 bg-[#F6F6F6]">
+      <div className="md:w-4/5 mx-auto rounded-lg p-5 sm:px-7 sm:py-6 bg-[#F6F6F6]">
         <p className="font-causten-semi-bold text-base text-[#807D7E]">
           {moment(updatedAt).format("D MMMM YYYY h:mm A")}{" "}
           <span className="text-secondary">{statusMessage}</span>

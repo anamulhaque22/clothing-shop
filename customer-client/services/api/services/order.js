@@ -23,7 +23,6 @@ export const useGetOrdersService = () => {
 
   return useCallback(
     (ordersReq, reqConfig) => {
-      console.log(ordersReq);
       const requestUrl = new URL(`${API_URL}/v1/orders/`);
       if (ordersReq) {
         if (ordersReq.page)

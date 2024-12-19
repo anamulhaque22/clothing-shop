@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${conbineFontVariable(font)}  bg-white`}>
         <QueryClientProvider client={queryClient}>
-          <SnackbarProvider maxSnack={3}>
+          <SnackbarProvider maxSnack={3} autoHideDuration={1000}>
             <AuthProvider>
               <GoogleAuthProvider>
                 <FacebookAuthProvider>

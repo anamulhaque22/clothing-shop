@@ -2,7 +2,6 @@ import { PAYMENT_PROVIDER } from "@/constants/payment-provider";
 import { CardElement } from "@stripe/react-stripe-js";
 
 const PaymentMethod = ({ paymentType, onSetPaymentType }) => {
-  console.log({ paymentType, onSetPaymentType });
   return (
     <div>
       <div className="mb-7">

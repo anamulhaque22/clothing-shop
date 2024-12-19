@@ -5,7 +5,7 @@ export default function LoginRegisterDropdown() {
   return (
     <div className="dropdown dropdown-bottom dropdown-left">
       <div tabIndex={0} role="button" className="cursor-pointer">
-        <LuUser2 size={20} />
+        <LuUser2 size={22} />
       </div>
       <ul
         tabIndex={0}

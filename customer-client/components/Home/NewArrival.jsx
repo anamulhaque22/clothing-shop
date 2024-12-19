@@ -50,7 +50,7 @@ const NewArrival = () => {
         page: 1,
         limit: 10,
       });
-      console.log(data);
+
       if (status === HTTP_CODES.OK) {
         setProducts(data["data"]);
       }

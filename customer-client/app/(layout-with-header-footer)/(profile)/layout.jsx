@@ -9,7 +9,7 @@ const UserProfileLayout = ({ children }) => {
 
   return (
     <div className="container h-full">
-      <div className="drawer lg:drawer-open my-5 gap-x-5">
+      <div className="drawer lg:drawer-open my-5 lg:gap-x-5">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
           <label

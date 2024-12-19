@@ -14,7 +14,7 @@ function WishListContent() {
   return (
     <>
       {wishlist?.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 custom-shadow py-6 px-5 rounded-lg gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 custom-shadow p-4 sm:py-6 sm:px-5 rounded-lg gap-5">
           {wishlist.map((wishList) => (
             <WishListItem
               key={wishList.id}
