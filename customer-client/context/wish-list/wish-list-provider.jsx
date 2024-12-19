@@ -22,10 +22,14 @@ export const WishlistProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const { data, status } = await fetchWishlist();
-      if (status === HTTP_CODES.OK) {
-        setWishlist(data);
+      try {
+        setLoading(true);
+        const { data, status } = await fetchWishlist();
+        if (status === HTTP_CODES.OK) {
+          setWishlist(data);
+          setLoading(false);
+        }
+      } finally {
         setLoading(false);
       }
     };
