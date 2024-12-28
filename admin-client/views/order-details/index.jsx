@@ -99,7 +99,7 @@ function OrderDetails() {
         </div>
         {/* order date end  */}
 
-        <div className="flex justify-between mt-5">
+        <div className="flex justify-evenly mt-5">
           <CustomerInfo user={order.user} />
           <ShippingInfo address={order?.shippingAddress} />
           <BillingInfo address={order?.billingAddress} />

@@ -37,7 +37,6 @@ export default function CategoryInput({ setValue, getValues, name }) {
   useEffect(() => {
     const fetchData = async () => {
       const { status, data } = await fetchCategories();
-      console.log({ status, data });
       if (status === HTTP_CODES.OK) {
         setCategories(data);
       }

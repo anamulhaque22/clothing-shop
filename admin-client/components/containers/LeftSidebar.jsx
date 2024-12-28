@@ -33,7 +33,7 @@ function LeftSidebar() {
 
         <li className="mb-2 font-semibold text-xl">
           <Link
-            href={"/app/welcome"}
+            href={"/"}
             className="active:!bg-transparent active:!text-text hover:bg-transparent"
           >
             <Logo />

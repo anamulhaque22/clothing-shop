@@ -81,8 +81,6 @@ function AddUser() {
       }
     }
 
-    console.log({ updatedImageResponse });
-
     const { data, status } = await fetchPostUser({
       email: formData.email,
       firstName: formData.firstName,

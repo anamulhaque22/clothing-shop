@@ -40,8 +40,6 @@ export default function CategoryForm({
     },
   });
 
-  console.log(editCategory);
-
   const { handleSubmit, setError, setValue, reset } = methods;
 
   useEffect(() => {

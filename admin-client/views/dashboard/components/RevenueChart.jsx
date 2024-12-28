@@ -62,7 +62,6 @@ const RevenueChart = () => {
     const getChartData = async () => {
       const { data, status } = await fetchMonthlyRevenue();
       if (status === 200) {
-        console.log({ data });
         const categories = data.map((item) =>
           new Date(item.month).toLocaleString("default", {
             month: "short",

@@ -7,15 +7,15 @@ export default function ShippingInfo({ address }) {
         <MdLocalShipping className="text-xl text-[#00B517]" />
       </div>
       <div className="text-text space-y-1">
-        <h4 className="font-semibold">Billing Info</h4>
+        <h4 className="font-semibold">Shipping Info</h4>
         <p className="font-normal">
-          {address?.firstName} {address?.lastName}
+          Name: {address?.firstName} {address?.lastName}
         </p>
         <p className="font-normal">City: {address?.city}</p>
+        <p className="font-normal">Phone: {address?.phone}</p>
         <p className="font-normal">
           {address?.aptSuiteUnit}, {address?.streetAddress}
         </p>
-        <p className="font-normal">{address?.phone}</p>
       </div>
     </div>
   );

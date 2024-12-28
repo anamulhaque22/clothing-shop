@@ -1,7 +1,6 @@
 import Image from "next/image";
 
 export default function BestSellingProduct({ products }) {
-  console.log({ products });
   return (
     <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
       <div className="flex justify-between items-center text-text py-3">

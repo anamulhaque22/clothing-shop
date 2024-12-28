@@ -15,7 +15,7 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(RoleEnum.admin, RoleEnum.user)
+  @Roles(RoleEnum.admin)
   @Get('best-selling-products')
   async getBestSellingProducts() {
     return this.analyticsService.getBestSellingProducts();

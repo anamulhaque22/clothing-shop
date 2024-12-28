@@ -91,16 +91,18 @@ export class AnalyticsRepositoryImpl implements AnalyticsRepository {
   getTatalActiveUsers(): Promise<NullableType<number>> {
     return this.dataSource.query(
       `
-      SELECT
-        COUNT(u.id) as "activeUsers"
+       SELECT
+        COUNT(DISTINCT u.id) as "activeUsers"
       FROM
         "user" u
-      JOIN
+       JOIN
         session s ON u.id = s."userId"
-      WHERE
-        s."updatedAt" > NOW() - INTERVAL '30 days'
-        AND u."deletedAt" IS NULL
-      `,
+      WHERE u."deletedAt" IS NULL
+      AND s."deletedAt" IS NULL
+      AND (
+        s."createdAt" >= NOW() - INTERVAL '30 days' OR
+        s."updatedAt" >= NOW() - INTERVAL '30 days'
+      );`,
     );
   }
 

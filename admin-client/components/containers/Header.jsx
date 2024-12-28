@@ -13,8 +13,6 @@ function Header() {
     logOut();
   }
 
-  console.log({ user });
-
   return (
     <>
       <div className="navbar  flex justify-between bg-primary border-b border-b-bc z-10">
@@ -29,27 +27,26 @@ function Header() {
           {/* <h1 className="text-2xl font-semibold ml-2">{"pageTitle"}</h1> */}
         </div>
 
-        <div className="flex-none">
+        <div className="flex-none space-x-3 mr-6">
           <div>
             <ThemeSwitch />
           </div>
 
           {/* Profile icon, opening menu on click */}
-          <div className="dropdown dropdown-end ml-4">
-            <label tabIndex={0} className="btn btn-primary btn-circle avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src={
-                    !!user?.photo
-                      ? user.photo.url
-                      : "/images/avatar-placeholder.png"
-                  }
-                  height={130}
-                  width={130}
-                  className="rounded-full  object-fill"
-                  alt="avatar"
-                />
-              </div>
+          <div className="dropdown dropdown-end h-12 w-12 ring-2 ring-blue-500 ring-offset-0 rounded-full ml-">
+            <label tabIndex={0} className="">
+              <Image
+                src={
+                  !!user?.photo
+                    ? user.photo.url
+                    : "/images/avatar-placeholder.png"
+                }
+                height={100}
+                width={100}
+                // fill={true}
+                className="rounded-full  object-fill"
+                alt="avatar"
+              />
             </label>
             <ul
               tabIndex={0}
