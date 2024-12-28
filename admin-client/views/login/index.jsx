@@ -28,8 +28,8 @@ function Login() {
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "anamul.ah00@gmail.com",
+      password: "secret",
     },
   });
 
@@ -71,7 +71,7 @@ function Login() {
       <div className="card mx-auto flex justify-center items-center h-full">
         <div className="px-7 py-10 shadow-xl w-full max-w-lg rounded-xl">
           <h2 className="text-2xl font-semibold mb-2 text-center text-text">
-            Login
+            Login (With Given Credentials)
           </h2>
           <FormProvider {...methods}>
             <form onSubmit={onSubmit}>
