@@ -8,6 +8,7 @@ import {
 import HTTP_CODES from "@/services/api/types/http-codes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import InputError from "../Input/InputError";
@@ -48,11 +49,11 @@ const schema = yup.object().shape({
               const sizes = context.parent.sizes || [];
               if (!value || typeof value !== "object") return false;
               return sizes.every((size) => Object.keys(value).includes(size));
-            }
+            },
           ),
         colorName: yup.string().required("Color Name is required"),
         image: yup.mixed().required("Image is required"),
-      })
+      }),
     ),
 });
 
@@ -79,24 +80,81 @@ const AddProductForm = () => {
   });
 
   const {
-    register,
     handleSubmit,
     setValue,
     getValues,
     control,
     reset,
-    formState: { errors, isSubmitting, isLoading },
+    watch,
+    formState: { isSubmitting },
   } = methods;
 
-  const sizes = methods.watch("sizes");
+  const productInfo = watch("productInfo") || [];
+  const quantity = watch("quantity");
+
+  const totalColorWiseQuantity = useMemo(() => {
+    return productInfo.reduce(
+      (total, info) => total + Number(info?.colorWiseQuantity || 0),
+      0,
+    );
+  }, [productInfo]);
+
+  const totalAssignedSizeWiseQuantity = useMemo(() => {
+    return productInfo.reduce((total, info) => {
+      const colorAssigned = Object.values(
+        info?.colorSizeWiseQuantity || {},
+      ).reduce((sum, qty) => sum + Number(qty || 0), 0);
+
+      return total + colorAssigned;
+    }, 0);
+  }, [productInfo]);
+
+  useEffect(() => {
+    if (Number(quantity || 0) !== totalColorWiseQuantity) {
+      setValue("quantity", totalColorWiseQuantity, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [quantity, setValue, totalColorWiseQuantity]);
 
   const onSubmit = handleSubmit(async (formData) => {
+    const expectedQuantity = formData.productInfo.reduce(
+      (total, info) => total + Number(info?.colorWiseQuantity || 0),
+      0,
+    );
+
+    if (Number(formData.quantity || 0) !== expectedQuantity) {
+      showToast(
+        "Quantity must match the total of all color-wise quantities",
+        "error",
+      );
+      setValue("quantity", expectedQuantity, { shouldValidate: true });
+      return;
+    }
+
+    const colorNameSet = new Set();
+    const hasDuplicateColorName = formData.productInfo.some((info) => {
+      const normalized = String(info?.colorName || "")
+        .trim()
+        .toLowerCase();
+      if (!normalized) return false;
+      if (colorNameSet.has(normalized)) return true;
+      colorNameSet.add(normalized);
+      return false;
+    });
+
+    if (hasDuplicateColorName) {
+      showToast("Duplicate color names are not allowed", "error");
+      return;
+    }
+
     // validate quantity and size wise quantity
     const invalidProductInfo = formData.productInfo.find((info) => {
       const sizeWiseQuantity = Object.values(info.colorSizeWiseQuantity);
       const totalSizeWiseQuantity = sizeWiseQuantity.reduce(
         (acc, qty) => acc + qty,
-        0
+        0,
       );
       return info.colorWiseQuantity < totalSizeWiseQuantity;
     });
@@ -104,7 +162,7 @@ const AddProductForm = () => {
     if (invalidProductInfo) {
       showToast(
         "Color wise quantity must be greater than or equal to total size wise quantity",
-        "error"
+        "error",
       );
       return;
     }
@@ -142,9 +200,8 @@ const AddProductForm = () => {
       })),
     };
 
-    const { status: createStatus, data: createData } = await fetchCreateProduct(
-      productData
-    );
+    const { status: createStatus, data: createData } =
+      await fetchCreateProduct(productData);
     if (createStatus !== HTTP_CODES.CREATED) {
       showToast("Failed to create product", "error");
       return;
@@ -234,14 +291,58 @@ const AddProductForm = () => {
               </div>
               {/* quantity  */}
               <div className="form-control basis-1/2">
-                <InputText
+                <Controller
                   name="quantity"
-                  type="number"
-                  containerStyle="mt-0"
-                  labelTitle="Quantity"
-                  placeholder="Quantity"
-                  inputStyle="h-10"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <>
+                      <label
+                        htmlFor="quantity"
+                        className="label font-causten-semi-bold text-base text-text"
+                      >
+                        Quantity (Auto)
+                      </label>
+                      <input
+                        {...field}
+                        value={field.value ?? 0}
+                        id="quantity"
+                        type="number"
+                        readOnly
+                        className="input text-text input-bordered w-full h-10 focus:outline-none bg-secondary"
+                      />
+                      <InputError>
+                        {fieldState.error ? fieldState.error.message : ""}
+                      </InputError>
+                    </>
+                  )}
                 />
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="rounded-lg border border-bc bg-secondary p-3">
+                <p className="text-xs text-text opacity-70">
+                  Total Product Quantity
+                </p>
+                <p className="text-xl font-semibold text-text">
+                  {Number(quantity || 0)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-bc bg-secondary p-3">
+                <p className="text-xs text-text opacity-70">
+                  Total Color-wise Quantity
+                </p>
+                <p className="text-xl font-semibold text-text">
+                  {totalColorWiseQuantity}
+                </p>
+              </div>
+              <div className="rounded-lg border border-bc bg-secondary p-3">
+                <p className="text-xs text-text opacity-70">
+                  Total Size-wise Assigned
+                </p>
+                <p className="text-xl font-semibold text-text">
+                  {totalAssignedSizeWiseQuantity}
+                </p>
               </div>
             </div>
 
