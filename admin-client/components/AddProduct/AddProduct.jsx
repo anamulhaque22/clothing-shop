@@ -15,6 +15,7 @@ import InputError from "../Input/InputError";
 import InputText from "../Input/InputText";
 import CategoryInput from "./CategoryInput";
 import ColorPickerFromImage from "./ColorPickerFromImage";
+import RichTextEditor from "./RichTextEditor";
 import SizesInput from "./SizesInput";
 import TagsInput from "./TagsInput";
 
@@ -89,8 +90,13 @@ const AddProductForm = () => {
     formState: { isSubmitting },
   } = methods;
 
-  const productInfo = watch("productInfo") || [];
+  const watchedProductInfo = watch("productInfo");
+  const productInfo = useMemo(
+    () => watchedProductInfo || [],
+    [watchedProductInfo],
+  );
   const quantity = watch("quantity");
+  const sizes = watch("sizes");
 
   const totalColorWiseQuantity = useMemo(() => {
     return productInfo.reduce(
@@ -107,6 +113,16 @@ const AddProductForm = () => {
 
       return total + colorAssigned;
     }, 0);
+  }, [productInfo]);
+
+  const hasOverAssignedQuantity = useMemo(() => {
+    return productInfo.some((info) => {
+      const assigned = Object.values(info?.colorSizeWiseQuantity || {}).reduce(
+        (sum, qty) => sum + Number(qty || 0),
+        0,
+      );
+      return assigned > Number(info?.colorWiseQuantity || 0);
+    });
   }, [productInfo]);
 
   useEffect(() => {
@@ -133,6 +149,22 @@ const AddProductForm = () => {
       return;
     }
 
+    const requiredSizeKeys = (formData.sizes || []).map((size) =>
+      String(size?.name || "").toLowerCase(),
+    );
+
+    const hasMissingSizeAssignment = formData.productInfo.some((info) => {
+      const sizeMapKeys = Object.keys(info?.colorSizeWiseQuantity || {}).map(
+        (key) => String(key).toLowerCase(),
+      );
+      return requiredSizeKeys.some((sizeKey) => !sizeMapKeys.includes(sizeKey));
+    });
+
+    if (hasMissingSizeAssignment) {
+      showToast("Each color must include all selected sizes", "error");
+      return;
+    }
+
     const colorNameSet = new Set();
     const hasDuplicateColorName = formData.productInfo.some((info) => {
       const normalized = String(info?.colorName || "")
@@ -153,10 +185,10 @@ const AddProductForm = () => {
     const invalidProductInfo = formData.productInfo.find((info) => {
       const sizeWiseQuantity = Object.values(info.colorSizeWiseQuantity);
       const totalSizeWiseQuantity = sizeWiseQuantity.reduce(
-        (acc, qty) => acc + qty,
+        (acc, qty) => acc + Number(qty || 0),
         0,
       );
-      return info.colorWiseQuantity < totalSizeWiseQuantity;
+      return Number(info.colorWiseQuantity || 0) < totalSizeWiseQuantity;
     });
 
     if (invalidProductInfo) {
@@ -185,6 +217,10 @@ const AddProductForm = () => {
     // create product
     const productData = {
       ...formData,
+      buyPrice: Number(formData.buyPrice || 0),
+      sellPrice: Number(formData.sellPrice || 0),
+      quantity: Number(expectedQuantity),
+      discount: Number(formData.discount || 0),
       images: imageResData.map((img) => ({ id: img.id })),
       sizes: formData.sizes.map((s) => ({
         id: s.id,
@@ -194,14 +230,17 @@ const AddProductForm = () => {
       },
       productInfo: formData.productInfo.map((info) => ({
         colorCode: info.color,
-        colorWiseQuantity: info.colorWiseQuantity,
-        colorSizeWiseQuantity: info.colorSizeWiseQuantity,
+        colorWiseQuantity: Number(info.colorWiseQuantity || 0),
+        colorSizeWiseQuantity: Object.fromEntries(
+          Object.entries(info.colorSizeWiseQuantity || {}).map(
+            ([key, value]) => [key, Number(value || 0)],
+          ),
+        ),
         colorName: info.colorName,
       })),
     };
 
-    const { status: createStatus, data: createData } =
-      await fetchCreateProduct(productData);
+    const { status: createStatus } = await fetchCreateProduct(productData);
     if (createStatus !== HTTP_CODES.CREATED) {
       showToast("Failed to create product", "error");
       return;
@@ -217,6 +256,16 @@ const AddProductForm = () => {
       <div className="bg-content-bg px-5 py-3 rounded-xl border border-bc">
         <FormProvider {...methods}>
           <form onSubmit={onSubmit}>
+            <div className="rounded-lg border border-bc bg-secondary px-4 py-3 mb-4">
+              <p className="text-sm font-medium text-text">
+                Quick Product Setup
+              </p>
+              <p className="text-xs text-text opacity-70 mt-1">
+                Add sizes first, then upload images and fill each color
+                inventory. Total quantity is auto-calculated.
+              </p>
+            </div>
+
             <div className="form-control w-full">
               <InputText
                 name="title"
@@ -228,32 +277,18 @@ const AddProductForm = () => {
               />
             </div>
 
-            <div className="mt-4">
-              <label
-                htmlFor="description"
-                className="label label-text text-text"
-              >
-                Product Description
-              </label>
-              <Controller
-                name="description"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <>
-                    <textarea
-                      {...field}
-                      placeholder="Product Description"
-                      rows={5}
-                      cols={20}
-                      className="py-2 input !h-auto text-text input-bordered w-full  focus:outline-1 focus:outline-offset-1 bg-secondary focus:bg-white dark:focus:bg-secondary"
-                    ></textarea>
-                    <InputError>
-                      {fieldState.error ? fieldState.error.message : ""}
-                    </InputError>
-                  </>
-                )}
-              />
-            </div>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field, fieldState }) => (
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={fieldState.error?.message}
+                  label="Product Description"
+                />
+              )}
+            />
 
             <div className="mt-4 flex items-center gap-x-7">
               <div className="form-control basis-1/2">
@@ -346,6 +381,14 @@ const AddProductForm = () => {
               </div>
             </div>
 
+            {(hasOverAssignedQuantity ||
+              totalAssignedSizeWiseQuantity > Number(quantity || 0)) && (
+              <div className="mt-3 rounded-lg border border-red-400 bg-red-50 px-3 py-2 text-xs text-red-700">
+                Assigned size quantities are higher than available color
+                quantity for at least one image.
+              </div>
+            )}
+
             {/* size and category */}
             <div className="mt-4 grid grid-cols-2 it gap-x-7">
               <Controller
@@ -388,7 +431,7 @@ const AddProductForm = () => {
             <div className="mt-4 grid grid-cols-2 gap-x-7">
               <div className="basis-1/2 flex flex-col">
                 <label htmlFor="price" className="label label-text text-text">
-                  Visivility:
+                  Visibility:
                 </label>
                 <Controller
                   name="visibility"
@@ -451,8 +494,17 @@ const AddProductForm = () => {
               />
             </div>
             <div className="flex justify-end">
-              <button className="btn btn-primary mt-4 !text-text" type="submit">
-                Add Product
+              <button
+                className="btn btn-primary mt-4 !text-text"
+                type="submit"
+                disabled={
+                  isSubmitting ||
+                  hasOverAssignedQuantity ||
+                  !productInfo.length ||
+                  !sizes?.length
+                }
+              >
+                {isSubmitting ? "Creating..." : "Add Product"}
               </button>
             </div>
           </form>

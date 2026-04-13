@@ -42,7 +42,7 @@ export default function CategoryInput({ setValue, getValues, name }) {
       }
     };
     fetchData();
-  }, []);
+  }, [fetchCategories]);
 
   const handleCategorySelect = (category) => {
     setValue(name, category, { shouldValidate: true });
@@ -51,7 +51,7 @@ export default function CategoryInput({ setValue, getValues, name }) {
 
   const groupedCategories = useMemo(
     () => groupCategoriesByParent(categories),
-    [categories]
+    [categories],
   );
 
   const category = getValues(name) || null;
