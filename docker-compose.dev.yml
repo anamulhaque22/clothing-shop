@@ -1,0 +1,10 @@
+name: euphoria-dev
+services:
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    image: euphoria-api:latest
+    # container_name: euphoria-api-latest
+    ports:
+      - ${}

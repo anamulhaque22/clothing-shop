@@ -1,0 +1,28 @@
+# Build dependencies
+node_modules
+dist
+coverage
+*.tsbuildinfo
+
+# Versioning and metadata
+.git
+.gitignore
+.dockerignore
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# IDEs and local configurations
+.vscode
+.idea
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Documentation and others
+README.md
+Dockerfile
+docker-compose.yml
