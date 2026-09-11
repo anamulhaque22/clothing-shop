@@ -1,0 +1,72 @@
+# --- Dependencies & Package Managers ---
+# Never copy host node_modules; let Docker install dependencies natively inside the container
+node_modules
+/node_modules
+**/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.pnpm-store
+
+# --- Environment & Secrets ---
+# Block local environment files to enforce runtime container configuration and prevent secret leaks
+.env
+.env.*
+!.env.example
+.git/
+.gitignore
+.gitattributes
+
+# --- Build, Cache, & Local Artifacts ---
+# Exclude local build targets if you compile TypeScript or build bundles natively in Docker
+dist
+build
+.next
+.nuxt
+.cache
+.parcel-cache
+
+# --- IDEs & System Garbage ---
+# Exclude editor and OS specific metadata
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# --- Documentation & CI/CD ---
+# Avoid bloating the image with markdown, tests, or pipeline infrastructure
+README.md
+CHANGELOG.md
+.github
+.gitlab-ci.yml
+docs
+tests
+coverage
+.nyc_output
+
+# --- Docker Itself ---
+Dockerfile
+docker-compose*
+.dockerignore
+
+
+
+test
+*.spec.ts
+*.e2e-spec.ts
+
+
+*.tsbuildinfo
+.eslintcache
+
+*.log
+logs
+
+.husky
