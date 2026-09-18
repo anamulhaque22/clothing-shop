@@ -28,8 +28,8 @@ export default function Login() {
   const methods = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "anamul.ah71@gmail.com",
+      password: "secretPassword@123",
     },
   });
 
