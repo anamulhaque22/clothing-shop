@@ -5,11 +5,16 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+env:
+  IMAGE: ghcr.io/${{ github.repository }}/server:${{ github.sha }}
+
 jobs:
   ci:
     uses: ./.github/workflows/ci.yml
 
   build:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 10
     needs: ci
     runs-on: ubuntu-latest
     permissions:
@@ -34,13 +39,31 @@ jobs:
           file: ./Dockerfile.prod
           push: true
           tags: |
-            "ghcr.io/${{ github.repository }}/server:${{ github.sha }}"
+            "${{ env.IMAGE }}"
             "ghcr.io/${{ github.repository }}/server:latest"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   deploy:
     needs: build
+    environment: production
+    permissions:
+      contents: read
+      deployments: write
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+
+      - name: Encode environment variables
+        env:
+          PROD_ENV_FILE: ${{ secrets.PROD_ENV_FILE }}
+        run: |
+          B64=$(printf '%s' "$PROD_ENV_FILE" | base64 -w0)
+          echo "::add-mask::$B64"
+          echo "ENV_B64=$B64" >> "$GITHUB_ENV"
 
       - name: Copy deployment files to server
         uses: appleboy/scp-action@v0.1.4
@@ -50,7 +73,8 @@ jobs:
           key: ${{ secrets.EC2_PROD_SSH_KEY }}
           port: ${{ secrets.EC2_PROD_PORT }}
           source: "server/docker-compose.prod.yml,server/nginx/nginx.conf"
-          target: "/home/${{ secrets.EC2_PROD_USER }}/"
+          target: "/home/${{ secrets.EC2_PROD_USER }}/euphoria-server"
+          strip_components: 1
 
       - name: Deploy to Production
         uses: appleboy/ssh-action@v0.1.6
@@ -60,7 +84,94 @@ jobs:
           key: ${{ secrets.EC2_PROD_SSH_KEY }}
           port: ${{ secrets.EC2_PROD_PORT }}
           script: |
-            docker pull ghcr.io/${{ github.repository }}/server:${{ github.sha }}
-            docker stop server || true
-            docker rm server || true
-            docker run -d --name server -p 80:80 ghcr.io/${{ github.repository }}/server:${{ github.sha }}
+            set -euo pipefail
+            set +x
+            umask 007
+            cd /home/${{ secrets.EC2_PROD_USER }}/euphoria-server
+
+            #1. copy env file
+            printf '%s' "$ENV_B64" | base64 -d > .env.production.new
+
+
+            #Senity check before swapping
+            sed -i 's/\r$//' .env.production.new
+            test -s .env.production.new
+            grep -q '^PORT=' .env.production.new
+
+            #Automic swap
+            chmod 600 .env.production.new
+            mv .env.production.new .env.production
+
+            PREVIOUS_IMAGE=$(grep '^IMAGE=' deploy.env | cut -d '=' -f2- || echo "")
+
+            # Read PORT from application env
+            APP_PORT=$(grep '^PORT=' .env.production | cut -d '=' -f2-)
+
+            # Validate PORT
+            test -n "$APP_PORT"
+
+            # Create deployment env
+            cat > deploy.env.new <<EOF
+            IMAGE=${{ env.IMAGE }}
+            APP_PORT=$APP_PORT
+            EOF
+
+            test -s deploy.env.new
+            grep -q '^IMAGE=' deploy.env.new
+            grep -q '^APP_PORT=' deploy.env.new
+
+            chmod 600 deploy.env.new
+            mv deploy.env.new deploy.env
+
+
+            #2 login to GHCR
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+
+            #3. Pull
+            docker compose -f docker-compose.prod.yml --env-file deploy.env pull ${{ env.IMAGE }}
+
+            # Migrate database if needed
+            docker compose -f docker-compose.prod.yml --env-file deploy.env --entrypoint pnpm run --rm server migration:run:prod
+            docker compose -f docker-compose.prod.yml --env-file deploy.env up -d --remove-orphans
+
+            echo "Waiting for application to become healthy..."
+
+            MAX_RETRIES=10
+            RETRY_INTERVAL=5
+            SUCCESS=false
+
+            for i in $(seq 1 $MAX_RETRIES); do
+              if curl -sf http://localhost:3000/api/health > /dev/null; then
+                echo "Health check passed on attempt $i"
+                SUCCESS=true
+                break
+              fi
+              echo "Attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_INTERVAL}s..."
+              sleep $RETRY_INTERVAL
+            done
+
+            if [ "$SUCCESS" = false ]; then
+            echo "Health check failed. Rolling back to: $PREVIOUS_IMAGE"
+            if [ -n "$PREVIOUS_IMAGE" ]; then
+              
+              # update deploy.env with previous image
+              cat > deploy.env.new <<EOF
+              IMAGE=$PREVIOUS_IMAGE
+              APP_PORT=$APP_PORT
+              EOF
+              chmod 600 deploy.env.new
+              mv deploy.env.new deploy.env
+
+              docker compose -f docker-compose.prod.yml --env-file deploy.env pull $PREVIOUS_IMAGE
+              docker compose -f docker-compose.prod.yml --env-file deploy.env up -d --remove-orphans
+              echo "Rollback completed. Previous version restored."
+            else
+              echo "No previous image found — cannot auto-rollback. Manual intervention required."
+            fi
+              exit 1
+            fi
+            echo "Deployment verified successfully."
+
+            docker logout ghcr.io
+            docker image prune -f
