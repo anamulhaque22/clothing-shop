@@ -18,7 +18,7 @@ export const WishlistProvider = ({ children }) => {
   const fetchDeleteWishlist = useRemoveFromWishListService();
   const showToast = useToast();
   const [loading, setLoading] = useState(false);
-  const { isLoaded } = useAuth();
+  const { isLoaded, user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,10 +33,17 @@ export const WishlistProvider = ({ children }) => {
         setLoading(false);
       }
     };
-    if (typeof window !== "undefined" && isLoaded) {
-      fetchData();
+    if (typeof window === "undefined" || !isLoaded) {
+      return;
     }
-  }, [fetchWishlist, isLoaded]);
+
+    if (!user) {
+      setWishlist([]);
+      return;
+    }
+
+    fetchData();
+  }, [fetchWishlist, isLoaded, user]);
 
   // Helper function to check if a product is in the wishlist
   const isInWishlist = (productId) =>
@@ -50,7 +57,7 @@ export const WishlistProvider = ({ children }) => {
       if (status === HTTP_CODES.NO_CONTENT) {
         showToast("Product removed from wishlist", "success");
         setWishlist((prev) =>
-          prev.filter((item) => item?.product?.id !== product?.id)
+          prev.filter((item) => item?.product?.id !== product?.id),
         );
         setLoading(false);
       }

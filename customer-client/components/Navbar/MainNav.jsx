@@ -12,23 +12,65 @@ import { FiShoppingCart } from "react-icons/fi";
 import { LuUser2 } from "react-icons/lu";
 import LoginRegisterDropdown from "./LoginRegisterDropdown";
 
+const HEADER_CATEGORIES_CACHE_KEY = "header-categories-cache-v1";
+let headerCategoriesMemoryCache = null;
+
 const MainNav = () => {
-  const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const fetchCategories = useGetHeaderCategoriesService();
   const { cart } = useCart();
-  const { wishlist, loading } = useWishlist();
+  const { wishlist } = useWishlist();
   const { user } = useAuth();
 
   useEffect(() => {
+    let isMounted = true;
+
     async function getCategories() {
+      if (headerCategoriesMemoryCache) {
+        setCategories(headerCategoriesMemoryCache);
+        return;
+      }
+
+      if (typeof window !== "undefined") {
+        try {
+          const cachedData = window.sessionStorage.getItem(
+            HEADER_CATEGORIES_CACHE_KEY,
+          );
+          if (cachedData) {
+            const parsed = JSON.parse(cachedData);
+            if (Array.isArray(parsed)) {
+              headerCategoriesMemoryCache = parsed;
+              setCategories(parsed);
+              return;
+            }
+          }
+        } catch {
+          window.sessionStorage.removeItem(HEADER_CATEGORIES_CACHE_KEY);
+        }
+      }
+
       const { data, status } = await fetchCategories();
 
       if (status === 200) {
-        setCategories(data);
+        headerCategoriesMemoryCache = data;
+        if (typeof window !== "undefined") {
+          window.sessionStorage.setItem(
+            HEADER_CATEGORIES_CACHE_KEY,
+            JSON.stringify(data),
+          );
+        }
+
+        if (isMounted) {
+          setCategories(data);
+        }
       }
     }
+
     getCategories();
+
+    return () => {
+      isMounted = false;
+    };
   }, [fetchCategories]);
 
   return (
