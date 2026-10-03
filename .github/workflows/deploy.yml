@@ -1,0 +1,66 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          file: ./Dockerfile.prod
+          push: true
+          tags: |
+            "ghcr.io/${{ github.repository }}/server:${{ github.sha }}"
+            "ghcr.io/${{ github.repository }}/server:latest"
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy deployment files to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_PROD_HOST }}
+          username: ${{ secrets.EC2_PROD_USER }}
+          key: ${{ secrets.EC2_PROD_SSH_KEY }}
+          port: ${{ secrets.EC2_PROD_PORT }}
+          source: "server/docker-compose.prod.yml,server/nginx/nginx.conf"
+          target: "/home/${{ secrets.EC2_PROD_USER }}/"
+
+      - name: Deploy to Production
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_PROD_HOST }}
+          username: ${{ secrets.EC2_PROD_USER }}
+          key: ${{ secrets.EC2_PROD_SSH_KEY }}
+          port: ${{ secrets.EC2_PROD_PORT }}
+          script: |
+            docker pull ghcr.io/${{ github.repository }}/server:${{ github.sha }}
+            docker stop server || true
+            docker rm server || true
+            docker run -d --name server -p 80:80 ghcr.io/${{ github.repository }}/server:${{ github.sha }}
