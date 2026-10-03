@@ -1,34 +1,34 @@
-import { OrderEntity } from 'src/orders/infrastructure/entities/order.entity';
-import { PAYMENT_STATUS } from 'src/payment/payment-status.enum';
-import { PAYMENT_PROVIDER } from 'src/stripe/payment-provider.enum';
-import { EntityHelper } from 'src/utils/entity-helper';
+import { OrderEntity } from "src/orders/infrastructure/entities/order.entity";
+import { PAYMENT_STATUS } from "src/payment/payment-status.enum";
+import { PAYMENT_PROVIDER } from "src/stripe/payment-provider.enum";
+import { EntityHelper } from "src/utils/entity-helper";
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity({
-  name: 'payments',
+  name: "payments",
 })
 export class PaymentEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   amount: number;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: PAYMENT_STATUS,
     default: PAYMENT_STATUS.PENDING,
   })
   status: PAYMENT_STATUS;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: PAYMENT_PROVIDER,
     default: PAYMENT_PROVIDER.STRIPE,
   })
@@ -38,7 +38,7 @@ export class PaymentEntity extends EntityHelper {
   transaction_id: string;
 
   @ManyToOne(() => OrderEntity, (order) => order.payments, {
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
     nullable: true,
   })
   order?: OrderEntity;

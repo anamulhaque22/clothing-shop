@@ -22,9 +22,7 @@ export class AddressRepositoryImpl implements AddressRepository {
     },
   ): Promise<Address> {
     const persistenceModel = AddressMapper.toPersistence(data);
-    let entities;
-
-    entities = await this.addressRepository.save(
+    const entities = await this.addressRepository.save(
       this.addressRepository.create({
         ...persistenceModel,
         addressType: data.addressType || AddressType.HOME,

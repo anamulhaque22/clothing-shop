@@ -1,20 +1,14 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import {
   BestSellingProducts,
   MonthlyRevenue,
 } from 'src/analytics/domain/analytics';
 import { ORDER_STATUS } from 'src/orders/orders.enum';
-import { ProductEntity } from 'src/products/infrastructure/entities/product.entity';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { AnalyticsRepository } from '../analytics.repository';
 
 export class AnalyticsRepositoryImpl implements AnalyticsRepository {
-  constructor(
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: Repository<ProductEntity>,
-    private readonly dataSource: DataSource,
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
   async getBestSellingProducts(): Promise<NullableType<BestSellingProducts>> {
     const result = await this.dataSource.query(
       `

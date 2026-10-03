@@ -22,7 +22,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
     payment.transaction_id = data.transaction_id;
     payment.payment_provider = data.payment_provider;
 
-    let order = new OrderEntity();
+    const order = new OrderEntity();
     if (data?.orderId) {
       order.id = data.orderId;
       payment.order = order;
@@ -71,7 +71,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
     data: UpdatePaymentDto,
     queryRunner?: QueryRunner,
   ) {
-    let order = new OrderEntity();
+    const order = new OrderEntity();
     order.id = data.orderId;
 
     delete data.orderId;

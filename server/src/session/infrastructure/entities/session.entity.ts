@@ -1,5 +1,5 @@
-import { UserEntity } from 'src/users/infrastructure/entities/user.entity';
-import { EntityHelper } from 'src/utils/entity-helper';
+import { UserEntity } from "src/users/infrastructure/entities/user.entity";
+import { EntityHelper } from "src/utils/entity-helper";
 import {
   Column,
   CreateDateColumn,
@@ -9,10 +9,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity({
-  name: 'session',
+  name: "session",
 })
 export class SessionEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
