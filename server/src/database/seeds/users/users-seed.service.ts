@@ -48,35 +48,5 @@ export class UsersSeedService {
         }),
       );
     }
-
-    const countUser = await this.repository.count({
-      where: {
-        role: {
-          id: RoleEnum.user,
-        },
-      },
-    });
-
-    if (!countUser) {
-      const salt = await bcrypt.genSalt();
-      const password = await bcrypt.hash('Zaqmlp@567', salt);
-
-      await this.repository.save(
-        this.repository.create({
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'anamul.ah71@gmail.com',
-          password,
-          role: {
-            id: RoleEnum.user,
-            name: 'User',
-          },
-          status: {
-            id: StatusEnum.active,
-            name: 'Active',
-          },
-        }),
-      );
-    }
   }
 }

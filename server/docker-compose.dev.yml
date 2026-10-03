@@ -11,7 +11,7 @@ services:
     env_file:
       - ./.env
     environment:
-      DATABASE_HOST: postgres
+      DATABASE_HOST: ${DATABASE_HOST}
     ports:
       - '${APP_PORT}:${APP_PORT}'
     networks:
@@ -44,10 +44,10 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
     env_file:
       - ./.env
-    # expose:
-    #   - '${DATABASE_PORT}'
-    ports:
-      - '${DATABASE_PORT}:${DATABASE_PORT}'
+    expose:
+      - '${DATABASE_PORT}'
+    # ports:
+    #   - '${DATABASE_PORT}:${DATABASE_PORT}'
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
