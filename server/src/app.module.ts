@@ -43,7 +43,10 @@ import { WishListModule } from './wish-list/wish-list.module';
         stripeConfig,
         facebookConfig,
       ],
-      envFilePath: ['.env'],
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.env.production'
+          : '.env.development',
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
