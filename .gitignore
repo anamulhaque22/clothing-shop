@@ -10,3 +10,4 @@ server/build/
 server/.github/*
 .env
 .env.dev
+.env.production
