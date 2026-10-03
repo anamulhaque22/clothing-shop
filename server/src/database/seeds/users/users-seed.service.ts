@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { RoleEnum } from 'src/roles/roles.enum';
@@ -11,6 +12,7 @@ export class UsersSeedService {
   constructor(
     @InjectRepository(UserEntity)
     private repository: Repository<UserEntity>,
+    private readonly configService: ConfigService,
   ) {}
 
   async run() {
@@ -24,13 +26,16 @@ export class UsersSeedService {
 
     if (!countAdmin) {
       const salt = await bcrypt.genSalt();
-      const password = await bcrypt.hash('secret', salt);
+      const password = await bcrypt.hash(
+        this.configService.get('ADMIN_PASSWORD'),
+        salt,
+      );
 
       await this.repository.save(
         this.repository.create({
           firstName: 'Super',
           lastName: 'Admin',
-          email: 'email@example.com',
+          email: this.configService.get('ADMIN_EMAIL'),
           password,
           role: {
             id: RoleEnum.admin,

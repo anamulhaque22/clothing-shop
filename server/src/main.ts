@@ -7,7 +7,6 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { useContainer } from 'class-validator';
-import 'dotenv/config';
 import { AppModule } from './app.module';
 import { AllConfigType } from './config/config.type';
 import { ResolvePromiseInterceptor } from './utils/serializer.interceptor';
