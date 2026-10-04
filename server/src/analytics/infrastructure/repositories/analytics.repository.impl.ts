@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import {
   BestSellingProducts,
   MonthlyRevenue,
@@ -7,6 +8,7 @@ import { NullableType } from 'src/utils/types/nullable.type';
 import { DataSource } from 'typeorm';
 import { AnalyticsRepository } from '../analytics.repository';
 
+@Injectable()
 export class AnalyticsRepositoryImpl implements AnalyticsRepository {
   constructor(private readonly dataSource: DataSource) {}
   async getBestSellingProducts(): Promise<NullableType<BestSellingProducts>> {
