@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./server
-          file: ./Dockerfile.prod
+          file: ./server/Dockerfile.prod
           push: true
           tags: |
             "${{ env.IMAGE }}"
