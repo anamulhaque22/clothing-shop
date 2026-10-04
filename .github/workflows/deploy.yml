@@ -46,7 +46,7 @@ jobs:
 
   deploy:
     needs: build
-    environment: production
+    environment: production-server
     permissions:
       contents: read
       deployments: write
