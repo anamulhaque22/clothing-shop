@@ -52,7 +52,7 @@ PREVIOUS_IMAGE=$(grep '^IMAGE=' last_good.env 2>/dev/null | cut -d= -f2- || true
 echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 write_deploy_env "$IMAGE"
 $COMPOSE pull server
-$COMPOSE run --rm -T --entrypoint pnpm server migration:run:prod
+$COMPOSE run --rm -T --entrypoint npm server migration:run:prod
 $COMPOSE up -d --remove-orphans
 
 # 4. Health check
