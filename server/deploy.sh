@@ -58,7 +58,7 @@ $COMPOSE up -d --remove-orphans
 # 4. Health check
 healthy=false
 for i in $(seq 1 10); do
-  if curl -sf "http://localhost:${APP_PORT}/api/health" >/dev/null; then
+  if curl -sf "http://localhost/api/health" >/dev/null; then
     echo "Health check passed on attempt $i"
     healthy=true
     break
