@@ -91,4 +91,5 @@ jobs:
           port: ${{ secrets.EC2_PROD_PORT }}
           envs: ENV_B64,IMAGE,GHCR_USER,GHCR_TOKEN
           script: |
+            cd /home/${{ secrets.EC2_PROD_USER }}/euphoria-server
             bash deploy.sh
