@@ -34,11 +34,16 @@ fi
 chmod 600 .env.production.new
 mv .env.production.new .env.production
 
-APP_PORT=$(grep '^APP_PORT=' .env.production | cut -d= -f2- | tr -d "\"'")
-if [ -z "$APP_PORT" ]; then
-  echo "ERROR: APP_PORT is present but empty"
-  exit 1
-fi
+# Read a KEY=value from .env.production (strips quotes)
+get_env() {
+  grep -m1 "^$1=" .env.production | cut -d= -f2- | tr -d "\"'"
+}
+
+APP_PORT=$(get_env APP_PORT)
+API_PREFIX=$(get_env API_PREFIX)
+
+[ -n "$APP_PORT" ]   || { echo "ERROR: APP_PORT missing or empty";   exit 1; }
+[ -n "$API_PREFIX" ] || { echo "ERROR: API_PREFIX missing or empty"; exit 1; }
 
 # 2. Last known-good image (only written after a passed health check)
 PREVIOUS_IMAGE=$(grep '^IMAGE=' last_good.env 2>/dev/null | cut -d= -f2- || true)
