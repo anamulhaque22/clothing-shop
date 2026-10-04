@@ -3,6 +3,10 @@ name: Deploy Production
 on:
   push:
     branches: ["main"]
+    paths:
+      - "server/**"
+      - ".github/workflows/deploy.yml"
+      - ".github/workflows/ci.yml"
   workflow_dispatch:
 
 env:
