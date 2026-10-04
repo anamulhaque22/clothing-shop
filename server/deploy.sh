@@ -11,7 +11,7 @@ trap 'docker logout ghcr.io >/dev/null 2>&1 || true' EXIT
 COMPOSE="docker compose -f docker-compose.prod.yml --env-file deploy.env"
 
 write_deploy_env() {
-  printf 'IMAGE=%s\nAPP_PORT=%s\n' "$1" "$APP_PORT" > deploy.env.new
+  printf 'IMAGE=%s\nAPP_PORT=%s\nAPI_PREFIX=%s\n' "$1" "$APP_PORT" "$API_PREFIX" > deploy.env.new
   chmod 600 deploy.env.new
   mv deploy.env.new deploy.env
 }
