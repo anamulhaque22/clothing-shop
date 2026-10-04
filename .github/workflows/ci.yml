@@ -26,12 +26,16 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        working-directory: ./server
 
       - name: Lint code
         run: pnpm lint
+        working-directory: ./server
 
       - name: Type check code
         run: pnpm typecheck
+        working-directory: ./server
 
       - name: Build code
         run: pnpm build
+        working-directory: ./server
