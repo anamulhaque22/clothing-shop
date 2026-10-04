@@ -72,107 +72,23 @@ jobs:
           username: ${{ secrets.EC2_PROD_USER }}
           key: ${{ secrets.EC2_PROD_SSH_KEY }}
           port: ${{ secrets.EC2_PROD_PORT }}
-          source: "server/docker-compose.prod.yml,server/nginx/nginx.conf"
+          source: "server/docker-compose.prod.yml,server/nginx/nginx.conf,server/deploy.sh"
           target: "/home/${{ secrets.EC2_PROD_USER }}/euphoria-server"
           strip_components: 1
 
       - name: Deploy to Production
         uses: appleboy/ssh-action@v0.1.6
+        env:
+          ENV_B64: ${{ env.ENV_B64 }}
+          IMAGE: ${{ env.IMAGE }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         with:
           host: ${{ secrets.EC2_PROD_HOST }}
           username: ${{ secrets.EC2_PROD_USER }}
           key: ${{ secrets.EC2_PROD_SSH_KEY }}
           port: ${{ secrets.EC2_PROD_PORT }}
-          envs: ENV_B64
+          envs: ENV_B64,IMAGE,GHCR_USER,GHCR_TOKEN
           script: |
-            set -euo pipefail
-            set +x
-            umask 007
-            cd /home/${{ secrets.EC2_PROD_USER }}/euphoria-server
-
-            #1. copy env file
-            printf '%s' "$ENV_B64" | base64 -d > .env.production.new
-
-
-            #Senity check before swapping
-            sed -i 's/\r$//' .env.production.new
-            test -s .env.production.new
-            grep -q '^PORT=' .env.production.new
-
-            #Automic swap
-            chmod 600 .env.production.new
-            mv .env.production.new .env.production
-
-            PREVIOUS_IMAGE=$(grep '^IMAGE=' deploy.env | cut -d '=' -f2- || echo "")
-
-            # Read PORT from application env
-            APP_PORT=$(grep '^PORT=' .env.production | cut -d '=' -f2-)
-
-            # Validate PORT
-            test -n "$APP_PORT"
-
-            # Create deployment env
-            cat > deploy.env.new <<EOF
-            IMAGE=${{ env.IMAGE }}
-            APP_PORT=$APP_PORT
-            EOF
-
-            test -s deploy.env.new
-            grep -q '^IMAGE=' deploy.env.new
-            grep -q '^APP_PORT=' deploy.env.new
-
-            chmod 600 deploy.env.new
-            mv deploy.env.new deploy.env
-
-
-            #2 login to GHCR
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-
-            #3. Pull
-            docker compose -f docker-compose.prod.yml --env-file deploy.env pull ${{ env.IMAGE }}
-
-            # Migrate database if needed
-            docker compose -f docker-compose.prod.yml --env-file deploy.env --entrypoint pnpm run --rm server migration:run:prod
-            docker compose -f docker-compose.prod.yml --env-file deploy.env up -d --remove-orphans
-
-            echo "Waiting for application to become healthy..."
-
-            MAX_RETRIES=10
-            RETRY_INTERVAL=5
-            SUCCESS=false
-
-            for i in $(seq 1 $MAX_RETRIES); do
-              if curl -sf http://localhost:3000/api/health > /dev/null; then
-                echo "Health check passed on attempt $i"
-                SUCCESS=true
-                break
-              fi
-              echo "Attempt $i/$MAX_RETRIES failed, retrying in ${RETRY_INTERVAL}s..."
-              sleep $RETRY_INTERVAL
-            done
-
-            if [ "$SUCCESS" = false ]; then
-            echo "Health check failed. Rolling back to: $PREVIOUS_IMAGE"
-            if [ -n "$PREVIOUS_IMAGE" ]; then
-              
-              # update deploy.env with previous image
-              cat > deploy.env.new <<EOF
-              IMAGE=$PREVIOUS_IMAGE
-              APP_PORT=$APP_PORT
-              EOF
-              chmod 600 deploy.env.new
-              mv deploy.env.new deploy.env
-
-              docker compose -f docker-compose.prod.yml --env-file deploy.env pull $PREVIOUS_IMAGE
-              docker compose -f docker-compose.prod.yml --env-file deploy.env up -d --remove-orphans
-              echo "Rollback completed. Previous version restored."
-            else
-              echo "No previous image found — cannot auto-rollback. Manual intervention required."
-            fi
-              exit 1
-            fi
-            echo "Deployment verified successfully."
-
-            docker logout ghcr.io
-            docker image prune -f
+            bash deploy.sh
