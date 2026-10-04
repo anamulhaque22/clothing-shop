@@ -35,7 +35,7 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
-    command: yarn start:dev
+    command: pnpm start:dev
   postgres:
     image: postgres:16-alpine
     environment:
@@ -46,8 +46,8 @@ services:
       - ./.env
     expose:
       - '${DATABASE_PORT}'
-    # ports:
-    #   - '${DATABASE_PORT}:${DATABASE_PORT}'
+    ports:
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
