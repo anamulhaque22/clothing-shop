@@ -13,15 +13,15 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Enable corepack
+        run: corepack enable
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: "pnpm"
-
-      - name: Enable corepack
-        run: corepack enable
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
