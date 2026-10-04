@@ -41,7 +41,7 @@ export class WishListController {
   @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() id: WishList['id'], @Request() request) {
+  remove(@Param() _id: WishList['id'], @Request() request) {
     return this.wishListService.remove(request.params.id, request.user.id);
   }
 }

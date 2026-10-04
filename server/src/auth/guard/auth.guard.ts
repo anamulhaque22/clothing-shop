@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
       });
 
       request['user'] = jwtData;
-    } catch (error) {
+    } catch (_error) {
       throw new UnauthorizedException();
     }
 

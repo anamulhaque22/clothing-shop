@@ -34,7 +34,7 @@ export class AuthJwtRefreshGuard implements CanActivate {
         },
       );
       request['user'] = jwtData;
-    } catch (error) {
+    } catch (_error) {
       throw new UnauthorizedException();
     }
     return true;

@@ -1,10 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-import { EntityHelper } from 'src/utils/entity-helper';
-import { ProductEntity } from './product.entity';
+import { EntityHelper } from "src/utils/entity-helper";
+import { ProductEntity } from "./product.entity";
 
 @Entity({
-  name: 'product_color',
+  name: "product_color",
 })
 export class ProductColorEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
@@ -17,13 +17,13 @@ export class ProductColorEntity extends EntityHelper {
   colorCode: string;
 
   @ManyToOne(() => ProductEntity, (product) => product.productColors, {
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
   })
   product: ProductEntity;
 
   @Column()
   colorWiseQuantity: number;
 
-  @Column('jsonb')
+  @Column("jsonb")
   colorSizeWiseQuantity: { [key: string]: number };
 }

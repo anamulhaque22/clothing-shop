@@ -1,15 +1,15 @@
-import { ProductEntity } from 'src/products/infrastructure/entities/product.entity';
-import { EntityHelper } from 'src/utils/entity-helper';
+import { ProductEntity } from "src/products/infrastructure/entities/product.entity";
+import { EntityHelper } from "src/utils/entity-helper";
 import {
   Column,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity({
-  name: 'categories',
+  name: "categories",
 })
 export class CategoryEntity extends EntityHelper {
   @PrimaryGeneratedColumn()
@@ -23,7 +23,7 @@ export class CategoryEntity extends EntityHelper {
 
   @ManyToOne(() => CategoryEntity, (category) => category.children, {
     nullable: true,
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
   })
   parentCategory: CategoryEntity;
 

@@ -1,11 +1,11 @@
-import { EntityHelper } from 'src/utils/entity-helper';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { EntityHelper } from "src/utils/entity-helper";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
-  name: 'user_image',
+  name: "user_image",
 })
 export class UserImageEntity extends EntityHelper {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()

@@ -37,12 +37,12 @@ export class OrderMapper {
       userEntity.id = domain.user.id;
     }
 
-    let billingAddress = new AddressEntity();
+    const billingAddress = new AddressEntity();
     if (domain.billingAddress && domain.billingAddress.id) {
       billingAddress.id = domain.billingAddress.id;
     }
 
-    let shippingAddress = new AddressEntity();
+    const shippingAddress = new AddressEntity();
     if (domain.shippingAddress && domain.shippingAddress.id) {
       shippingAddress.id = domain.shippingAddress.id;
     }

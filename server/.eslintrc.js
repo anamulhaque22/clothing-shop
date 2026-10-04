@@ -21,6 +21,18 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    endOfLine: 'auto',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error', // Use 'warn' if you only want warnings instead of build failures
+      {
+        vars: 'all',
+        args: 'after-used',
+        ignoreRestSiblings: true,
+        // (Optional) Allows prefixing intentionally unused variables with an underscore
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
+    ],
   },
 };

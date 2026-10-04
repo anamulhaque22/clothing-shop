@@ -237,9 +237,10 @@ const ProductsDetails = ({ product }) => {
       </div>
       <div className="mt-10 lg:mt-20">
         <SectionHeading text="Product Description" />
-        <p className="text-[#807D7E] text-base font-causten-regular mt-7">
-          {product?.description}
-        </p>
+        <div
+          className="text-[#807D7E] text-base font-causten-regular mt-7"
+          dangerouslySetInnerHTML={{ __html: product?.description || "" }}
+        />
       </div>
 
       {/* <div className="mt-10 lg:mt-20">

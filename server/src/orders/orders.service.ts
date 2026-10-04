@@ -63,7 +63,7 @@ export class OrdersService {
         userId: data.userId,
       });
 
-    let newOrderItems = data.orderItems.map((item) => {
+    const newOrderItems = data.orderItems.map((item) => {
       return {
         productId: item.productId,
         quantity: item.quantity,
@@ -172,7 +172,7 @@ export class OrdersService {
 
       await queryRunner.commitTransaction();
       return order;
-    } catch (error) {
+    } catch (_error) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException('Order processing failed');
     } finally {
@@ -231,18 +231,18 @@ export class OrdersService {
     if (!order) {
       throw new NotFoundException(`Order not found with id: ${id}`);
     }
-    let data;
+
     if (
       order.successPayment?.payment_provider === PAYMENT_PROVIDER.COD &&
       orderStatus === ORDER_STATUS.COMPLETED
     ) {
-      data = await this.orderRepo.updateOrderStatus(id, {
+      await this.orderRepo.updateOrderStatus(id, {
         status: orderStatus,
         paymentStatus: PAYMENT_STATUS.SUCCESS,
       });
       return;
     } else {
-      data = await this.orderRepo.updateOrderStatus(id, {
+      await this.orderRepo.updateOrderStatus(id, {
         status: orderStatus,
         paymentStatus: PAYMENT_STATUS[order.successPayment?.status],
       });

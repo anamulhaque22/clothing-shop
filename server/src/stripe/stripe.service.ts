@@ -84,7 +84,9 @@ export class StripeService {
     ) {
       return;
     }
-    const data = event.data.object as Stripe.PaymentIntent;
+    // @ts-expect-error: _data is kept for debugging or upcoming Stripe webhook implementations
+    const _data = event.data.object as Stripe.PaymentIntent;
+
     const payment = null;
     //= await this.paymentRepo.findOne({
     //   where: { transaction_id: data.id },

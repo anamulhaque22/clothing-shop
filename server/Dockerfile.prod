@@ -1,35 +1,39 @@
 FROM node:22-alpine AS builder
-WORKDIR /app
-ARG NODE_ENV
-ARG APP_PORT
 
-COPY package.json yarn.lock ./
-RUN --mount=type=cache,target=/root/.yarn yarn install --frozen-lockfile
+WORKDIR /app
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN --mount=type=cache,target=/pnpm/store \
+    pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN yarn build
+RUN pnpm build
 
 FROM node:22-alpine AS runner
 
 RUN addgroup -S app && adduser -S app -G app
 
 WORKDIR /app
-ARG NODE_ENV
-ARG APP_PORT
 
-COPY package.json yarn.lock ./
-RUN --mount=type=cache,target=/root/.yarn \ 
-    yarn install --frozen-lockfile --production
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+
+RUN corepack enable  
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN --mount=type=cache,target=/pnpm/store \
+    pnpm install --frozen-lockfile --production
 
 COPY --from=builder /app/dist ./dist
 
-COPY docker-entrypoint.prod.sh ./
-RUN chmod +x docker-entrypoint.prod.sh
 USER app:app
-
-EXPOSE ${APP_PORT}
 
 ENTRYPOINT [ "node" ]
 
-CMD [ "./docker-entrypoint.prod.sh" ]
+CMD [ "dist/main.js" ]

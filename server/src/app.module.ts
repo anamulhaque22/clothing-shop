@@ -44,6 +44,7 @@ import { WishListModule } from './wish-list/wish-list.module';
         facebookConfig,
       ],
       envFilePath: ['.env'],
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,

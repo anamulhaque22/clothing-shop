@@ -166,7 +166,7 @@ export class AuthService {
       });
 
       userId = jwtData.confirmEmailUserId;
-    } catch (error) {
+    } catch (_error) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
@@ -213,7 +213,7 @@ export class AuthService {
 
       userId = jwtData.confirmEmailUserId;
       newEmail = jwtData.newEmail;
-    } catch (error) {
+    } catch (_error) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
@@ -292,7 +292,7 @@ export class AuthService {
       });
 
       userId = jwtData.forgotUserId;
-    } catch (error) {
+    } catch (_error) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: {
@@ -482,7 +482,7 @@ export class AuthService {
     // });
   }
 
-  async removeImage(id: UserImage['id']): Promise<void> {
+  async removeImage(__id: UserImage['id']): Promise<void> {
     // return this.usersService.removeImage(id);
     // const result = await this.usersRepository.removeUserImage(id);
     // await this.cloudinaryService.removeFile(result);

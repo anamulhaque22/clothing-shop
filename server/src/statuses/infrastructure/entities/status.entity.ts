@@ -1,8 +1,8 @@
-import { EntityHelper } from 'src/utils/entity-helper';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { EntityHelper } from "src/utils/entity-helper";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity({
-  name: 'status',
+  name: "status",
 })
 export class StatusEntity extends EntityHelper {
   @PrimaryColumn()
