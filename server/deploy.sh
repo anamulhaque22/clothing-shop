@@ -70,7 +70,7 @@ done
 # 5. Success or rollback
 if [ "$healthy" = true ]; then
   cp deploy.env last_good.env
-  docker image prune -af --filter "until=168h"
+  docker system prune -af
   echo "Deployment verified successfully."
 else
   echo "Health check failed."
@@ -79,6 +79,7 @@ else
     write_deploy_env "$PREVIOUS_IMAGE"
     $COMPOSE pull server
     $COMPOSE up -d --remove-orphans
+    docker rmi "$IMAGE" || true
     echo "Rollback completed."
   else
     echo "No previous image found, manual intervention required."
