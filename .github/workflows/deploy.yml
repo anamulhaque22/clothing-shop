@@ -83,6 +83,7 @@ jobs:
           username: ${{ secrets.EC2_PROD_USER }}
           key: ${{ secrets.EC2_PROD_SSH_KEY }}
           port: ${{ secrets.EC2_PROD_PORT }}
+          envs: ENV_B64
           script: |
             set -euo pipefail
             set +x
