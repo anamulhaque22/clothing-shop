@@ -19,13 +19,26 @@ write_deploy_env() {
 # 1. App env file (validate, then atomic swap)
 printf '%s' "$ENV_B64" | base64 -d > .env.production.new
 sed -i 's/\r$//' .env.production.new
-test -s .env.production.new
-grep -q '^PORT=' .env.production.new
+
+if [ ! -s .env.production.new ]; then
+  echo "ERROR: decoded env file is empty"
+  exit 1
+fi
+
+if ! grep -q '^APP_PORT=' .env.production.new; then
+  echo "ERROR: no APP_PORT= line in env file. Keys found:"
+  cut -d= -f1 .env.production.new | sed 's/^/  - /'
+  exit 1
+fi
+
 chmod 600 .env.production.new
 mv .env.production.new .env.production
 
-APP_PORT=$(grep '^PORT=' .env.production | cut -d= -f2-)
-test -n "$APP_PORT"
+APP_PORT=$(grep '^APP_PORT=' .env.production | cut -d= -f2- | tr -d "\"'")
+if [ -z "$APP_PORT" ]; then
+  echo "ERROR: APP_PORT is present but empty"
+  exit 1
+fi
 
 # 2. Last known-good image (only written after a passed health check)
 PREVIOUS_IMAGE=$(grep '^IMAGE=' last_good.env 2>/dev/null | cut -d= -f2- || true)
